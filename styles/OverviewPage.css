@@ -1,0 +1,884 @@
+/* ============================================================
+   PHOLIO AGENCY — Overview (Bento Grid)
+   ============================================================ */
+
+.ov-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 32px 40px 48px;
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ── Hero Welcome Block ── */
+.ov-hero {
+  padding: 40px 0 64px; /* Tightened top padding */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  margin-bottom: 32px;
+}
+
+.ov-hero-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 4rem; /* Massive, cinematic title */
+  font-weight: 400;
+  color: #0f172a;
+  margin: 0 0 24px;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+}
+
+.ov-hero-title-gold {
+  background: linear-gradient(135deg, #C9A55A 0%, #E3CD91 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.ov-hero-line {
+  display: block;
+}
+
+.ov-hero-sub {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ov-hero-div {
+  color: #cbd5e1;
+  font-weight: 300;
+  font-size: 1.1rem;
+}
+
+.ov-stat-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ov-stat-num {
+  color: #C9A55A;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.ov-stat-label {
+  color: #94A3B8;
+  font-weight: 500;
+}
+
+/* ============================================================
+   KPI CARDS (Row 1)
+   ============================================================ */
+.ov-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.ov-kpi {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  box-shadow: 0 12px 36px -12px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 1);
+  border-radius: 20px;
+  padding: 20px 22px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: default;
+}
+
+.ov-kpi:hover {
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+.ov-kpi-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ov-kpi-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
+}
+
+.ov-kpi-change {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+.ov-kpi-change.positive {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.ov-kpi-link {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: #C9A55A;
+  text-decoration: none;
+}
+
+.ov-kpi-link:hover {
+  text-decoration: underline;
+}
+
+.ov-kpi-sub-label {
+  font-size: 0.6875rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.ov-kpi-body {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 48px;
+}
+
+.ov-kpi-body--center {
+  justify-content: center;
+  align-items: center;
+}
+
+.ov-kpi-number {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+/* Sparkline */
+.ov-sparkline {
+  flex-shrink: 0;
+  margin-bottom: 4px;
+}
+
+/* Progress ring */
+.ov-ring {
+  flex-shrink: 0;
+}
+
+.ov-ring-progress {
+  transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ov-ring-text {
+  font-size: 13px;
+  font-weight: 700;
+  fill: #0f172a;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Mini bars */
+.ov-minibars {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex-shrink: 0;
+  width: 80px;
+  margin-bottom: 4px;
+}
+
+.ov-minibar-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ov-minibar-label {
+  font-size: 9px;
+  font-weight: 600;
+  color: #94a3b8;
+  width: 24px;
+  text-align: right;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ov-minibar-track {
+  flex: 1;
+  height: 5px;
+  background: #f1f0ee;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.ov-minibar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.6s ease;
+}
+
+/* Calendar dots */
+.ov-cal-dots {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 6px;
+}
+
+.ov-cal-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.ov-cal-letter {
+  font-size: 9px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.ov-cal-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #f1f0ee;
+  transition: all 0.3s ease;
+}
+
+.ov-cal-dot--on {
+  background: #C9A55A;
+  box-shadow: 0 0 0 3px rgba(201, 165, 90, 0.15);
+}
+
+/* ============================================================
+   ROW 2 — Applications + Promo
+   ============================================================ */
+.ov-row-2 {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 16px;
+  align-items: stretch;
+}
+
+/* Shared card */
+.ov-card {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  box-shadow: 0 12px 36px -12px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 1);
+  border-radius: 20px;
+  padding: 24px;
+}
+
+.ov-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.ov-card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.ov-sort-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #64748b;
+  background: #f5f4f2;
+  border: 1px solid #e8e5e1;
+  padding: 5px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ov-sort-btn:hover {
+  background: #eeedeb;
+  color: #0f172a;
+}
+
+/* Application rows */
+.ov-app-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.ov-app-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid #f5f3f0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ov-app-row:last-child {
+  border-bottom: none;
+}
+
+.ov-app-row:hover {
+  padding-left: 8px;
+}
+
+.ov-app-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.ov-app-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ov-app-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+}
+
+.ov-app-meta {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ov-app-badge {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: #f5f4f2;
+  color: #64748b;
+}
+
+.ov-app-match {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #C9A55A;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.ov-view-all {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #C9A55A;
+  background: #fdfcfa;
+  border: 1px solid #f0ede8;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ov-view-all:hover {
+  background: rgba(201, 165, 90, 0.06);
+  border-color: rgba(201, 165, 90, 0.3);
+  transform: translateY(-1px);
+}
+
+/* ── Promo card ── */
+.ov-promo {
+  position: relative;
+  background: linear-gradient(145deg, #0B0D10 0%, #1a1d23 100%);
+  border-radius: 20px;
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+  min-height: 320px;
+}
+
+.ov-promo-glow {
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(201, 165, 90, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.ov-promo-content {
+  position: relative;
+  z-index: 1;
+}
+
+.ov-promo-eyebrow {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #C9A55A;
+  margin-bottom: 16px;
+}
+
+.ov-promo-heading {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.75rem;
+  font-weight: 400;
+  color: white;
+  margin: 0 0 12px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.ov-promo-body {
+  font-size: 0.8125rem;
+  color: #64748b;
+  margin: 0 0 24px;
+  line-height: 1.6;
+}
+
+.ov-promo-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  background: #C9A55A;
+  color: white;
+  border-radius: 10px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.ov-promo-cta:hover {
+  background: #b08d45;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(201, 165, 90, 0.3);
+}
+
+/* ============================================================
+   ROW 3 — Pipeline + Archetypes
+   ============================================================ */
+.ov-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* Pipeline stacked bar */
+.ov-pipeline-bar {
+  display: flex;
+  height: 12px;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.ov-pipeline-seg {
+  transition: width 0.6s ease;
+}
+
+.ov-pipeline-seg:first-child {
+  border-radius: 6px 0 0 6px;
+}
+
+.ov-pipeline-seg:last-child {
+  border-radius: 0 6px 6px 0;
+}
+
+.ov-pipeline-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.ov-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ov-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.ov-legend-label {
+  font-size: 0.8125rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.ov-legend-count {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* Archetypes */
+.ov-arch-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ov-arch-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ov-arch-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.ov-arch-name {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #0f172a;
+}
+
+.ov-arch-pct {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.ov-arch-track {
+  height: 8px;
+  background: #f5f4f2;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.ov-arch-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================================
+   MODAL (Quick View)
+   ============================================================ */
+.ov-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(8px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: ov-fade-in 0.2s ease;
+}
+
+@keyframes ov-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.ov-modal {
+  background: white;
+  width: 100%;
+  max-width: 440px;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 32px 64px rgba(0, 0, 0, 0.16);
+  animation: ov-modal-in 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes ov-modal-in {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.ov-modal-hero {
+  position: relative;
+  height: 280px;
+  background: #0f172a;
+  overflow: hidden;
+}
+
+.ov-modal-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  opacity: 0.5;
+  mix-blend-mode: luminosity;
+}
+
+.ov-modal-grad {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, transparent 60%);
+}
+
+.ov-modal-match-area {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+}
+
+.ov-modal-match-label {
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 2px;
+}
+
+.ov-modal-match-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  font-weight: 400;
+  color: white;
+  line-height: 1;
+}
+
+.ov-modal-body {
+  padding: 28px;
+  position: relative;
+}
+
+.ov-modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: #f5f4f2;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ov-modal-close:hover {
+  background: #eeedeb;
+  color: #0f172a;
+}
+
+.ov-modal-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #0f172a;
+  margin: 0 0 12px;
+  letter-spacing: -0.02em;
+}
+
+.ov-modal-tags {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.ov-modal-badge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3px 10px;
+  border-radius: 4px;
+  background: rgba(201, 165, 90, 0.1);
+  color: #C9A55A;
+}
+
+.ov-modal-location {
+  font-size: 0.8125rem;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ov-modal-stats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  padding: 14px;
+  background: #faf9f7;
+  border-radius: 12px;
+  border: 1px solid #f0ede8;
+  margin-bottom: 20px;
+}
+
+.ov-modal-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+}
+
+.ov-modal-stat-label {
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #94a3b8;
+}
+
+.ov-modal-stat-val {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.ov-modal-bio {
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: #64748b;
+  margin: 0 0 24px;
+  padding-left: 14px;
+  border-left: 2px solid #C9A55A;
+}
+
+.ov-modal-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.ov-modal-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 11px;
+  border-radius: 12px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ov-modal-btn--primary {
+  background: #C9A55A;
+  color: white;
+  box-shadow: 0 2px 8px rgba(201, 165, 90, 0.25);
+}
+
+.ov-modal-btn--primary:hover {
+  background: #b08d45;
+  transform: translateY(-1px);
+}
+
+.ov-modal-btn--secondary {
+  background: white;
+  color: #0f172a;
+  border: 1px solid #e8e5e1;
+}
+
+.ov-modal-btn--secondary:hover {
+  border-color: #C9A55A;
+}
+
+.ov-modal-btn--ghost {
+  background: #faf9f7;
+  color: #64748b;
+}
+
+.ov-modal-btn--ghost:hover {
+  background: #f0ede8;
+  color: #0f172a;
+}
+
+.ov-modal-btn--danger:hover {
+  background: #fef2f2;
+  color: #ef4444;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+  .ov-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ov-row-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .ov-promo {
+    min-height: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .ov-page {
+    padding: 20px 16px 40px;
+  }
+
+  .ov-greeting-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ov-kpi-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ov-row-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .ov-greeting {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .ov-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
