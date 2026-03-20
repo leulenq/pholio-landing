@@ -103,58 +103,64 @@ export default function Header({ theme = "dark" }: HeaderProps) {
         transition: "opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1)",
       }}
     >
-      {/* ── Pill Container ──────────────────────────────────────────────────── */}
-      <div
-        className="relative overflow-hidden mx-auto max-w-[1200px]"
-        style={{
-          borderRadius: "100px",
-          background: isDark ? "rgba(10, 10, 15, 0.6)" : "rgba(255, 255, 255, 0.85)",
-          backdropFilter: "blur(24px) saturate(180%)",
-          WebkitBackdropFilter: "blur(24px) saturate(180%)",
-          border: isDark ? "1px solid rgba(255, 255, 255, 0.05)" : "1px solid rgba(0, 0, 0, 0.05)",
-          boxShadow: isDark 
-            ? "inset 0 0 0 1px rgba(255,255,255,0.02), 0 0 0 1px rgba(201,165,90,0.1), 0 20px 40px -10px rgba(0,0,0,0.5)" 
-            : "0 10px 30px rgba(0,0,0,0.04)",
-        }}
-      >
+      {/* ── Ultra-Premium Pill Container ──────────────────────────────────────────────────── */}
+      <div className="relative mx-auto max-w-[1000px] mt-2 sm:mt-6 rounded-[100px] p-[1px] group/header" style={{ boxShadow: isDark ? "0 40px 80px -20px rgba(0,0,0,0.8)" : "0 20px 40px -10px rgba(0,0,0,0.05)" }}>
+        {/* Animated Conic Border Glow */}
         {isDark && (
-          <div className="absolute inset-0 pointer-events-none" style={{
-            background: "radial-gradient(circle at 10% 0%, rgba(201, 165, 90, 0.1), transparent 40%), radial-gradient(circle at 90% 100%, rgba(255, 255, 255, 0.03), transparent 40%)",
-          }} />
+          <div className="absolute inset-0 overflow-hidden rounded-[100px] opacity-60">
+             <motion.div
+                className="absolute top-1/2 left-1/2 w-[300%] h-[300%]"
+                style={{
+                  originX: 0.5, originY: 0.5, x: "-50%", y: "-50%",
+                  background: "conic-gradient(from 0deg, transparent 0%, transparent 70%, rgba(201,165,90,0.8) 90%, transparent 100%)",
+                }}
+                animate={{ rotate: 360 }}
+                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+              />
+          </div>
         )}
-        <div className="px-6 lg:px-8 h-[60px] flex items-center justify-between relative">
+
+        <div
+          className="relative rounded-[100px] overflow-hidden"
+          style={{
+            background: isDark ? "rgba(10, 10, 12, 0.75)" : "rgba(255, 255, 255, 0.85)",
+            backdropFilter: "blur(32px) saturate(200%)",
+            WebkitBackdropFilter: "blur(32px) saturate(200%)",
+            boxShadow: isDark ? "inset 0 1px 1px rgba(255,255,255,0.1)" : "inset 0 1px 1px rgba(255,255,255,0.8)",
+          }}
+        >
+          {/* Inner Noise for Physical Texture */}
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.7\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\'/%3E%3C/svg%3E")', mixBlendMode: "overlay" }} />
+
+          <div className="px-6 lg:px-8 h-[64px] flex items-center justify-between relative z-10">
 
           {/* ── Logo ─────────────────────────────────────────────── */}
-          <Link href="/" className="group flex-shrink-0 z-10 focus:outline-none" aria-label="Pholio home">
-            <div className="flex items-center overflow-hidden" style={{ height: "28px" }}>
-              {"PHOLIO".split("").map((letter, i) => (
-                <motion.span
-                  key={i}
-                  style={{
-                    fontFamily: "var(--font-serif)",
-                    fontWeight: 400,
-                    fontSize: "1.05rem",
-                    letterSpacing: "0.3em",
-                    display: "inline-block",
-                    color: isDark ? "rgba(220, 230, 245, 0.88)" : "#0f172a",
-                  }}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    delay: 0.12 + i * 0.04,
-                    duration: 0.5,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                >
-                  <span
-                    style={{ transition: "color 0.35s ease" }}
-                    className="group-hover:text-[#C9A55A]"
-                  >
-                    {letter}
-                  </span>
-                </motion.span>
-              ))}
-            </div>
+          <Link href="/" className="group flex-shrink-0 z-10 focus:outline-none relative" aria-label="Pholio home">
+            <span
+              className="relative overflow-hidden inline-block"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontWeight: 600,
+                fontSize: "1.1rem",
+                letterSpacing: "0.25em",
+                color: isDark ? "rgba(255, 255, 255, 0.95)" : "#0f172a",
+                textShadow: isDark ? "0 2px 10px rgba(255,255,255,0.1)" : "none",
+              }}
+            >
+              PHOLIO
+              <motion.span
+                 className="absolute inset-0 pointer-events-none"
+                 style={{
+                   background: "linear-gradient(90deg, transparent, rgba(201,165,90,0.8), transparent)",
+                   WebkitBackgroundClip: "text",
+                   WebkitTextFillColor: "transparent",
+                 }}
+                 animate={{ x: ["-100%", "200%"] }}
+                 transition={{ duration: 3, repeat: Infinity, repeatDelay: 5, ease: "easeInOut" }}
+              >
+                PHOLIO
+              </motion.span>
+            </span>
           </Link>
 
           {/* ── Desktop Nav ──────────────────────────────────────── */}
@@ -163,24 +169,31 @@ export default function Header({ theme = "dark" }: HeaderProps) {
             onMouseLeave={() => setHoveredLink(null)}
           >
             {LINKS.map((link) => {
-              const active = pathname === link.href;
-              const lit = hoveredLink === link.label || active;
+              const animatedHover = hoveredLink === link.label;
               return (
                 <Link
                   key={link.label}
                   href={link.href}
-                  className="px-4 py-3 focus:outline-none"
+                  className="relative px-5 py-2 rounded-full focus:outline-none"
                   onMouseEnter={() => setHoveredLink(link.label)}
                 >
+                  {animatedHover && (
+                    <motion.div
+                      layoutId="header-nav-hover"
+                      className="absolute inset-0 rounded-full"
+                      style={{ background: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0,0,0,0.04)" }}
+                      transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+                    />
+                  )}
                   <span
+                    className="relative z-10 transition-colors duration-200"
                     style={{
                       fontFamily: "var(--font-sans)",
                       fontSize: "10px",
-                      fontWeight: 500,
-                      letterSpacing: "0.2em",
+                      fontWeight: 600,
+                      letterSpacing: "0.15em",
                       textTransform: "uppercase",
-                      color: lit ? (isDark ? "rgba(255,255,255,0.88)" : "#0f172a") : (isDark ? "rgba(255,255,255,0.32)" : "rgba(15, 23, 42, 0.4)"),
-                      transition: "color 0.2s ease",
+                      color: animatedHover ? (isDark ? "#ffffff" : "#0f172a") : (isDark ? "rgba(255,255,255,0.4)" : "rgba(15, 23, 42, 0.4)"),
                     }}
                   >
                     {link.label}
@@ -358,34 +371,36 @@ export default function Header({ theme = "dark" }: HeaderProps) {
                   LOG IN
                 </a>
 
-                <a
+                <motion.a
                   href={`${APP_URL}/onboarding`}
                   className="group relative inline-flex items-center justify-center overflow-hidden"
+                  whileHover="hover"
                   style={{
-                    background: "linear-gradient(135deg, #C9A55A 0%, #A88C44 100%)",
+                    background: "linear-gradient(135deg, #DFBE76 0%, #A88C44 100%)",
                     color: "#050505",
                     fontFamily: "var(--font-sans)",
-                    fontWeight: 600,
+                    fontWeight: 700,
                     fontSize: "10px",
-                    letterSpacing: "0.1em",
+                    letterSpacing: "0.15em",
                     textTransform: "uppercase",
-                    padding: "10px 24px",
+                    padding: "12px 28px",
                     borderRadius: "100px",
                     textDecoration: "none",
-                    boxShadow: "0 4px 14px rgba(201,165,90,0.25)",
-                    transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateY(-1px)";
-                    e.currentTarget.style.boxShadow = "0 6px 20px rgba(201,165,90,0.4)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow = "0 4px 14px rgba(201,165,90,0.25)";
+                    boxShadow: "0 10px 30px -5px rgba(201,165,90,0.4), inset 0 1px 0 rgba(255,255,255,0.3)",
+                    border: "1px solid rgba(255,255,255,0.1)",
                   }}
                 >
-                  GET SCOUTED
-                </a>
+                  <motion.div
+                    className="absolute inset-0 z-0 bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-12"
+                    variants={{
+                      hover: { x: ["-150%", "150%"], transition: { duration: 0.6, ease: "easeInOut" } }
+                    }}
+                    initial={{ x: "-150%" }}
+                  />
+                  <span className="relative z-10 flex items-center gap-2">
+                    GET SCOUTED
+                  </span>
+                </motion.a>
               </>
             )}
           </div>
@@ -416,6 +431,7 @@ export default function Header({ theme = "dark" }: HeaderProps) {
             ))}
           </button>
         </div>
+      </div>
       </div>
 
       {/* ══ Mobile Menu Overlay ═══════════════════════════════════ */}
