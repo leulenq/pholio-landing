@@ -258,7 +258,7 @@ export default function Header({ theme = "dark" }: HeaderProps) {
                     {authData?.role === "TALENT" && (
                       <>
                         <a
-                          href={`${APP_URL}/login`}
+                          href="/login"
                           className="profile-strength-widget"
                           onClick={() => setIsProfileOpen(false)}
                         >
@@ -292,7 +292,7 @@ export default function Header({ theme = "dark" }: HeaderProps) {
                         </a>
                       )}
                       <a
-                        href={`${APP_URL}/login`}
+                        href="/login"
                         className="dropdown-item"
                         onClick={() => setIsProfileOpen(false)}
                       >
@@ -301,7 +301,7 @@ export default function Header({ theme = "dark" }: HeaderProps) {
                       </a>
                       {!authData?.subscription?.isPro && (
                         <a
-                          href={`${APP_URL}/login`}
+                          href="/login"
                           className="dropdown-item upgrade-item"
                           onClick={() => setIsProfileOpen(false)}
                         >
@@ -339,7 +339,7 @@ export default function Header({ theme = "dark" }: HeaderProps) {
             ) : (
               <>
                 <a
-                  href={`${APP_URL}/login`}
+                  href="/login"
                   style={{
                     fontFamily: "var(--font-sans)",
                     fontSize: "10px",
@@ -357,7 +357,7 @@ export default function Header({ theme = "dark" }: HeaderProps) {
                 </a>
 
                 <motion.a
-                  href={`${APP_URL}/onboarding`}
+                  href="/onboarding"
                   className="group relative inline-flex items-center justify-center overflow-hidden"
                   whileHover="hover"
                   style={{
@@ -507,7 +507,7 @@ export default function Header({ theme = "dark" }: HeaderProps) {
             ) : (
               <>
                 <a
-                  href={`${APP_URL}/onboarding`}
+                  href="/onboarding"
                   className="btn-gold text-[11px] px-7 py-4 text-center"
                   style={{ borderRadius: "3px" }}
                   onClick={() => setIsMobileMenuOpen(false)}
@@ -515,7 +515,7 @@ export default function Header({ theme = "dark" }: HeaderProps) {
                   <span>Get Scouted</span>
                 </a>
                 <a
-                  href={`${APP_URL}/login`}
+                  href="/login"
                   className="text-center py-3 transition-colors duration-200"
                   style={{
                     fontFamily: "var(--font-sans)",
