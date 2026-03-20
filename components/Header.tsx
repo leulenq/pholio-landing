@@ -9,11 +9,8 @@ import { ChevronDown, ExternalLink, Settings, LogOut, Sparkles } from "lucide-re
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
 const LINKS = [
-  { label: "ABOUT", href: "/about-us" },
-  { label: "CAREERS", href: "/careers" },
-  { label: "FOR TALENT", href: "/talent" },
-  { label: "FOR AGENCIES", href: "/agency" },
-  { label: "PLATFORM", href: "/#platform" },
+  { label: "TALENT", href: "/talent" },
+  { label: "AGENCIES", href: "/agency" },
   { label: "STUDIO+", href: "/#studio-plus" },
 ];
 
@@ -74,12 +71,12 @@ export default function Header({ theme = "dark" }: HeaderProps) {
   }, []);
 
   useEffect(() => {
-    const isHeroPage = pathname === "/" || pathname === "/for-talent" || pathname === "/talent";
+    const isHeroPage = pathname === "/";
     setIsAtHero(isHeroPage && window.scrollY < window.innerHeight);
   }, [pathname]);
 
   useMotionValueEvent(scrollY, "change", (latest) => {
-    const isHeroPage = pathname === "/" || pathname === "/for-talent" || pathname === "/talent";
+    const isHeroPage = pathname === "/";
     setIsAtHero(isHeroPage && latest < window.innerHeight);
     const prev = scrollY.getPrevious() ?? 0;
     if (latest > 120 && latest > prev) {
@@ -104,7 +101,7 @@ export default function Header({ theme = "dark" }: HeaderProps) {
       }}
     >
       {/* ── Ultra-Premium Pill Container ──────────────────────────────────────────────────── */}
-      <div className="relative mx-auto max-w-[1000px] mt-2 sm:mt-6 rounded-[100px] p-[1px] group/header" style={{ boxShadow: isDark ? "0 40px 80px -20px rgba(0,0,0,0.8)" : "0 20px 40px -10px rgba(0,0,0,0.05)" }}>
+      <div className="relative mx-auto w-[96%] max-w-[1280px] mt-2 sm:mt-6 rounded-[100px] p-[1px] group/header" style={{ boxShadow: isDark ? "0 40px 80px -20px rgba(0,0,0,0.8)" : "0 20px 40px -10px rgba(0,0,0,0.05)" }}>
         {/* Animated Conic Border Glow */}
         {isDark && (
           <div className="absolute inset-0 overflow-hidden rounded-[100px] opacity-60">
@@ -137,29 +134,17 @@ export default function Header({ theme = "dark" }: HeaderProps) {
           {/* ── Logo ─────────────────────────────────────────────── */}
           <Link href="/" className="group flex-shrink-0 z-10 focus:outline-none relative" aria-label="Pholio home">
             <span
-              className="relative overflow-hidden inline-block"
+              className="inline-block"
               style={{
                 fontFamily: "var(--font-serif)",
                 fontWeight: 600,
                 fontSize: "1.1rem",
                 letterSpacing: "0.25em",
-                color: isDark ? "rgba(255, 255, 255, 0.95)" : "#0f172a",
-                textShadow: isDark ? "0 2px 10px rgba(255,255,255,0.1)" : "none",
+                color: "#C9A55A",
+                textShadow: isDark ? "0 2px 10px rgba(201,165,90,0.2)" : "none",
               }}
             >
               PHOLIO
-              <motion.span
-                 className="absolute inset-0 pointer-events-none"
-                 style={{
-                   background: "linear-gradient(90deg, transparent, rgba(201,165,90,0.8), transparent)",
-                   WebkitBackgroundClip: "text",
-                   WebkitTextFillColor: "transparent",
-                 }}
-                 animate={{ x: ["-100%", "200%"] }}
-                 transition={{ duration: 3, repeat: Infinity, repeatDelay: 5, ease: "easeInOut" }}
-              >
-                PHOLIO
-              </motion.span>
             </span>
           </Link>
 
