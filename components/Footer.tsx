@@ -20,7 +20,7 @@ const footerLinks = [
     links: [
       { label: "About Us", href: "/about" },
       { label: "Careers", href: "/careers" },
-      { label: "Contact", href: "mailto:support@pholio.studio" },
+      { label: "Contact", href: "/contact" },
     ],
   },
   {
@@ -85,8 +85,8 @@ export default function Footer() {
               className="text-base leading-[1.6]"
               style={{ color: "var(--color-text-secondary)" }}
             >
-              The industry standard for talent portfolios. AI-curated, visually
-              stunning, and directly connected to top global agencies.
+              Built for talent. Trusted by agencies. AI-curated portfolios,
+              directly connected to top global agencies.
             </p>
             <div className="mt-8">
               <a

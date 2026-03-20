@@ -20,7 +20,7 @@ const footerLinks = [
     links: [
       { label: "About Us", href: "/about-us" },
       { label: "Careers", href: "/careers" },
-      { label: "Contact", href: "mailto:support@pholio.studio" },
+      { label: "Contact", href: "/contact" },
     ],
   },
   {
@@ -33,145 +33,40 @@ const footerLinks = [
   },
 ];
 
-export default function MarketingFooter() {
+export interface MarketingFooterProps {
+  theme?: "light" | "dark";
+}
+
+export default function MarketingFooter({ theme = "light" }: MarketingFooterProps) {
+  const isDark = theme === "dark";
+
   return (
     <div
-      className="w-full pt-[16px] px-4 md:px-8 pb-10"
-      style={{ backgroundColor: "var(--color-cream)" }}
+      className={`w-full pt-[16px] px-4 md:px-8 pb-10 ${isDark ? "bg-[#0A0A0F]" : ""}`}
+      style={!isDark ? { backgroundColor: "var(--color-cream)" } : {}}
     >
       <div className="mx-auto w-full max-w-[1600px] flex flex-col gap-4">
         {/* =========================================
-            CARD 1 — CTA CARD (dark, rounded)
+            CARD 2 — FOOTER CARD
             ========================================= */}
         <div
-          className="flex flex-col items-center text-center w-full"
+          className="w-full relative overflow-hidden"
           style={{
-            backgroundColor: "var(--color-ink)",
-            borderRadius: "32px",
-            padding: "100px 40px",
-          }}
-        >
-          {/* Eyebrow */}
-          <span
-            className="uppercase"
-            style={{
-              fontFamily: "var(--font-sans)",
-              fontWeight: 500,
-              fontSize: "11px",
-              color: "#C9A55A",
-              letterSpacing: "0.15em",
-              marginBottom: "20px",
-            }}
-          >
-            YOUR NEXT MOVE
-          </span>
-
-          {/* Headline */}
-          <h2 style={{ marginBottom: "16px", margin: 0, padding: 0 }}>
-            <span
-              style={{
-                fontFamily: "var(--font-sans)",
-                fontWeight: 700,
-                fontSize: "52px",
-                color: "white",
-              }}
-            >
-              Ready to be{" "}
-            </span>
-            <span
-              className="italic"
-              style={{
-                fontFamily: "var(--font-serif)",
-                fontWeight: 700,
-                fontSize: "52px",
-                color: "#C9A55A",
-              }}
-            >
-              seen?
-            </span>
-          </h2>
-
-          {/* Subtext */}
-          <p
-            style={{
-              fontFamily: "var(--font-sans)",
-              fontWeight: 400,
-              fontSize: "16px",
-              color: "#94a3b8",
-              marginTop: "16px",
-              maxWidth: "440px",
-              margin: "16px auto 0 auto", // Center block
-            }}
-          >
-            Join the platform that top agencies use to scout verified talent.
-          </p>
-
-          {/* Buttons Row */}
-          <div className="flex flex-row items-center justify-center gap-[16px] mt-[40px]">
-            {/* Button 1 */}
-            <a
-              href={`${APP_URL}/signup`}
-              className="uppercase transition-transform duration-300 hover:scale-[1.02]"
-              style={{
-                backgroundColor: "#C9A55A",
-                color: "#0f172a",
-                fontFamily: "var(--font-sans)",
-                fontWeight: 600,
-                fontSize: "13px",
-                letterSpacing: "0.08em",
-                borderRadius: "100px",
-                padding: "14px 32px",
-                display: "inline-block",
-                textDecoration: "none",
-              }}
-            >
-              START CASTING
-            </a>
-
-            {/* Button 2 */}
-            <a
-              href={`${APP_URL}/login`}
-              className="uppercase transition-colors duration-300 group"
-              style={{
-                backgroundColor: "transparent",
-                border: "1px solid #2d3f55",
-                color: "white",
-                fontFamily: "var(--font-sans)",
-                fontWeight: 500,
-                fontSize: "13px",
-                letterSpacing: "0.08em",
-                borderRadius: "100px",
-                padding: "14px 32px",
-                display: "inline-block",
-                textDecoration: "none",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "#C9A55A";
-                e.currentTarget.style.color = "#C9A55A";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = "#2d3f55";
-                e.currentTarget.style.color = "white";
-              }}
-            >
-              AGENCY LOGIN
-            </a>
-          </div>
-        </div>
-
-        {/* =========================================
-            CARD 2 — FOOTER CARD (light, rounded)
-            ========================================= */}
-        <div
-          className="w-full"
-          style={{
-            backgroundColor: "#ffffff",
+            backgroundColor: isDark ? "#111116" : "#ffffff",
             borderRadius: "32px",
             padding: "64px 64px 40px 64px",
             marginBottom: "40px",
-            boxShadow: "0 20px 40px -10px rgba(0,0,0,0.03)",
+            boxShadow: isDark
+              ? "0 0 0 1px rgba(255,255,255,0.05), 0 20px 40px -10px rgba(0,0,0,0.5)"
+              : "0 20px 40px -10px rgba(0,0,0,0.03)",
           }}
         >
+          {isDark && (
+            <div className="absolute inset-0 pointer-events-none" style={{
+              background: "radial-gradient(circle at top right, rgba(201, 165, 90, 0.05), transparent 40%), radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.02), transparent 40%)",
+            }} />
+          )}
+
           {/* TOP SECTION */}
           <div className="flex flex-col md:flex-row items-start justify-between w-full">
             {/* LEFT BLOCK */}
@@ -186,8 +81,9 @@ export default function MarketingFooter() {
                     fontSize: "1.75rem",
                     fontWeight: 700,
                     letterSpacing: "0.12em",
+                    color: isDark ? "#ffffff" : "var(--color-ink)",
                   }}
-                  className="text-ink uppercase transition-colors duration-300 relative group-hover:text-[#c9a55a]"
+                  className="uppercase transition-colors duration-300 relative group-hover:text-[#c9a55a]"
                 >
                   PHOLIO
                 </span>
@@ -209,9 +105,8 @@ export default function MarketingFooter() {
                   marginTop: "10px",
                 }}
               >
-                The industry standard for talent portfolios. AI-curated,
-                visually stunning, and directly connected to top global
-                agencies.
+                Built for talent. Trusted by agencies. AI-curated portfolios,
+                directly connected to top global agencies.
               </p>
 
               {/* Social Icons */}
@@ -280,7 +175,7 @@ export default function MarketingFooter() {
                       fontFamily: "var(--font-sans)",
                       fontWeight: 600,
                       fontSize: "11px",
-                      color: "#0f172a",
+                      color: isDark ? "#e2e8f0" : "#0f172a",
                       letterSpacing: "0.1em",
                       marginBottom: "16px",
                       display: "block",
@@ -298,7 +193,7 @@ export default function MarketingFooter() {
                           fontFamily: "var(--font-sans)",
                           fontWeight: 400,
                           fontSize: "13px",
-                          color: "#64748b",
+                          color: isDark ? "#94a3b8" : "#64748b",
                           lineHeight: 2.4,
                           display: "block",
                           textDecoration: "none",
@@ -307,7 +202,7 @@ export default function MarketingFooter() {
                           (e.currentTarget.style.color = "#C9A55A")
                         }
                         onMouseLeave={(e) =>
-                          (e.currentTarget.style.color = "#64748b")
+                          (e.currentTarget.style.color = isDark ? "#94a3b8" : "#64748b")
                         }
                       >
                         {link.label}
@@ -323,7 +218,7 @@ export default function MarketingFooter() {
           <div
             style={{
               height: "1px",
-              backgroundColor: "#f1f5f9",
+              backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "#f1f5f9",
               width: "100%",
               margin: "32px 0 20px 0",
             }}
@@ -356,7 +251,7 @@ export default function MarketingFooter() {
                     textDecoration: "none",
                   }}
                   onMouseEnter={(e) =>
-                    (e.currentTarget.style.color = "#0f172a")
+                    (e.currentTarget.style.color = isDark ? "#ffffff" : "#0f172a")
                   }
                   onMouseLeave={(e) =>
                     (e.currentTarget.style.color = "#94a3b8")

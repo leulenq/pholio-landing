@@ -97,7 +97,7 @@ export default function SceneStandard() {
 
         <div style={{ color: "var(--color-cream)" }}>
           <LivingHeadline
-            text="Pholio is the industry standard."
+            text="Built for talent. Trusted by agencies."
             className="font-editorial text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-8"
             as="h2"
           />

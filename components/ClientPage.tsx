@@ -12,6 +12,7 @@ import SceneAgencyView from "@/components/SceneAgencyView";
 import SceneCurated from "@/components/SceneCurated";
 import SceneNetwork from "@/components/SceneNetwork";
 import PricingSection from "@/components/PricingSection";
+import FinalCTA from "@/components/FinalCTA";
 import MarketingFooter from "@/components/MarketingFooter";
 
 export default function ClientPage() {
@@ -53,8 +54,11 @@ export default function ClientPage() {
         {/* ── PRICING ───────────────────────────────────────────────────── */}
         <PricingSection />
 
+        {/* ── FINAL CTA ─────────────────────────────────────────────────── */}
+        <FinalCTA />
+
         {/* ── MARKETING FOOTER (CTA + Footer Cards) ─────────────── */}
-        <MarketingFooter />
+        <MarketingFooter theme="dark" />
       </main>
     </SmoothScroll>
   );

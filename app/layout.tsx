@@ -19,13 +19,13 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Pholio — The Industry Standard for Talent Portfolios",
+  title: "Pholio — Built for Talent. Trusted by Agencies.",
   description:
-    "AI-curated portfolios, verified metrics, and direct agency access. The platform top agencies use to discover verified talent.",
+    "Built for talent. Trusted by agencies. AI-curated portfolios, verified metrics, and direct agency access — the platform top agencies use to discover verified talent.",
   openGraph: {
-    title: "Pholio — The Industry Standard for Talent Portfolios",
+    title: "Pholio — Built for Talent. Trusted by Agencies.",
     description:
-      "AI-curated portfolios, verified metrics, and direct agency access.",
+      "Built for talent. Trusted by agencies. AI-curated portfolios, verified metrics, and direct agency access.",
     url: "https://www.pholio.studio",
     siteName: "Pholio",
     type: "website",
