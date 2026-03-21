@@ -395,7 +395,7 @@ export default function StudioPlusUpsell() {
                   whiteSpace: "nowrap",
                 }}
               >
-                Start Trial
+                Start 14-day free trial
               </a>
             </div>
           </div>

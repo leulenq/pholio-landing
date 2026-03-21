@@ -267,7 +267,7 @@ export default function PricingSection() {
               href={`${APP_URL}/signup?plan=studio`}
               className="btn-gold mb-8 block w-full rounded-lg text-center"
             >
-              Start 14-Day Trial
+              Start 14-day free trial
             </a>
             <ul className="space-y-3.5">
               {STUDIO_FEATURES.map((f) => (
