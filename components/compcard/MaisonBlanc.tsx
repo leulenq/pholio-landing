@@ -6,8 +6,9 @@ export default function CommercialWarm() {
   return (
     <div
       style={{
-        width: 400,
-        height: 600,
+        width: "100%",
+        height: "100%",
+        minHeight: 0,
         backgroundColor: "#F5F0EA",
         position: "relative",
         overflow: "hidden",

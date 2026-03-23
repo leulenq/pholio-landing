@@ -5,7 +5,8 @@ import { useState, useEffect } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { RuleLines } from "@/components/talent/shared";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+import { PHOLIO_APP_ORIGIN as APP_URL } from "@/lib/pholio-app-origin";
+
 const ease = [0.22, 1, 0.36, 1] as const;
 // Explicit delays per line
 const DELAYS = [0, 0.12, 0.35, 0.55];

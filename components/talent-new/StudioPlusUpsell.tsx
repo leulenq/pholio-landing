@@ -8,59 +8,34 @@ import {
   AnimatePresence,
   useReducedMotion,
 } from "framer-motion";
-import { Check, X, Sparkles } from "lucide-react";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+import { PHOLIO_APP_ORIGIN as APP_URL } from "@/lib/pholio-app-origin";
 const ease = [0.22, 1, 0.36, 1] as const;
 
-const COMPARISON = [
-  { feature: "Professional profile", free: true, studio: true },
-  { feature: "AI photo curation", free: true, studio: true },
-  { feature: "Comp card generation", free: true, studio: true },
-  { feature: "Archetype mapping", free: true, studio: true },
-  { feature: "Portfolio images", free: "Up to 10", studio: "Unlimited" },
-  { feature: "Agency applications / mo", free: "3", studio: "Unlimited" },
-  { feature: "Basic analytics", free: true, studio: true },
-  { feature: "Advanced analytics & insights", free: false, studio: true },
-  { feature: "AI profile audit", free: false, studio: true },
-  { feature: "Your own .studio website", free: false, studio: true },
-  { feature: "QR code comp cards", free: false, studio: true },
-  { feature: "Priority placement in search", free: false, studio: true },
-  { feature: "Custom portfolio URL", free: false, studio: true },
+const WALKS_IN = [
+  "Your book already lives in agency search — comp, digitals, and stats synced from one profile.",
+  "Pholio ranks your frames like an editor: the board sees the cut, not the camera roll.",
+  "Wallet pass, PDF comp, and a .studio link — what you hand over at the go-see stays on-brand.",
 ];
 
-function FeatureValue({
-  value,
-  gold = false,
-}: {
-  value: boolean | string;
-  gold?: boolean;
-}) {
-  if (typeof value === "string") {
-    return (
-      <span
-        style={{
-          fontFamily: "var(--font-sans)",
-          fontWeight: 600,
-          fontSize: "0.8125rem",
-          color: gold ? "#C9A55A" : "#1A1815",
-        }}
-      >
-        {value}
-      </span>
-    );
-  }
-  if (value) {
-    return (
-      <Check
-        size={15}
-        strokeWidth={2}
-        color={gold ? "#C9A55A" : "rgba(26,24,21,0.35)"}
-      />
-    );
-  }
-  return <X size={14} strokeWidth={1.5} color="rgba(26,24,21,0.15)" />;
-}
+const STUDIO_DEPTH = [
+  {
+    title: "Unlimited film",
+    body: "No cap on digitals — the contact sheet grows with every shoot.",
+  },
+  {
+    title: "Priority in the corridor",
+    body: "Your row surfaces earlier when scouts filter — still you, just harder to scroll past.",
+  },
+  {
+    title: "Your URL on the call sheet",
+    body: "Custom .studio domain and QR comps — the packaging agencies expect from a signed face.",
+  },
+  {
+    title: "Deeper signal",
+    body: "Advanced lean-in analytics and a profile audit — know what moved before the callback.",
+  },
+];
 
 export default function StudioPlusUpsell() {
   const ref = useRef<HTMLElement>(null);
@@ -75,346 +50,322 @@ export default function StudioPlusUpsell() {
       ref={ref}
       className="relative overflow-hidden"
       style={{
-        backgroundColor: "#FAF8F5",
+        backgroundColor: "#F3EFE8",
         padding: "7rem 0 8rem",
       }}
     >
-      {/* Noise texture */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
         style={{
-          opacity: 0.025,
+          opacity: 0.03,
           backgroundImage:
             'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.65\' numOctaves=\'2\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\'/%3E%3C/svg%3E")',
           backgroundSize: "150px 150px",
         }}
       />
 
-      {/* Gold ambient */}
-      <div
-        aria-hidden="true"
-        style={{
-          position: "absolute",
-          top: "15%",
-          left: "10%",
-          width: 400,
-          height: 400,
-          background: "radial-gradient(circle, rgba(201,165,90,0.06) 0%, transparent 65%)",
-          filter: "blur(80px)",
-          pointerEvents: "none",
-        }}
-      />
-
-      <div className="relative z-10 mx-auto max-w-5xl px-6 lg:px-8">
-        {/* Header */}
+      <div className="relative z-10 mx-auto max-w-6xl px-6 lg:px-12">
         <motion.div
-          className="mb-14"
-          initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 20 }}
+          className="mb-16 grid gap-10 lg:grid-cols-12 lg:gap-12"
+          initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 22 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, ease }}
+          transition={{ duration: 0.85, ease }}
         >
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-            <div>
-              <div className="flex items-center gap-3 mb-5">
-                <div
-                  style={{
-                    width: 24,
-                    height: 1,
-                    background: "linear-gradient(to right, var(--color-gold), transparent)",
-                  }}
-                />
-                <span
-                  style={{
-                    fontFamily: "var(--font-sans)",
-                    fontWeight: 600,
-                    fontSize: "0.625rem",
-                    letterSpacing: "0.2em",
-                    textTransform: "uppercase",
-                    color: "var(--color-gold)",
-                  }}
-                >
-                  Pricing
-                </span>
-              </div>
-              <h2
-                className="font-editorial"
+          <div className="lg:col-span-5">
+            <div className="mb-5 flex items-center gap-3">
+              <div
                 style={{
-                  fontSize: "clamp(2.2rem, 4.5vw, 3.8rem)",
-                  color: "#1A1815",
-                  fontWeight: 400,
-                  lineHeight: 1.08,
-                  letterSpacing: "-0.025em",
-                  margin: 0,
+                  width: 24,
+                  height: 1,
+                  background:
+                    "linear-gradient(to right, var(--color-gold), transparent)",
+                }}
+              />
+              <span
+                style={{
+                  fontFamily: "var(--font-sans)",
+                  fontWeight: 600,
+                  fontSize: "0.625rem",
+                  letterSpacing: "0.22em",
+                  textTransform: "uppercase",
+                  color: "var(--color-gold)",
                 }}
               >
-                Go further with{" "}
-                <span className="font-editorial-italic" style={{ color: "var(--color-gold)" }}>
-                  Studio+
-                </span>
-              </h2>
+                Depth
+              </span>
             </div>
+            <h2
+              className="font-editorial"
+              style={{
+                fontSize: "clamp(2.1rem, 4vw, 3.5rem)",
+                color: "#1A1815",
+                fontWeight: 400,
+                lineHeight: 1.05,
+                letterSpacing: "-0.03em",
+                margin: "0 0 1.5rem",
+              }}
+            >
+              Studio+
+              <span
+                className="font-editorial-italic"
+                style={{ color: "var(--color-gold)" }}
+              >
+                {" "}
+                when the floor gets loud.
+              </span>
+            </h2>
+            <p
+              className="font-editorial-italic m-0"
+              style={{
+                fontSize: "1rem",
+                color: "rgba(26,24,21,0.42)",
+                lineHeight: 1.65,
+                maxWidth: 340,
+              }}
+            >
+              Free Pholio already puts you in the glass. Studio+ is for the
+              season when every frame, application, and lean-in matters.
+            </p>
+          </div>
 
-            {/* Toggle */}
-            <div className="flex items-center gap-3 mb-1">
-              <span
-                className="text-sm font-medium transition-colors duration-300"
+          <div className="space-y-6 lg:col-span-7">
+            {WALKS_IN.map((para, i) => (
+              <motion.p
+                key={i}
+                initial={{ opacity: 0, x: prefersReducedMotion ? 0 : 16 }}
+                animate={inView ? { opacity: 1, x: 0 } : {}}
+                transition={{
+                  duration: 0.65,
+                  delay: 0.12 + i * 0.1,
+                  ease,
+                }}
                 style={{
                   fontFamily: "var(--font-sans)",
-                  color: !yearly ? "#1A1815" : "rgba(26,24,21,0.35)",
+                  fontSize: "0.9375rem",
+                  color: "rgba(26,24,21,0.55)",
+                  lineHeight: 1.75,
+                  margin: 0,
+                  paddingBottom: "1.25rem",
+                  borderBottom: "1px solid rgba(26,24,21,0.07)",
                 }}
               >
-                Monthly
-              </span>
-              <button
-                onClick={() => setYearly(!yearly)}
-                className="relative h-6 w-11 rounded-full transition-all duration-500"
-                style={{
-                  backgroundColor: yearly
-                    ? "var(--color-gold)"
-                    : "rgba(26,24,21,0.12)",
-                  boxShadow: yearly
-                    ? "0 0 16px rgba(201,165,90,0.25)"
-                    : "none",
-                }}
-                aria-label="Toggle yearly pricing"
-              >
-                <div
-                  className="absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform duration-300"
-                  style={{
-                    transform: yearly
-                      ? "translateX(22px)"
-                      : "translateX(2px)",
-                  }}
-                />
-              </button>
-              <span
-                className="text-sm font-medium transition-colors duration-300"
-                style={{
-                  fontFamily: "var(--font-sans)",
-                  color: yearly ? "#1A1815" : "rgba(26,24,21,0.35)",
-                }}
-              >
-                Yearly
-              </span>
-              <AnimatePresence>
-                {yearly && (
-                  <motion.span
-                    initial={{ opacity: 0, scale: 0.85, x: -8 }}
-                    animate={{ opacity: 1, scale: 1, x: 0 }}
-                    exit={{ opacity: 0, scale: 0.85, x: -8 }}
-                    style={{
-                      fontFamily: "var(--font-sans)",
-                      fontSize: "0.625rem",
-                      fontWeight: 700,
-                      letterSpacing: "0.05em",
-                      color: "var(--color-gold-dark)",
-                      backgroundColor: "rgba(201,165,90,0.1)",
-                      padding: "3px 10px",
-                      borderRadius: 20,
-                    }}
-                  >
-                    Save 20%
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </div>
+                {para}
+              </motion.p>
+            ))}
           </div>
         </motion.div>
 
-        {/* Comparison table */}
-        <motion.div
-          initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 24 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, delay: 0.15, ease }}
+        <p
+          className="mb-6 text-center font-editorial-italic md:text-left"
           style={{
-            backgroundColor: "white",
-            borderRadius: 16,
-            overflow: "hidden",
-            border: "1px solid rgba(0,0,0,0.04)",
-            boxShadow:
-              "0 4px 24px rgba(0,0,0,0.03), 0 1px 3px rgba(0,0,0,0.02)",
+            fontSize: "0.7rem",
+            letterSpacing: "0.22em",
+            textTransform: "uppercase",
+            color: "rgba(201,165,90,0.55)",
+            margin: "0 0 1.5rem",
           }}
         >
-          {/* Table header */}
-          <div
-            className="grid grid-cols-[1fr_100px_120px] md:grid-cols-[1fr_140px_160px] items-center"
-            style={{
-              padding: "16px 24px",
-              borderBottom: "1px solid rgba(0,0,0,0.05)",
-              backgroundColor: "rgba(250,248,245,0.4)",
-            }}
-          >
-            <span
+          Studio+ depth
+        </p>
+        <div className="mb-14 grid gap-6 md:grid-cols-2">
+          {STUDIO_DEPTH.map((card, i) => (
+            <motion.article
+              key={card.title}
+              initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{
+                duration: 0.65,
+                delay: 0.2 + i * 0.08,
+                ease,
+              }}
               style={{
-                fontFamily: "var(--font-sans)",
-                fontSize: "0.6875rem",
-                fontWeight: 600,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                color: "rgba(26,24,21,0.35)",
+                padding: "1.75rem 1.5rem 1.75rem 1.25rem",
+                borderRadius: 12,
+                backgroundColor: "#1A1815",
+                border: "1px solid rgba(255,255,255,0.04)",
+                position: "relative",
+                overflow: "hidden",
               }}
             >
-              Feature
-            </span>
-            <span
-              className="text-center"
-              style={{
-                fontFamily: "var(--font-sans)",
-                fontSize: "0.6875rem",
-                fontWeight: 600,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                color: "rgba(26,24,21,0.35)",
-              }}
-            >
-              Free
-            </span>
-            <div className="text-center">
-              <div className="flex items-center justify-center gap-1.5">
-                <Sparkles size={11} color="#C9A55A" />
-                <span
-                  style={{
-                    fontFamily: "var(--font-sans)",
-                    fontSize: "0.6875rem",
-                    fontWeight: 700,
-                    letterSpacing: "0.12em",
-                    textTransform: "uppercase",
-                    color: "#C9A55A",
-                  }}
-                >
-                  Studio+
-                </span>
-              </div>
-              <div className="flex items-baseline justify-center gap-0.5 mt-1">
-                <AnimatePresence mode="wait">
-                  <motion.span
-                    key={price}
-                    className="font-editorial"
-                    initial={{ opacity: 0, y: -6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 6 }}
-                    transition={{ duration: 0.25 }}
-                    style={{ fontSize: "1.1rem", color: "#1A1815" }}
-                  >
-                    ${price}
-                  </motion.span>
-                </AnimatePresence>
-                <span
-                  style={{
-                    fontFamily: "var(--font-sans)",
-                    fontSize: "0.6875rem",
-                    color: "rgba(26,24,21,0.3)",
-                  }}
-                >
-                  /mo
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Rows */}
-          {COMPARISON.map((row, i) => (
-            <div
-              key={row.feature}
-              className="grid grid-cols-[1fr_100px_120px] md:grid-cols-[1fr_140px_160px] items-center"
-              style={{
-                padding: "12px 24px",
-                borderBottom:
-                  i < COMPARISON.length - 1
-                    ? "1px solid rgba(0,0,0,0.03)"
-                    : "none",
-                backgroundColor: !row.free && row.studio
-                  ? "rgba(201,165,90,0.02)"
-                  : "transparent",
-              }}
-            >
-              <span
+              <h3
+                className="font-editorial m-0"
                 style={{
-                  fontFamily: "var(--font-sans)",
-                  fontSize: "0.875rem",
-                  color: "#1A1815",
-                  fontWeight: !row.free && row.studio ? 500 : 400,
+                  fontSize: "1.35rem",
+                  color: "#FAF8F5",
+                  fontWeight: 400,
+                  letterSpacing: "-0.02em",
+                  marginBottom: "0.65rem",
                 }}
               >
-                {row.feature}
-              </span>
-              <div className="flex justify-center">
-                <FeatureValue value={row.free} />
-              </div>
-              <div className="flex justify-center">
-                <FeatureValue value={row.studio} gold />
-              </div>
-            </div>
+                {card.title}
+              </h3>
+              <p
+                className="m-0"
+                style={{
+                  fontFamily: "var(--font-sans)",
+                  fontSize: "0.8125rem",
+                  color: "rgba(250,248,245,0.45)",
+                  lineHeight: 1.65,
+                }}
+              >
+                {card.body}
+              </p>
+            </motion.article>
           ))}
+        </div>
 
-          {/* CTA row */}
-          <div
-            className="grid grid-cols-[1fr_100px_120px] md:grid-cols-[1fr_140px_160px] items-center"
-            style={{
-              padding: "20px 24px",
-              borderTop: "1px solid rgba(0,0,0,0.05)",
-              backgroundColor: "rgba(250,248,245,0.3)",
-            }}
-          >
-            <span />
-            <div className="flex justify-center">
-              <a
-                href={`${APP_URL}/onboarding`}
-                style={{
-                  fontFamily: "var(--font-sans)",
-                  fontSize: "0.6875rem",
-                  fontWeight: 600,
-                  color: "rgba(26,24,21,0.5)",
-                  padding: "8px 16px",
-                  borderRadius: 8,
-                  border: "1px solid rgba(26,24,21,0.1)",
-                  textDecoration: "none",
-                  transition: "all 0.3s ease",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                Get Started
-              </a>
-            </div>
-            <div className="flex justify-center">
-              <a
-                href={`${APP_URL}/signup?plan=studio`}
-                style={{
-                  fontFamily: "var(--font-sans)",
-                  fontSize: "0.6875rem",
-                  fontWeight: 700,
-                  color: "#050505",
-                  background:
-                    "linear-gradient(135deg, #C9A55A 0%, #A88C44 100%)",
-                  padding: "8px 18px",
-                  borderRadius: 8,
-                  textDecoration: "none",
-                  transition: "all 0.3s ease",
-                  boxShadow: "0 2px 8px rgba(201,165,90,0.2)",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                Start 14-day free trial
-              </a>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Bottom note */}
-        <motion.p
+        <motion.div
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
-          transition={{ delay: 0.4, duration: 0.6 }}
-          className="mt-6 text-center"
-          style={{
-            fontFamily: "var(--font-sans)",
-            fontSize: "0.8125rem",
-            color: "rgba(26,24,21,0.35)",
-          }}
+          transition={{ delay: 0.45, duration: 0.7, ease }}
+          className="flex flex-col items-center border-t border-[rgba(26,24,21,0.08)] pt-12 text-center"
         >
-          14-day free trial · No credit card required · Cancel anytime
-        </motion.p>
+          <p
+            className="font-editorial m-0 mb-6"
+            style={{
+              fontSize: "clamp(1.25rem, 2.5vw, 1.65rem)",
+              color: "#1A1815",
+              letterSpacing: "-0.02em",
+            }}
+          >
+            <span className="font-editorial-italic" style={{ color: "#C9A55A" }}>
+              Studio+
+            </span>
+            <span style={{ color: "rgba(26,24,21,0.35)" }}> · </span>
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={price}
+                className="font-editorial"
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 4 }}
+                transition={{ duration: 0.2 }}
+              >
+                ${price}
+              </motion.span>
+            </AnimatePresence>
+            <span
+              style={{
+                fontFamily: "var(--font-sans)",
+                fontSize: "0.75rem",
+                color: "rgba(26,24,21,0.35)",
+              }}
+            >
+              {" "}
+              / month
+            </span>
+          </p>
+
+          <div className="mb-8 flex flex-wrap items-center justify-center gap-4">
+            <span
+              style={{
+                fontFamily: "var(--font-sans)",
+                fontSize: "0.8125rem",
+                color: !yearly ? "#1A1815" : "rgba(26,24,21,0.35)",
+                fontWeight: 500,
+              }}
+            >
+              Monthly
+            </span>
+            <button
+              type="button"
+              onClick={() => setYearly(!yearly)}
+              className="relative h-6 w-11 rounded-full transition-colors duration-300"
+              style={{
+                backgroundColor: yearly
+                  ? "var(--color-gold)"
+                  : "rgba(26,24,21,0.12)",
+              }}
+              aria-label="Toggle yearly Studio+ pricing"
+            >
+              <span
+                className="absolute top-0.5 block h-5 w-5 rounded-full bg-white shadow transition-transform duration-300"
+                style={{
+                  transform: yearly ? "translateX(22px)" : "translateX(2px)",
+                }}
+              />
+            </button>
+            <span
+              style={{
+                fontFamily: "var(--font-sans)",
+                fontSize: "0.8125rem",
+                color: yearly ? "#1A1815" : "rgba(26,24,21,0.35)",
+                fontWeight: 500,
+              }}
+            >
+              Yearly
+            </span>
+            <AnimatePresence>
+              {yearly && (
+                <motion.span
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  style={{
+                    fontFamily: "var(--font-sans)",
+                    fontSize: "0.625rem",
+                    fontWeight: 700,
+                    letterSpacing: "0.08em",
+                    color: "#8B7740",
+                    backgroundColor: "rgba(201,165,90,0.12)",
+                    padding: "4px 10px",
+                    borderRadius: 20,
+                  }}
+                >
+                  Save 20%
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <a
+              href={`${APP_URL}/onboarding`}
+              className="inline-flex items-center gap-2 rounded-full border border-[rgba(26,24,21,0.12)] px-7 py-3.5"
+              style={{
+                fontFamily: "var(--font-sans)",
+                fontSize: "0.6875rem",
+                fontWeight: 600,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "rgba(26,24,21,0.55)",
+                textDecoration: "none",
+              }}
+            >
+              Start with Pholio
+            </a>
+            <a
+              href={`${APP_URL}/signup?plan=studio`}
+              className="inline-flex items-center gap-2 rounded-full px-8 py-3.5"
+              style={{
+                background: "linear-gradient(135deg, #C9A55A 0%, #A88C44 100%)",
+                color: "#050505",
+                fontFamily: "var(--font-sans)",
+                fontSize: "0.6875rem",
+                fontWeight: 700,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                textDecoration: "none",
+                boxShadow: "0 4px 24px rgba(201,165,90,0.25)",
+              }}
+            >
+              Add Studio+
+            </a>
+          </div>
+
+          <p
+            className="mt-8 max-w-md"
+            style={{
+              fontFamily: "var(--font-sans)",
+              fontSize: "0.75rem",
+              color: "rgba(26,24,21,0.32)",
+              lineHeight: 1.6,
+            }}
+          >
+            14-day trial on Studio+ · cancel when the season ends
+          </p>
+        </motion.div>
       </div>
     </section>
   );

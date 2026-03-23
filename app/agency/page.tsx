@@ -4,11 +4,11 @@ import AgencyPageClient from "@/components/AgencyPageClient";
 export const metadata: Metadata = {
   title: "For Agencies — Pholio",
   description:
-    "Scout smarter. Book faster. Discover AI-matched talent, manage your pipeline, and build your roster — all from one intelligent platform.",
+    "Search ranked talent, govern intake, and run scouting pipeline with board-ready books—one workspace for agencies and scouting teams.",
   openGraph: {
     title: "For Agencies — Pholio",
     description:
-      "Discover AI-matched talent, manage your pipeline, and build your roster with Pholio's agency platform.",
+      "Structured discovery, fit ranking, and pipeline visibility for modeling agencies and scouting teams.",
     url: "https://www.pholio.studio/agency",
     siteName: "Pholio",
     type: "website",

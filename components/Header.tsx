@@ -4,15 +4,9 @@ import { useState, useEffect, useRef } from "react";
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown, ExternalLink, Settings, LogOut, Sparkles } from "lucide-react";
-
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-
-const LINKS = [
-  { label: "TALENT", href: "/talent" },
-  { label: "AGENCIES", href: "/agency" },
-  { label: "STUDIO+", href: "/#studio-plus" },
-];
+import { ChevronDown, ExternalLink, Menu, Settings, LogOut, Sparkles, X } from "lucide-react";
+import { MARKETING_NAV_LINKS } from "@/lib/marketing-nav-links";
+import { PHOLIO_APP_ORIGIN as APP_URL } from "@/lib/pholio-app-origin";
 
 export interface HeaderProps {
   theme?: "light" | "dark";
@@ -49,6 +43,16 @@ export default function Header({ theme = "dark" }: HeaderProps) {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || window.matchMedia("(min-width: 1024px)").matches) return;
+    if (!isMobileMenuOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [isMobileMenuOpen]);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -89,7 +93,7 @@ export default function Header({ theme = "dark" }: HeaderProps) {
 
   return (
     <motion.header
-      className="fixed top-0 left-0 right-0 z-50 pt-4 md:pt-6 px-4 md:px-8"
+      className="fixed top-0 left-0 right-0 z-50 px-3 pt-3 md:px-8 md:pt-6 lg:px-8"
       variants={{ visible: { y: 0 }, hidden: { y: "-100%" } }}
       initial="visible"
       animate={hidden ? "hidden" : "visible"}
@@ -100,11 +104,17 @@ export default function Header({ theme = "dark" }: HeaderProps) {
         transition: "opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1)",
       }}
     >
-      {/* ── Ultra-Premium Pill Container ──────────────────────────────────────────────────── */}
-      <div className="relative mx-auto w-[96%] max-w-[1280px] mt-2 sm:mt-6 rounded-[100px] p-[1px] group/header" style={{ boxShadow: isDark ? "0 40px 80px -20px rgba(0,0,0,0.8)" : "0 20px 40px -10px rgba(0,0,0,0.05)" }}>
-        {/* Animated Conic Border Glow */}
+      {/* ── Pill: compact rounded shell on mobile / full premium pill on lg+ ───────────── */}
+      <div
+        className={`group/header relative mx-auto mt-1 w-full max-w-[1280px] rounded-2xl p-px sm:mt-2 lg:mt-6 lg:w-[96%] lg:rounded-[100px] ${
+          isDark
+            ? "shadow-[0_24px_48px_-16px_rgba(0,0,0,0.75)] lg:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)]"
+            : "shadow-[0_16px_32px_-8px_rgba(0,0,0,0.06)] lg:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.05)]"
+        }`}
+      >
+        {/* Animated conic border — desktop only */}
         {isDark && (
-          <div className="absolute inset-0 overflow-hidden rounded-[100px] opacity-60">
+          <div className="absolute inset-0 hidden overflow-hidden rounded-2xl opacity-60 lg:block lg:rounded-[100px]">
              <motion.div
                 className="absolute top-1/2 left-1/2 w-[300%] h-[300%]"
                 style={{
@@ -118,7 +128,7 @@ export default function Header({ theme = "dark" }: HeaderProps) {
         )}
 
         <div
-          className="relative rounded-[100px] overflow-hidden"
+          className="relative overflow-hidden rounded-2xl lg:rounded-[100px]"
           style={{
             background: isDark ? "rgba(10, 10, 12, 0.75)" : "rgba(255, 255, 255, 0.85)",
             backdropFilter: "blur(32px) saturate(200%)",
@@ -129,7 +139,7 @@ export default function Header({ theme = "dark" }: HeaderProps) {
           {/* Inner Noise for Physical Texture */}
           <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.7\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\'/%3E%3C/svg%3E")', mixBlendMode: "overlay" }} />
 
-          <div className="px-6 lg:px-8 h-[64px] flex items-center justify-between relative z-10">
+          <div className="relative z-10 flex h-[54px] items-center justify-between px-4 lg:h-[64px] lg:px-8">
 
           {/* ── Logo ─────────────────────────────────────────────── */}
           <Link href="/" className="group flex-shrink-0 z-10 focus:outline-none relative" aria-label="Pholio home">
@@ -153,7 +163,7 @@ export default function Header({ theme = "dark" }: HeaderProps) {
             className="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center gap-1"
             onMouseLeave={() => setHoveredLink(null)}
           >
-            {LINKS.map((link) => {
+            {MARKETING_NAV_LINKS.map((link) => {
               const animatedHover = hoveredLink === link.label;
               return (
                 <Link
@@ -258,7 +268,7 @@ export default function Header({ theme = "dark" }: HeaderProps) {
                     {authData?.role === "TALENT" && (
                       <>
                         <a
-                          href="/login"
+                          href={`${APP_URL}/login`}
                           className="profile-strength-widget"
                           onClick={() => setIsProfileOpen(false)}
                         >
@@ -292,7 +302,7 @@ export default function Header({ theme = "dark" }: HeaderProps) {
                         </a>
                       )}
                       <a
-                        href="/login"
+                        href={`${APP_URL}/login`}
                         className="dropdown-item"
                         onClick={() => setIsProfileOpen(false)}
                       >
@@ -301,7 +311,7 @@ export default function Header({ theme = "dark" }: HeaderProps) {
                       </a>
                       {!authData?.subscription?.isPro && (
                         <a
-                          href="/login"
+                          href={`${APP_URL}/login`}
                           className="dropdown-item upgrade-item"
                           onClick={() => setIsProfileOpen(false)}
                         >
@@ -339,7 +349,7 @@ export default function Header({ theme = "dark" }: HeaderProps) {
             ) : (
               <>
                 <a
-                  href="/login"
+                  href={`${APP_URL}/login`}
                   style={{
                     fontFamily: "var(--font-sans)",
                     fontSize: "10px",
@@ -357,7 +367,7 @@ export default function Header({ theme = "dark" }: HeaderProps) {
                 </a>
 
                 <motion.a
-                  href="/onboarding"
+                  href={`${APP_URL}/onboarding`}
                   className="group relative inline-flex items-center justify-center overflow-hidden"
                   whileHover="hover"
                   style={{
@@ -390,144 +400,142 @@ export default function Header({ theme = "dark" }: HeaderProps) {
             )}
           </div>
 
-          {/* ── Mobile Hamburger ─────────────────────────────────── */}
+          {/* ── Mobile menu trigger (lg+ unchanged) ───────────────── */}
           <button
-            className="lg:hidden z-50 w-10 h-10 flex flex-col justify-center items-center gap-[5px] focus:outline-none"
+            type="button"
+            className="z-50 flex h-10 w-10 items-center justify-center rounded-xl border focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A55A]/40 lg:hidden"
+            style={{
+              borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(15,23,42,0.1)",
+              backgroundColor: isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.03)",
+              color: isMobileMenuOpen ? "#C9A55A" : isDark ? "rgba(255,255,255,0.85)" : "rgba(15,23,42,0.75)",
+            }}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle menu"
+            aria-expanded={isMobileMenuOpen}
+            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
           >
-            {[0, 1, 2].map((i) => (
-              <span
-                key={i}
-                className="block w-[22px] h-[1px] transition-all duration-300"
-                style={{
-                  backgroundColor: isMobileMenuOpen
-                    ? "#C9A55A"
-                    : isDark ? "rgba(255,255,255,0.75)" : "rgba(15, 23, 42, 0.6)",
-                  transform: isMobileMenuOpen
-                    ? i === 0 ? "rotate(45deg) translate(4.5px, 4.5px)"
-                    : i === 1 ? "scaleX(0)"
-                    : "rotate(-45deg) translate(4.5px, -4.5px)"
-                    : "none",
-                  opacity: isMobileMenuOpen && i === 1 ? 0 : 1,
-                  transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-                }}
-              />
-            ))}
+            {isMobileMenuOpen ? <X size={20} strokeWidth={1.75} /> : <Menu size={20} strokeWidth={1.75} />}
           </button>
         </div>
       </div>
       </div>
 
-      {/* ══ Mobile Menu Overlay ═══════════════════════════════════ */}
+      {/* ══ Mobile menu — lg+ hidden; desktop nav unchanged ═══════ */}
       <motion.div
-        className="fixed inset-0 z-40 lg:hidden flex flex-col"
+        className="fixed inset-0 z-40 flex flex-col lg:hidden"
         initial={false}
-        animate={{ opacity: isMobileMenuOpen ? 1 : 0, y: isMobileMenuOpen ? 0 : -16 }}
-        transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
-        style={{
+        animate={{
+          opacity: isMobileMenuOpen ? 1 : 0,
           pointerEvents: isMobileMenuOpen ? "auto" : "none",
-          background: "rgba(5, 5, 5, 0.97)",
-          backdropFilter: "blur(24px)",
+        }}
+        transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+        style={{
+          background: "rgba(5, 5, 5, 0.98)",
+          backdropFilter: "blur(20px)",
+          paddingTop: "max(5.5rem, env(safe-area-inset-top))",
         }}
       >
-        <div className="flex flex-col h-full px-8 pt-[88px] pb-12">
+        <div className="flex h-[calc(100dvh-max(5.5rem,env(safe-area-inset-top)))] flex-col px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+          <div className="mb-6 flex items-center justify-between border-b border-white/[0.08] pb-4">
+            <span
+              className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35"
+              style={{ fontFamily: "var(--font-sans)" }}
+            >
+              Menu
+            </span>
+            <button
+              type="button"
+              aria-label="Close menu"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/12 text-white/70 transition-colors hover:bg-white/[0.06]"
+            >
+              <X size={20} strokeWidth={1.75} />
+            </button>
+          </div>
 
-          {/* Nav */}
-          <nav className="flex-1 flex flex-col justify-center">
-            {LINKS.map((link, i) => (
+          <nav className="flex min-h-0 flex-1 flex-col justify-center gap-0 overflow-y-auto">
+            {MARKETING_NAV_LINKS.map((link, i) => (
               <motion.div
                 key={link.label}
                 initial={false}
                 animate={{
                   opacity: isMobileMenuOpen ? 1 : 0,
-                  y: isMobileMenuOpen ? 0 : 20,
+                  x: isMobileMenuOpen ? 0 : 12,
                 }}
                 transition={{
-                  delay: isMobileMenuOpen ? 0.06 + i * 0.06 : 0,
-                  duration: 0.42,
+                  delay: isMobileMenuOpen ? 0.04 + i * 0.05 : 0,
+                  duration: 0.35,
                   ease: [0.22, 1, 0.36, 1],
                 }}
               >
-                <div
-                  style={{ height: "1px", background: "rgba(255,255,255,0.06)" }}
-                />
                 <Link
                   href={link.href}
-                  className="flex items-center py-[1.1rem] focus:outline-none"
+                  className="block border-b border-white/[0.06] py-5 focus:outline-none focus-visible:bg-white/[0.04]"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <span
                     style={{
                       fontFamily: "var(--font-serif)",
                       fontWeight: 400,
-                      fontSize: "2rem",
-                      letterSpacing: "-0.01em",
-                      color: pathname === link.href ? "#C9A55A" : "rgba(255,255,255,0.78)",
-                      transition: "color 0.2s ease",
+                      fontSize: "clamp(1.75rem, 6vw, 2.125rem)",
+                      letterSpacing: "-0.02em",
+                      color: pathname === link.href ? "#C9A55A" : "rgba(255,255,255,0.88)",
                     }}
-                    onMouseEnter={(e) => (e.currentTarget.style.color = "#C9A55A")}
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style.color =
-                        pathname === link.href ? "#C9A55A" : "rgba(255,255,255,0.78)")
-                    }
                   >
                     {link.label}
                   </span>
                 </Link>
               </motion.div>
             ))}
-            <div style={{ height: "1px", background: "rgba(255,255,255,0.06)" }} />
           </nav>
 
-          {/* CTAs */}
           <motion.div
-            className="flex flex-col gap-3 mt-10"
+            className="mt-6 flex shrink-0 flex-col gap-3 border-t border-white/[0.08] pt-6"
             initial={false}
             animate={{
               opacity: isMobileMenuOpen ? 1 : 0,
-              y: isMobileMenuOpen ? 0 : 12,
+              y: isMobileMenuOpen ? 0 : 10,
             }}
             transition={{
-              delay: isMobileMenuOpen ? 0.06 + LINKS.length * 0.06 : 0,
-              duration: 0.38,
+              delay: isMobileMenuOpen ? 0.12 + MARKETING_NAV_LINKS.length * 0.04 : 0,
+              duration: 0.35,
               ease: [0.22, 1, 0.36, 1],
             }}
-            style={{ opacity: isLoadingAuth ? 0.2 : 1 }}
+            style={{ opacity: isLoadingAuth ? 0.25 : 1 }}
           >
             {!isLoadingAuth && isAuthenticated ? (
               <a
                 href={`${APP_URL}/login`}
-                className="btn-gold text-[11px] px-7 py-4 text-center"
-                style={{ borderRadius: "3px" }}
+                className="rounded-2xl py-4 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-[#050505]"
+                style={{
+                  fontFamily: "var(--font-sans)",
+                  background: "linear-gradient(135deg, #DFBE76 0%, #A88C44 100%)",
+                  boxShadow: "0 8px 24px rgba(201,165,90,0.2)",
+                }}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                <span>Dashboard</span>
+                Open dashboard
               </a>
             ) : (
               <>
                 <a
-                  href="/onboarding"
-                  className="btn-gold text-[11px] px-7 py-4 text-center"
-                  style={{ borderRadius: "3px" }}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <span>Get Scouted</span>
-                </a>
-                <a
-                  href="/login"
-                  className="text-center py-3 transition-colors duration-200"
+                  href={`${APP_URL}/onboarding`}
+                  className="rounded-2xl py-4 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-[#050505]"
                   style={{
                     fontFamily: "var(--font-sans)",
-                    fontSize: "10px",
-                    fontWeight: 500,
-                    letterSpacing: "0.18em",
-                    textTransform: "uppercase",
-                    color: "rgba(255,255,255,0.3)",
+                    background: "linear-gradient(135deg, #DFBE76 0%, #A88C44 100%)",
+                    boxShadow: "0 8px 24px rgba(201,165,90,0.2)",
                   }}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  Log In
+                  Get scouted
+                </a>
+                <a
+                  href={`${APP_URL}/login`}
+                  className="py-3 text-center text-[10px] font-medium uppercase tracking-[0.2em] text-white/40"
+                  style={{ fontFamily: "var(--font-sans)" }}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Log in
                 </a>
               </>
             )}

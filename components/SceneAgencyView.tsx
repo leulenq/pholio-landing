@@ -52,6 +52,25 @@ const PIPELINE_STAGES = [
   { label: 'Declined', count: 23, color: '#94a3b8', pct: 26 },
 ];
 
+const AGENCY_VALUE_POINTS = [
+  "Brief-to-shortlist workflow in one system",
+  "Ranked discovery with shared team criteria",
+  "Board-ready quality controls before sendout",
+];
+
+const TALENT_VALUE_POINTS = [
+  "Profiles surface inside active agency searches",
+  "Clear status visibility from review to shortlist",
+  "Verified profile context improves trust at first glance",
+];
+
+const WORKFLOW_STEPS = [
+  "Intake aligned to brief",
+  "Discover and rank fit",
+  "Review with shared pipeline",
+  "Build shortlist for board",
+];
+
 // ════════════════════════════════════════════════════════════
 // MINI VISUALIZATIONS (SVG)
 // ════════════════════════════════════════════════════════════
@@ -200,42 +219,55 @@ export default function SceneAgencyView() {
               Agency Perspective
             </span>
             <h2 className="font-editorial text-4xl sm:text-5xl md:text-6xl mb-7 leading-[1.05]">
-              See how agencies{" "}
+              One workflow for agencies.{" "}
               <span
                 className="font-editorial-italic"
                 style={{ color: "var(--color-gold)" }}
               >
-                see you.
+                Real visibility for talent.
               </span>
             </h2>
             <p
               className="text-base md:text-lg leading-relaxed mb-10"
               style={{ color: "var(--color-text-secondary)" }}
             >
-              Agencies use Pholio to discover, filter, and shortlist talent.
-              Your verified profile is their first impression — and the one
-              they bookmark.
+              Agencies get control over intake, quality, and shortlist decisions.
+              Talent gets discovered in the same live scouting workflow agencies
+              use every day.
             </p>
-            <div className="flex flex-wrap justify-center gap-x-8 gap-y-4">
-              {[
-                "340+ partner agencies actively scouting",
-                "Real-time application status",
-                "Visibility into profile views",
-                "Direct messaging from verified agencies",
-              ].map((f) => (
-                <div key={f} className="flex items-center gap-2">
-                  <div
-                    className="h-1 w-1 rounded-full shrink-0"
-                    style={{ backgroundColor: "var(--color-gold)" }}
-                  />
-                  <span
-                    className="text-sm leading-relaxed"
-                    style={{ color: "var(--color-text-secondary)" }}
-                  >
-                    {f}
-                  </span>
-                </div>
+
+            <div className="ov-audience-strip w-full">
+              <div className="ov-audience-card">
+                <h3 className="ov-audience-label">For agencies</h3>
+                <ul className="ov-audience-list">
+                  {AGENCY_VALUE_POINTS.map((point) => (
+                    <li key={point}>{point}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="ov-audience-card">
+                <h3 className="ov-audience-label">For talent</h3>
+                <ul className="ov-audience-list">
+                  {TALENT_VALUE_POINTS.map((point) => (
+                    <li key={point}>{point}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <ol className="ov-workflow-rail w-full">
+              {WORKFLOW_STEPS.map((step, idx) => (
+                <li key={step} className="ov-workflow-step">
+                  <span className="ov-workflow-index">0{idx + 1}</span>
+                  <span className="ov-workflow-text">{step}</span>
+                </li>
               ))}
+            </ol>
+
+            <div className="ov-proof-bar w-full">
+              <span className="ov-proof-chip ov-proof-chip--verified">140+ agency teams in network (platform figures)</span>
+              <span className="ov-proof-chip ov-proof-chip--verified">12k+ presentation-ready profiles (platform figures)</span>
+              <span className="ov-proof-chip ov-proof-chip--illustrative">Dashboard KPIs below are illustrative UI examples</span>
             </div>
           </motion.div>
 

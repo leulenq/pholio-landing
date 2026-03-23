@@ -11,8 +11,9 @@ export default function SwissGrid() {
   return (
     <div
       style={{
-        width: 400,
-        height: 600,
+        width: "100%",
+        height: "100%",
+        minHeight: 0,
         backgroundColor: "#ffffff",
         position: "relative",
         overflow: "hidden",

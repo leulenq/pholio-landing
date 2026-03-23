@@ -4,7 +4,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, useReducedMotion, AnimatePresence } from "framer-motion";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+import { PHOLIO_APP_ORIGIN as APP_URL } from "@/lib/pholio-app-origin";
 const ease = [0.22, 1, 0.36, 1] as const;
 
 const ROTATING_WORDS = ["Discovered", "Represented", "Booked", "Seen"];
@@ -120,7 +120,7 @@ export default function HeroSection() {
             className="flex items-center gap-4 mb-10"
           >
             <div style={{ width: 32, height: 1, background: "linear-gradient(to right, #C9A55A, rgba(201,165,90,0.1))" }} />
-            <span style={{ fontFamily: "var(--font-sans)", fontWeight: 600, fontSize: "0.625rem", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C9A55A" }}>The platform for talent</span>
+            <span style={{ fontFamily: "var(--font-sans)", fontWeight: 600, fontSize: "0.625rem", letterSpacing: "0.22em", textTransform: "uppercase", color: "#C9A55A" }}>Agency-side discovery</span>
           </motion.div>
 
           {/* Headline */}
@@ -168,7 +168,7 @@ export default function HeroSection() {
             transition={{ duration: 0.7, delay: 0.55, ease }}
             style={{ fontFamily: "var(--font-sans)", fontWeight: 400, fontSize: "clamp(0.9375rem, 1.5vw, 1.125rem)", color: "rgba(26,24,21,0.45)", lineHeight: 1.7, letterSpacing: "-0.005em", maxWidth: 480, marginTop: "2rem", marginBottom: "2.5rem" }}
           >
-            Build an AI-curated portfolio. Get discovered by 140+ agencies. Manage your career from one place — with tools that work as hard as you do.
+            Comp, digitals, and stats in one book — searchable by 140+ agencies. When scouts pull you up, you see the lean-in. Apply when the invite path opens.
           </motion.p>
 
           {/* CTAs */}
@@ -185,7 +185,7 @@ export default function HeroSection() {
               onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 30px rgba(201,165,90,0.3)"; }}
               onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}
             >
-              Get Scouted
+              Start your book
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="group-hover:translate-x-1" style={{ transition: "transform 0.3s ease" }}>
                 <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
@@ -196,7 +196,7 @@ export default function HeroSection() {
               onMouseEnter={(e) => { e.currentTarget.style.color = "#C9A55A"; e.currentTarget.style.borderColor = "rgba(201,165,90,0.3)"; }}
               onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(26,24,21,0.35)"; e.currentTarget.style.borderColor = "rgba(26,24,21,0.1)"; }}
             >
-              See what&apos;s included
+              See comp &amp; book
             </a>
           </motion.div>
         </div>
@@ -211,10 +211,10 @@ export default function HeroSection() {
       >
         <div style={{ borderTop: "1px solid rgba(26,24,21,0.06)", paddingTop: "1.5rem", display: "flex", justifyContent: "space-between", maxWidth: 840 }}>
           {[
-            { value: "140+", label: "Agencies" },
-            { value: "<1hr", label: "To build" },
-            { value: "$0", label: "To start" },
-            { value: "24/7", label: "Live profile" },
+            { value: "140+", label: "Agency desks" },
+            { value: "<1 hr", label: "Book goes live" },
+            { value: "Match", label: "Why you surface" },
+            { value: "Apply", label: "When you're ready" },
           ].map((stat, i) => (
             <div key={i}>
               <div className="font-editorial" style={{ fontSize: "clamp(1.2rem, 2vw, 1.6rem)", color: "#1A1815", fontWeight: 400, lineHeight: 1, marginBottom: 4 }}>{stat.value}</div>

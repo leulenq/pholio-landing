@@ -1,6 +1,7 @@
 "use client";
 
 import AgencyHero from "@/components/agency/HeroSection";
+import AgencyValueBand from "@/components/agency/AgencyValueBand";
 import DashboardPreview from "@/components/agency/DashboardPreview";
 import FeatureMatch from "@/components/agency/FeatureMatch";
 import FeatureDiscovery from "@/components/agency/FeatureDiscovery";
@@ -12,8 +13,9 @@ import MarketingFooter from "@/components/MarketingFooter";
 
 export default function AgencyPageClient() {
   return (
-    <main style={{ backgroundColor: "#0A0A0F" }}>
+    <main className="agency-marketing min-h-screen">
       <AgencyHero />
+      <AgencyValueBand />
       <DashboardPreview />
       <FeatureMatch />
       <FeatureDiscovery />

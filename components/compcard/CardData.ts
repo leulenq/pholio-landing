@@ -3,7 +3,7 @@ export const MODEL = {
   firstName: "Alessandra",
   lastName: "V.",
   city: "New York, NY",
-  website: "pholio.co/alessandrav",
+  website: "pholio.studio/alessandrav",
   year: "2026",
   agency: "Metro Models",
   email: "alessandra@pholio.co",

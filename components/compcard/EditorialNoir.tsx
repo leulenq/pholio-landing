@@ -7,8 +7,9 @@ export default function MinimalEditorial() {
   return (
     <div
       style={{
-        width: 400,
-        height: 600,
+        width: "100%",
+        height: "100%",
+        minHeight: 0,
         backgroundColor: "#FAFAFA",
         position: "relative",
         overflow: "hidden",

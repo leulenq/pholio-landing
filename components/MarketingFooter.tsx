@@ -4,22 +4,21 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Twitter, Instagram, Linkedin } from "lucide-react";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+import { PHOLIO_APP_ORIGIN as APP_URL } from "@/lib/pholio-app-origin";
 
 const footerLinks = [
   {
     title: "PLATFORM",
     links: [
       { label: "For Talent", href: "/for-talent" },
-      { label: "For Agencies", href: "/login" },
-      { label: "Studio+", href: `${APP_URL}/studio-plus` },
+      { label: "For Agencies", href: `${APP_URL}/login` },
+      { label: "Studio+", href: "/studio-plus" },
     ],
   },
   {
     title: "COMPANY",
     links: [
       { label: "About Us", href: "/about-us" },
-      { label: "Press", href: "/press" },
       { label: "Careers", href: "/careers" },
       { label: "Contact", href: "/contact" },
     ],
@@ -43,20 +42,17 @@ export default function MarketingFooter({ theme = "light" }: MarketingFooterProp
 
   return (
     <div
-      className={`w-full pt-[16px] px-4 md:px-8 pb-10 ${isDark ? "bg-[#0A0A0F]" : ""}`}
+      className={`w-full px-3 pb-8 pt-3 sm:px-4 md:px-8 md:pb-10 md:pt-4 ${isDark ? "bg-[#0A0A0F]" : ""}`}
       style={!isDark ? { backgroundColor: "var(--color-cream)" } : {}}
     >
-      <div className="mx-auto w-full max-w-[1600px] flex flex-col gap-4">
+      <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-3 md:gap-4">
         {/* =========================================
             CARD 2 — FOOTER CARD
             ========================================= */}
         <div
-          className="w-full relative overflow-hidden"
+          className="relative mb-6 w-full overflow-hidden rounded-[22px] p-6 pb-8 md:mb-10 md:rounded-[32px] md:p-16 md:pb-10 md:pt-16"
           style={{
             backgroundColor: isDark ? "#111116" : "#ffffff",
-            borderRadius: "32px",
-            padding: "64px 64px 40px 64px",
-            marginBottom: "40px",
             boxShadow: isDark
               ? "0 0 0 1px rgba(255,255,255,0.05), 0 20px 40px -10px rgba(0,0,0,0.5)"
               : "0 20px 40px -10px rgba(0,0,0,0.03)",
@@ -68,10 +64,10 @@ export default function MarketingFooter({ theme = "light" }: MarketingFooterProp
             }} />
           )}
 
-          {/* TOP SECTION */}
-          <div className="flex flex-col md:flex-row items-start justify-between w-full">
+          {/* TOP SECTION — lg+ layout unchanged; mobile stacks & full-width links */}
+          <div className="flex w-full flex-col items-start justify-between gap-8 md:flex-row md:gap-10 lg:gap-0">
             {/* LEFT BLOCK */}
-            <div style={{ maxWidth: "260px" }}>
+            <div className="w-full max-w-none md:max-w-[260px]">
               <Link
                 href="/"
                 className="inline-flex items-center gap-3 no-underline transition-transform duration-300 w-fit mb-6 group hover:translate-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 z-50"
@@ -164,10 +160,7 @@ export default function MarketingFooter({ theme = "light" }: MarketingFooterProp
             </div>
 
             {/* RIGHT BLOCK (Links) */}
-            <div
-              className="flex-1 grid grid-cols-2 sm:grid-cols-3 gap-[40px] mt-[40px] md:mt-0"
-              style={{ paddingLeft: "80px" }}
-            >
+            <div className="mt-0 grid w-full flex-1 grid-cols-1 gap-8 sm:grid-cols-2 sm:gap-10 md:mt-0 md:grid-cols-3 md:gap-10 md:pl-10 lg:gap-[40px] lg:pl-20">
               {footerLinks.map((column) => (
                 <div key={column.title} className="flex flex-col">
                   <span
@@ -217,11 +210,10 @@ export default function MarketingFooter({ theme = "light" }: MarketingFooterProp
 
           {/* BOTTOM SECTION */}
           <div
+            className="my-6 w-full md:my-8"
             style={{
               height: "1px",
               backgroundColor: isDark ? "rgba(255,255,255,0.05)" : "#f1f5f9",
-              width: "100%",
-              margin: "32px 0 20px 0",
             }}
           />
 

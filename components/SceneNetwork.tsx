@@ -6,10 +6,9 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import LivingHeadline from "./LivingHeadline";
 import { WorldMapSvg } from "./WorldMapSvg";
+import { PHOLIO_APP_ORIGIN as APP_URL } from "@/lib/pholio-app-origin";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
 /*
  * City coordinates in equirectangular 1000×500 space (matching WorldMapSvg viewBox).

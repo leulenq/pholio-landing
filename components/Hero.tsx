@@ -1,9 +1,12 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
-import { motion, useScroll, useTransform, useSpring, useAnimation, useMotionValue } from "framer-motion";
-
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Menu, X } from "lucide-react";
+import { motion, AnimatePresence, useScroll, useTransform, useSpring, useAnimation, useMotionValue } from "framer-motion";
+import { MARKETING_NAV_LINKS } from "@/lib/marketing-nav-links";
+import { PHOLIO_APP_ORIGIN as APP_URL } from "@/lib/pholio-app-origin";
 
 interface HeroProps {
   ready?: boolean;
@@ -33,8 +36,18 @@ const ROW_H = 52; // px
 export function Hero({ ready = false }: HeroProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const controls = useAnimation();
+  const pathname = usePathname();
   const [wordIndex, setWordIndex] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [mobileMenuOpen]);
 
   useEffect(() => {
     if (ready) controls.start("visible");
@@ -171,37 +184,170 @@ export function Hero({ ready = false }: HeroProps) {
             variants={containerVariants}
             className="w-full h-full relative max-w-[1440px] mx-auto px-6"
           >
-            {/* Nav links - Top Left */}
+            {/* Mobile hero bar — md+ uses desktop chrome below */}
             <motion.div
               variants={itemUp}
               style={{ opacity: uiOpacity }}
-              className="absolute top-10 left-6 md:left-12 flex items-center gap-8 pointer-events-auto"
+              className="pointer-events-auto absolute left-4 right-4 top-4 z-[38] md:hidden"
             >
-              {[
-                { label: 'Platform', href: '#platform' },
-                { label: 'For Agencies', href: '#agencies' },
-                { label: 'Studio+', href: '#studio-plus' },
-              ].map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  className="relative text-[10px] font-medium tracking-[0.15em] uppercase text-white/60 hover:text-white transition-colors duration-300 pb-1 group"
-                  style={{ fontFamily: "var(--font-sans)" }}
+              <div className="flex items-center justify-between gap-3 rounded-2xl border border-white/[0.12] bg-black/45 px-4 py-3 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.65)] backdrop-blur-xl supports-[backdrop-filter]:bg-black/35">
+                <Link
+                  href="/"
+                  className="shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A55A]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-black/50 rounded-sm"
+                  style={{
+                    fontFamily: "var(--font-serif)",
+                    fontWeight: 600,
+                    fontSize: "0.7rem",
+                    letterSpacing: "0.28em",
+                    color: "#C9A55A",
+                  }}
                 >
-                  {link.label}
+                  PHOLIO
+                </Link>
+                <div className="flex min-w-0 flex-1 items-center justify-end gap-2">
+                  <a
+                    href={`${APP_URL}/login`}
+                    className="shrink-0 rounded-full px-3 py-1.5 text-[9px] font-semibold uppercase tracking-[0.14em] text-white/55 transition-colors hover:text-white"
+                    style={{ fontFamily: "var(--font-sans)" }}
+                  >
+                    Log in
+                  </a>
+                  <a
+                    href={`${APP_URL}/onboarding`}
+                    className="shrink-0 rounded-full px-3.5 py-1.5 text-[9px] font-bold uppercase tracking-[0.12em] text-[#050505] transition-transform active:scale-[0.98]"
+                    style={{
+                      fontFamily: "var(--font-sans)",
+                      background: "linear-gradient(135deg, #DFBE76 0%, #A88C44 100%)",
+                      boxShadow: "0 4px 14px rgba(201,165,90,0.25)",
+                    }}
+                  >
+                    Join
+                  </a>
+                  <button
+                    type="button"
+                    aria-expanded={mobileMenuOpen}
+                    aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+                    onClick={() => setMobileMenuOpen((o) => !o)}
+                    className="ml-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-white/85 transition-colors hover:bg-white/[0.08]"
+                  >
+                    {mobileMenuOpen ? <X size={18} strokeWidth={1.75} /> : <Menu size={18} strokeWidth={1.75} />}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+
+            <AnimatePresence>
+              {mobileMenuOpen && (
+                <motion.div
+                  className="fixed inset-0 z-[200] flex flex-col bg-[#050505]/98 px-5 pb-8 pt-[max(1.25rem,env(safe-area-inset-top))] backdrop-blur-xl md:hidden"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
+                    <span
+                      className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40"
+                      style={{ fontFamily: "var(--font-sans)" }}
+                    >
+                      Navigate
+                    </span>
+                    <button
+                      type="button"
+                      aria-label="Close menu"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="rounded-full border border-white/15 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/70"
+                      style={{ fontFamily: "var(--font-sans)" }}
+                    >
+                      Close
+                    </button>
+                  </div>
+                  <nav className="flex flex-1 flex-col justify-center gap-0">
+                    {MARKETING_NAV_LINKS.map((link, i) => (
+                      <motion.div
+                        key={link.href}
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.05 + i * 0.05, duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                      >
+                        <Link
+                          href={link.href}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="block border-b border-white/[0.06] py-5 focus:outline-none focus-visible:bg-white/[0.04]"
+                        >
+                          <span
+                            className="text-2xl font-normal tracking-tight"
+                            style={{
+                              fontFamily: "var(--font-serif)",
+                              color: pathname === link.href ? "#C9A55A" : "rgba(255,255,255,0.88)",
+                            }}
+                          >
+                            {link.label}
+                          </span>
+                        </Link>
+                      </motion.div>
+                    ))}
+                  </nav>
+                  <div className="mt-auto flex flex-col gap-3 border-t border-white/[0.08] pt-6">
+                    <a
+                      href={`${APP_URL}/onboarding`}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex w-full items-center justify-center rounded-2xl py-4 text-[11px] font-bold uppercase tracking-[0.14em] text-[#050505]"
+                      style={{
+                        fontFamily: "var(--font-sans)",
+                        background: "linear-gradient(135deg, #DFBE76 0%, #A88C44 100%)",
+                        boxShadow: "0 8px 24px rgba(201,165,90,0.25)",
+                      }}
+                    >
+                      Get scouted
+                    </a>
+                    <a
+                      href={`${APP_URL}/login`}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="py-3 text-center text-[10px] font-medium uppercase tracking-[0.18em] text-white/40"
+                      style={{ fontFamily: "var(--font-sans)" }}
+                    >
+                      Log in to dashboard
+                    </a>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Nav links - Top Left (tablet & desktop) */}
+            <motion.div
+              variants={itemUp}
+              style={{ opacity: uiOpacity }}
+              className="pointer-events-auto absolute left-6 top-10 hidden items-center gap-8 md:left-12 md:flex"
+            >
+              {MARKETING_NAV_LINKS.map((link) => {
+                const className =
+                  "relative text-[10px] font-medium tracking-[0.15em] uppercase text-white/60 hover:text-white transition-colors duration-300 pb-1 group";
+                const underline = (
                   <div
                     className="absolute bottom-0 left-0 h-[1px] w-0 group-hover:w-full transition-all duration-300 ease-out"
                     style={{ backgroundColor: "#C9A55A" }}
                   />
-                </a>
-              ))}
+                );
+                return (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    className={className}
+                    style={{ fontFamily: "var(--font-sans)" }}
+                  >
+                    {link.label}
+                    {underline}
+                  </Link>
+                );
+              })}
             </motion.div>
 
-            {/* Log In + Get Scouted - Top Right */}
+            {/* Log In + Get Scouted - Top Right (tablet & desktop) */}
             <motion.div
               variants={itemUp}
               style={{ opacity: uiOpacity }}
-              className="absolute top-8 right-6 md:right-12 flex items-center gap-6 pointer-events-auto"
+              className="pointer-events-auto absolute right-6 top-8 hidden items-center gap-6 md:right-12 md:flex"
             >
               <a
                 href="/login"

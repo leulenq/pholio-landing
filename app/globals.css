@@ -588,3 +588,74 @@ body {
   height: 1px;
   background: rgba(255, 255, 255, 0.08);
 }
+
+/* ══════════════════════════════════════════════════════════
+   AGENCY MARKETING PAGE — scoped tokens (see AgencyPageClient)
+   ══════════════════════════════════════════════════════════ */
+
+.agency-marketing {
+  --agency-bg-0: #08080c;
+  --agency-bg-1: #0c0c12;
+  --agency-bg-2: #101018;
+  --agency-line: rgba(255, 255, 255, 0.07);
+  --agency-text: #ececf1;
+  --agency-muted: rgba(236, 236, 241, 0.62);
+  --agency-faint: rgba(236, 236, 241, 0.42);
+  --agency-accent: #3b82f6;
+  --agency-accent-soft: rgba(59, 130, 246, 0.14);
+  --agency-warm: #c9a55a;
+  --agency-panel: rgba(255, 255, 255, 0.025);
+  background-color: var(--agency-bg-0);
+  color: var(--agency-text);
+}
+
+.agency-marketing .agency-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.9rem 1.75rem;
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #fff;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition:
+    transform 0.35s var(--ease-out-expo),
+    box-shadow 0.35s var(--ease-out-expo);
+}
+
+.agency-marketing .agency-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 36px rgba(37, 99, 235, 0.35);
+}
+
+.agency-marketing .agency-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.9rem 1.5rem;
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--agency-muted);
+  border: 1px solid var(--agency-line);
+  background: transparent;
+  transition:
+    color 0.25s ease,
+    border-color 0.25s ease,
+    background 0.25s ease;
+}
+
+.agency-marketing .agency-btn-secondary:hover {
+  color: var(--agency-text);
+  border-color: rgba(59, 130, 246, 0.35);
+  background: rgba(59, 130, 246, 0.06);
+}

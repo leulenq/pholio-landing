@@ -2,8 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
-
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+import { PHOLIO_APP_ORIGIN as APP_URL } from "@/lib/pholio-app-origin";
 
 const ease = [0.22, 1, 0.36, 1] as const;      // ease-out-quint: text elements
 const easeExpo = [0.16, 1, 0.3, 1] as const;   // ease-out-expo: rule lines only
