@@ -10,7 +10,7 @@ const footerLinks = [
     title: "Platform",
     links: [
       { label: "For Talent", href: `${APP_URL}/casting` },
-      { label: "For Agencies", href: "/login" },
+      { label: "For Agencies", href: `${APP_URL}/login` },
       { label: "Studio+", href: `${APP_URL}/studio-plus` },
     ],
   },

@@ -350,7 +350,7 @@ export function Hero({ ready = false }: HeroProps) {
               className="pointer-events-auto absolute right-6 top-8 hidden items-center gap-6 md:right-12 md:flex"
             >
               <a
-                href="/login"
+                href={`${APP_URL}/login`}
                 className="relative text-[10px] font-medium tracking-[0.15em] uppercase text-white/60 hover:text-white transition-colors duration-300 pb-1 group"
                 style={{ fontFamily: "var(--font-sans)" }}
               >
@@ -361,7 +361,7 @@ export function Hero({ ready = false }: HeroProps) {
                 />
               </a>
               <a
-                href="/onboarding"
+                href={`${APP_URL}/onboarding`}
                 className="relative text-[10px] font-bold tracking-[0.15em] uppercase px-5 py-2.5 rounded-full focus:outline-none overflow-hidden group transition-transform duration-300 hover:scale-[1.02]"
                 style={{
                   background:
