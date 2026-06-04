@@ -4,6 +4,7 @@ import "./globals.css";
 import HeaderWrapper from "@/components/HeaderWrapper";
 import CustomCursor from "@/components/CustomCursor";
 import SmoothScroll from "@/components/SmoothScroll";
+import Providers from "@/components/Providers";
 
 const notoSerif = Noto_Serif_Display({
   subsets: ["latin"],
@@ -40,11 +41,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${notoSerif.variable} ${inter.variable}`}>
       <body>
-        <SmoothScroll>
-          <CustomCursor />
-          <HeaderWrapper />
-          {children}
-        </SmoothScroll>
+        <Providers>
+          <SmoothScroll>
+            <CustomCursor />
+            <HeaderWrapper />
+            {children}
+          </SmoothScroll>
+        </Providers>
       </body>
     </html>
   );

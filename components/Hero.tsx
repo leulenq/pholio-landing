@@ -93,13 +93,218 @@ export function Hero({ ready = false }: HeroProps) {
   const imageScale = useTransform(scrollYProgress, [0, 1], [1.15, 1]);
   const textY = useTransform(textSpring, [0, 1], [0, -400]);
 
-  const textOpacity = useTransform(scrollYProgress, [0.3, 0.6], [1, 0]);
-  const uiOpacity = useTransform(scrollYProgress, [0.5, 0.7], [1, 0]);
+  const textOpacity = useTransform(textSpring, [0.3, 0.6], [1, 0]);
   const scrollIndicatorOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
-  const heroOpacity = useTransform(scrollYProgress, [0.75, 0.95], [1, 0]);
+  const heroOpacity = useTransform(scrollYProgress, [0.9, 1], [1, 0]);
 
   return (
     <section ref={containerRef} className="relative h-[300vh] z-10">
+      {/* ── UI Chrome: embedded in the hero composition, scrolls with the section ── */}
+      <motion.div data-hero-chrome className="absolute inset-x-0 top-0 z-30 h-screen pointer-events-none">
+        <motion.div
+          initial="hidden"
+          animate={controls}
+          variants={containerVariants}
+          className="w-full h-full relative max-w-[1440px] mx-auto px-6"
+        >
+          {/* Mobile hero bar — md+ uses desktop chrome below */}
+          <motion.div
+            variants={itemUp}
+            className="pointer-events-auto absolute left-4 right-4 top-4 z-[38] md:hidden"
+          >
+            <div className="flex items-center justify-between gap-3 rounded-2xl border border-white/[0.12] bg-black/45 px-4 py-3 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.65)] backdrop-blur-xl supports-[backdrop-filter]:bg-black/35">
+              <Link
+                href="/"
+                className="shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A55A]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-black/50 rounded-sm"
+                style={{
+                  fontFamily: "var(--font-serif)",
+                  fontWeight: 600,
+                  fontSize: "0.7rem",
+                  letterSpacing: "0.28em",
+                  color: "#C9A55A",
+                }}
+              >
+                PHOLIO
+              </Link>
+              <div className="flex min-w-0 flex-1 items-center justify-end gap-2">
+                <a
+                  href={`${APP_URL}/login`}
+                  className="shrink-0 rounded-full px-3 py-1.5 text-[9px] font-semibold uppercase tracking-[0.14em] text-white/55 transition-colors hover:text-white"
+                  style={{ fontFamily: "var(--font-sans)" }}
+                >
+                  Log in
+                </a>
+                <a
+                  href={`${APP_URL}/onboarding`}
+                  className="shrink-0 rounded-full px-3.5 py-1.5 text-[9px] font-bold uppercase tracking-[0.12em] text-[#050505] transition-transform active:scale-[0.98]"
+                  style={{
+                    fontFamily: "var(--font-sans)",
+                    background: "linear-gradient(135deg, #DFBE76 0%, #A88C44 100%)",
+                    boxShadow: "0 4px 14px rgba(201,165,90,0.25)",
+                  }}
+                >
+                  Join
+                </a>
+                <button
+                  type="button"
+                  aria-expanded={mobileMenuOpen}
+                  aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+                  onClick={() => setMobileMenuOpen((o) => !o)}
+                  className="ml-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-white/85 transition-colors hover:bg-white/[0.08]"
+                >
+                  {mobileMenuOpen ? <X size={18} strokeWidth={1.75} /> : <Menu size={18} strokeWidth={1.75} />}
+                </button>
+              </div>
+            </div>
+          </motion.div>
+
+          <AnimatePresence>
+            {mobileMenuOpen && (
+              <motion.div
+                className="fixed inset-0 z-[200] flex flex-col bg-[#050505]/98 px-5 pb-8 pt-[max(1.25rem,env(safe-area-inset-top))] backdrop-blur-xl md:hidden"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
+                  <span
+                    className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40"
+                    style={{ fontFamily: "var(--font-sans)" }}
+                  >
+                    Navigate
+                  </span>
+                  <button
+                    type="button"
+                    aria-label="Close menu"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="rounded-full border border-white/15 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/70"
+                    style={{ fontFamily: "var(--font-sans)" }}
+                  >
+                    Close
+                  </button>
+                </div>
+                <nav className="flex flex-1 flex-col justify-center gap-0">
+                  {MARKETING_NAV_LINKS.map((link, i) => (
+                    <motion.div
+                      key={link.href}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.05 + i * 0.05, duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                      <Link
+                        href={link.href}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block border-b border-white/[0.06] py-5 focus:outline-none focus-visible:bg-white/[0.04]"
+                      >
+                        <span
+                          className="text-2xl font-normal tracking-tight"
+                          style={{
+                            fontFamily: "var(--font-serif)",
+                            color: pathname === link.href ? "#C9A55A" : "rgba(255,255,255,0.88)",
+                          }}
+                        >
+                          {link.label}
+                        </span>
+                      </Link>
+                    </motion.div>
+                  ))}
+                </nav>
+                <div className="mt-auto flex flex-col gap-3 border-t border-white/[0.08] pt-6">
+                  <a
+                    href={`${APP_URL}/onboarding`}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex w-full items-center justify-center rounded-2xl py-4 text-[11px] font-bold uppercase tracking-[0.14em] text-[#050505]"
+                    style={{
+                      fontFamily: "var(--font-sans)",
+                      background: "linear-gradient(135deg, #DFBE76 0%, #A88C44 100%)",
+                      boxShadow: "0 8px 24px rgba(201,165,90,0.25)",
+                    }}
+                  >
+                    Get scouted
+                  </a>
+                  <a
+                    href={`${APP_URL}/login`}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="py-3 text-center text-[10px] font-medium uppercase tracking-[0.18em] text-white/40"
+                    style={{ fontFamily: "var(--font-sans)" }}
+                  >
+                    Log in to dashboard
+                  </a>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Nav links - Top Left (tablet & desktop) */}
+          <motion.div
+            variants={itemUp}
+            className="pointer-events-auto absolute left-6 top-10 hidden items-center gap-8 md:left-12 md:flex"
+          >
+            {MARKETING_NAV_LINKS.map((link) => {
+              const className =
+                "relative text-[10px] font-medium tracking-[0.15em] uppercase text-white/60 hover:text-white transition-colors duration-300 pb-1 group";
+              const underline = (
+                <div
+                  className="absolute bottom-0 left-0 h-[1px] w-0 group-hover:w-full transition-all duration-300 ease-out"
+                  style={{ backgroundColor: "#C9A55A" }}
+                />
+              );
+              return (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  className={className}
+                  style={{ fontFamily: "var(--font-sans)" }}
+                >
+                  {link.label}
+                  {underline}
+                </Link>
+              );
+            })}
+          </motion.div>
+
+          {/* Log In + Get Scouted - Top Right (tablet & desktop) */}
+          <motion.div
+            variants={itemUp}
+            className="pointer-events-auto absolute right-6 top-8 hidden items-center gap-6 md:right-12 md:flex"
+          >
+            <a
+              href={`${APP_URL}/login`}
+              className="relative text-[10px] font-medium tracking-[0.15em] uppercase text-white/60 hover:text-white transition-colors duration-300 pb-1 group"
+              style={{ fontFamily: "var(--font-sans)" }}
+            >
+              Log In
+              <div
+                className="absolute bottom-0 left-0 h-[1px] w-0 group-hover:w-full transition-all duration-300 ease-out"
+                style={{ backgroundColor: "#C9A55A" }}
+              />
+            </a>
+            <a
+              href={`${APP_URL}/onboarding`}
+              className="relative text-[10px] font-bold tracking-[0.15em] uppercase px-5 py-2.5 rounded-full focus:outline-none overflow-hidden group transition-transform duration-300 hover:scale-[1.02]"
+              style={{
+                background:
+                  "linear-gradient(135deg, #C9A55A 0%, #A68644 100%)",
+                color: "#050505",
+                boxShadow: "0 4px 15px rgba(201, 165, 90, 0.2)",
+                fontFamily: "var(--font-sans)"
+              }}
+            >
+              <span className="relative z-10">Get Scouted</span>
+              <div
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #DFBE76 0%, #C9A55A 100%)",
+                }}
+              />
+            </a>
+          </motion.div>
+
+        </motion.div>
+      </motion.div>
+
       <motion.div
         className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center"
         style={{ opacity: heroOpacity }}
@@ -176,217 +381,21 @@ export function Hero({ ready = false }: HeroProps) {
           </motion.div>
         </motion.div>
 
-        {/* ── UI Chrome (Z-30) ── */}
-        <motion.div className="absolute inset-0 z-30 pointer-events-none">
+        {/* ── Word Wheel - fades in place as the hero exits ── */}
+        <motion.div
+          className="absolute inset-0 z-30 pointer-events-none"
+          style={{ opacity: textOpacity, willChange: "opacity" }}
+        >
           <motion.div
             initial="hidden"
             animate={controls}
             variants={containerVariants}
             className="w-full h-full relative max-w-[1440px] mx-auto px-6"
           >
-            {/* Mobile hero bar — md+ uses desktop chrome below */}
             <motion.div
+              data-hero-word-wheel
               variants={itemUp}
-              style={{ opacity: uiOpacity }}
-              className="pointer-events-auto absolute left-4 right-4 top-4 z-[38] md:hidden"
-            >
-              <div className="flex items-center justify-between gap-3 rounded-2xl border border-white/[0.12] bg-black/45 px-4 py-3 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.65)] backdrop-blur-xl supports-[backdrop-filter]:bg-black/35">
-                <Link
-                  href="/"
-                  className="shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A55A]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-black/50 rounded-sm"
-                  style={{
-                    fontFamily: "var(--font-serif)",
-                    fontWeight: 600,
-                    fontSize: "0.7rem",
-                    letterSpacing: "0.28em",
-                    color: "#C9A55A",
-                  }}
-                >
-                  PHOLIO
-                </Link>
-                <div className="flex min-w-0 flex-1 items-center justify-end gap-2">
-                  <a
-                    href={`${APP_URL}/login`}
-                    className="shrink-0 rounded-full px-3 py-1.5 text-[9px] font-semibold uppercase tracking-[0.14em] text-white/55 transition-colors hover:text-white"
-                    style={{ fontFamily: "var(--font-sans)" }}
-                  >
-                    Log in
-                  </a>
-                  <a
-                    href={`${APP_URL}/onboarding`}
-                    className="shrink-0 rounded-full px-3.5 py-1.5 text-[9px] font-bold uppercase tracking-[0.12em] text-[#050505] transition-transform active:scale-[0.98]"
-                    style={{
-                      fontFamily: "var(--font-sans)",
-                      background: "linear-gradient(135deg, #DFBE76 0%, #A88C44 100%)",
-                      boxShadow: "0 4px 14px rgba(201,165,90,0.25)",
-                    }}
-                  >
-                    Join
-                  </a>
-                  <button
-                    type="button"
-                    aria-expanded={mobileMenuOpen}
-                    aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-                    onClick={() => setMobileMenuOpen((o) => !o)}
-                    className="ml-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-white/85 transition-colors hover:bg-white/[0.08]"
-                  >
-                    {mobileMenuOpen ? <X size={18} strokeWidth={1.75} /> : <Menu size={18} strokeWidth={1.75} />}
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-
-            <AnimatePresence>
-              {mobileMenuOpen && (
-                <motion.div
-                  className="fixed inset-0 z-[200] flex flex-col bg-[#050505]/98 px-5 pb-8 pt-[max(1.25rem,env(safe-area-inset-top))] backdrop-blur-xl md:hidden"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
-                    <span
-                      className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40"
-                      style={{ fontFamily: "var(--font-sans)" }}
-                    >
-                      Navigate
-                    </span>
-                    <button
-                      type="button"
-                      aria-label="Close menu"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="rounded-full border border-white/15 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/70"
-                      style={{ fontFamily: "var(--font-sans)" }}
-                    >
-                      Close
-                    </button>
-                  </div>
-                  <nav className="flex flex-1 flex-col justify-center gap-0">
-                    {MARKETING_NAV_LINKS.map((link, i) => (
-                      <motion.div
-                        key={link.href}
-                        initial={{ opacity: 0, y: 12 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.05 + i * 0.05, duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                      >
-                        <Link
-                          href={link.href}
-                          onClick={() => setMobileMenuOpen(false)}
-                          className="block border-b border-white/[0.06] py-5 focus:outline-none focus-visible:bg-white/[0.04]"
-                        >
-                          <span
-                            className="text-2xl font-normal tracking-tight"
-                            style={{
-                              fontFamily: "var(--font-serif)",
-                              color: pathname === link.href ? "#C9A55A" : "rgba(255,255,255,0.88)",
-                            }}
-                          >
-                            {link.label}
-                          </span>
-                        </Link>
-                      </motion.div>
-                    ))}
-                  </nav>
-                  <div className="mt-auto flex flex-col gap-3 border-t border-white/[0.08] pt-6">
-                    <a
-                      href={`${APP_URL}/onboarding`}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="flex w-full items-center justify-center rounded-2xl py-4 text-[11px] font-bold uppercase tracking-[0.14em] text-[#050505]"
-                      style={{
-                        fontFamily: "var(--font-sans)",
-                        background: "linear-gradient(135deg, #DFBE76 0%, #A88C44 100%)",
-                        boxShadow: "0 8px 24px rgba(201,165,90,0.25)",
-                      }}
-                    >
-                      Get scouted
-                    </a>
-                    <a
-                      href={`${APP_URL}/login`}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="py-3 text-center text-[10px] font-medium uppercase tracking-[0.18em] text-white/40"
-                      style={{ fontFamily: "var(--font-sans)" }}
-                    >
-                      Log in to dashboard
-                    </a>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Nav links - Top Left (tablet & desktop) */}
-            <motion.div
-              variants={itemUp}
-              style={{ opacity: uiOpacity }}
-              className="pointer-events-auto absolute left-6 top-10 hidden items-center gap-8 md:left-12 md:flex"
-            >
-              {MARKETING_NAV_LINKS.map((link) => {
-                const className =
-                  "relative text-[10px] font-medium tracking-[0.15em] uppercase text-white/60 hover:text-white transition-colors duration-300 pb-1 group";
-                const underline = (
-                  <div
-                    className="absolute bottom-0 left-0 h-[1px] w-0 group-hover:w-full transition-all duration-300 ease-out"
-                    style={{ backgroundColor: "#C9A55A" }}
-                  />
-                );
-                return (
-                  <Link
-                    key={link.label}
-                    href={link.href}
-                    className={className}
-                    style={{ fontFamily: "var(--font-sans)" }}
-                  >
-                    {link.label}
-                    {underline}
-                  </Link>
-                );
-              })}
-            </motion.div>
-
-            {/* Log In + Get Scouted - Top Right (tablet & desktop) */}
-            <motion.div
-              variants={itemUp}
-              style={{ opacity: uiOpacity }}
-              className="pointer-events-auto absolute right-6 top-8 hidden items-center gap-6 md:right-12 md:flex"
-            >
-              <a
-                href={`${APP_URL}/login`}
-                className="relative text-[10px] font-medium tracking-[0.15em] uppercase text-white/60 hover:text-white transition-colors duration-300 pb-1 group"
-                style={{ fontFamily: "var(--font-sans)" }}
-              >
-                Log In
-                <div
-                  className="absolute bottom-0 left-0 h-[1px] w-0 group-hover:w-full transition-all duration-300 ease-out"
-                  style={{ backgroundColor: "#C9A55A" }}
-                />
-              </a>
-              <a
-                href={`${APP_URL}/onboarding`}
-                className="relative text-[10px] font-bold tracking-[0.15em] uppercase px-5 py-2.5 rounded-full focus:outline-none overflow-hidden group transition-transform duration-300 hover:scale-[1.02]"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #C9A55A 0%, #A68644 100%)",
-                  color: "#050505",
-                  boxShadow: "0 4px 15px rgba(201, 165, 90, 0.2)",
-                  fontFamily: "var(--font-sans)"
-                }}
-              >
-                <span className="relative z-10">Get Scouted</span>
-                <div
-                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, #DFBE76 0%, #C9A55A 100%)",
-                  }}
-                />
-              </a>
-            </motion.div>
-
-            {/* ── Word Wheel - Bottom Right ── */}
-            <motion.div
-              variants={itemUp}
-              style={{ opacity: uiOpacity }}
-              className="absolute bottom-16 md:bottom-24 right-6 md:right-12 pointer-events-auto"
+              className="absolute bottom-16 right-6 pointer-events-auto md:bottom-24 md:right-12"
             >
               <div
                 style={{
@@ -398,18 +407,12 @@ export function Hero({ ready = false }: HeroProps) {
                   maskImage: "linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%)",
                 }}
               >
-
-                {/* Each word is independently positioned via y transform */}
                 {HERO_WORDS.map((word, i) => {
-                  // Wrap-aware distance from active index
                   let dist = ((i - wordIndex) % N + N) % N;
                   if (dist > Math.floor(N / 2)) dist -= N;
-                  // dist ∈ {-2, -1, 0, 1, 2} for N=5
 
                   const absD = Math.abs(dist);
                   const isActive = dist === 0;
-
-                  // y: center of window (3 rows, center is row index 1)
                   const yPos = ROW_H + dist * ROW_H;
 
                   return (

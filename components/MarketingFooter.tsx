@@ -1,7 +1,13 @@
 "use client";
 
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { Twitter, Instagram, Linkedin } from "lucide-react";
 
 import { PHOLIO_APP_ORIGIN as APP_URL } from "@/lib/pholio-app-origin";
@@ -33,17 +39,101 @@ const footerLinks = [
   },
 ];
 
+const TRANSPARENT_COLORS = new Set(["rgba(0, 0, 0, 0)", "transparent"]);
+const useIsomorphicLayoutEffect =
+  typeof window === "undefined" ? useEffect : useLayoutEffect;
+
+function readBackgroundStyle(element: HTMLElement): CSSProperties | null {
+  const computed = window.getComputedStyle(element);
+  const hasColor = !TRANSPARENT_COLORS.has(computed.backgroundColor);
+  const hasImage = computed.backgroundImage !== "none";
+
+  if (!hasColor && !hasImage) {
+    return null;
+  }
+
+  return {
+    backgroundColor: hasColor ? computed.backgroundColor : "transparent",
+    ...(hasImage
+      ? {
+          backgroundImage: computed.backgroundImage,
+          backgroundPosition: computed.backgroundPosition,
+          backgroundRepeat: computed.backgroundRepeat,
+          backgroundSize: computed.backgroundSize,
+        }
+      : {}),
+  };
+}
+
+function readSectionBackgroundStyle(section: HTMLElement): CSSProperties | null {
+  const sectionBackground = readBackgroundStyle(section);
+
+  if (sectionBackground) {
+    return sectionBackground;
+  }
+
+  const sectionRect = section.getBoundingClientRect();
+
+  for (const child of Array.from(section.children)) {
+    if (!(child instanceof HTMLElement)) {
+      continue;
+    }
+
+    const childBackground = readBackgroundStyle(child);
+
+    if (!childBackground) {
+      continue;
+    }
+
+    const childRect = child.getBoundingClientRect();
+    const coversSection =
+      childRect.width >= sectionRect.width * 0.95 &&
+      childRect.height >= sectionRect.height * 0.85 &&
+      Math.abs(childRect.left - sectionRect.left) <= 2 &&
+      Math.abs(childRect.top - sectionRect.top) <= 2;
+
+    if (coversSection) {
+      return childBackground;
+    }
+  }
+
+  return null;
+}
+
 export interface MarketingFooterProps {
   theme?: "light" | "dark";
 }
 
 export default function MarketingFooter({ theme = "light" }: MarketingFooterProps) {
   const isDark = theme === "dark";
+  const footerRef = useRef<HTMLDivElement>(null);
+  const [backgroundStyle, setBackgroundStyle] = useState<CSSProperties>({
+    backgroundColor: isDark ? "#050505" : "var(--color-cream)",
+  });
+
+  useIsomorphicLayoutEffect(() => {
+    const footer = footerRef.current;
+    const previousSection = footer?.previousElementSibling;
+
+    if (!(previousSection instanceof HTMLElement)) {
+      setBackgroundStyle({
+        backgroundColor: isDark ? "#050505" : "var(--color-cream)",
+      });
+      return;
+    }
+
+    setBackgroundStyle(
+      readSectionBackgroundStyle(previousSection) ?? {
+        backgroundColor: isDark ? "#050505" : "var(--color-cream)",
+      },
+    );
+  }, [isDark]);
 
   return (
     <div
-      className={`w-full px-3 pb-8 pt-3 sm:px-4 md:px-8 md:pb-10 md:pt-4 ${isDark ? "bg-[#0A0A0F]" : ""}`}
-      style={!isDark ? { backgroundColor: "var(--color-cream)" } : {}}
+      ref={footerRef}
+      className="w-full px-3 pb-8 pt-3 sm:px-4 md:px-8 md:pb-10 md:pt-4"
+      style={backgroundStyle}
     >
       <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-3 md:gap-4">
         {/* =========================================
