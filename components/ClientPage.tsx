@@ -5,6 +5,7 @@ import SmoothScroll from "@/components/SmoothScroll";
 import Preloader from "@/components/Preloader";
 import { Hero } from "@/components/Hero";
 import BeliefSection from "@/components/BeliefSection";
+import SceneIntelligence from "@/components/SceneIntelligence";
 import SceneCompCard from "@/components/SceneCompCard";
 import SceneHorizontalPortfolios from "@/components/SceneHorizontalPortfolios";
 import SceneStudioWeb from "@/components/SceneStudioWeb";
@@ -34,6 +35,9 @@ export default function ClientPage() {
 
         {/* ── BELIEF ────────────────────────────────────────────────────── */}
         <BeliefSection />
+
+        {/* ── INTELLIGENCE — "The Presence" (AI knows you, works for you) ── */}
+        <SceneIntelligence />
 
         {/* ── COMP CARD ─────────────────────────────────────────────────── */}
         <SceneCompCard />
