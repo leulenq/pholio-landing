@@ -33,6 +33,35 @@ const LINES = [
   { text: "It works while you rest — and it never leaves.", at: 0.70 },
 ];
 
+function AtmosphereLine({
+  text,
+  at,
+  progress,
+  rm,
+}: {
+  text: string;
+  at: number;
+  progress: import("framer-motion").MotionValue<number>;
+  rm: boolean | null;
+}) {
+  const opacity = useTransform(progress, [at - 0.1, at], [0, 1]);
+  const y = useTransform(progress, [at - 0.1, at], [18, 0]);
+  return (
+    <motion.div
+      className="flex items-baseline gap-5"
+      style={rm ? undefined : { opacity, y }}
+    >
+      <span
+        className="mt-2 h-px w-12 shrink-0"
+        style={{
+          background: `linear-gradient(to right, ${GOLD}, rgba(201,165,90,0))`,
+        }}
+      />
+      <p className="font-editorial text-2xl leading-snug md:text-3xl">{text}</p>
+    </motion.div>
+  );
+}
+
 export default function SceneIntelligence() {
   const ref = useRef<HTMLElement>(null);
   const headerInView = useInView(ref, { once: true, margin: "-120px" });
@@ -116,20 +145,16 @@ export default function SceneIntelligence() {
             </h2>
           </motion.div>
 
-          {/* Atmosphere lines (static stack for now) */}
+          {/* Atmosphere lines — each arrives as the thread reaches it. */}
           <div className="mt-24 flex flex-col gap-24">
             {LINES.map((line) => (
-              <div key={line.text} className="flex items-baseline gap-5">
-                <span
-                  className="mt-2 h-px w-12 shrink-0"
-                  style={{
-                    background: `linear-gradient(to right, ${GOLD}, rgba(201,165,90,0))`,
-                  }}
-                />
-                <p className="font-editorial text-2xl leading-snug md:text-3xl">
-                  {line.text}
-                </p>
-              </div>
+              <AtmosphereLine
+                key={line.text}
+                text={line.text}
+                at={line.at}
+                progress={scrollYProgress}
+                rm={rm}
+              />
             ))}
           </div>
 
