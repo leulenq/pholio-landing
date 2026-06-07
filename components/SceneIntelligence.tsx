@@ -1,7 +1,13 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import {
+  motion,
+  useInView,
+  useScroll,
+  useTransform,
+  useReducedMotion,
+} from "framer-motion";
 
 /* ──────────────────────────────────────────────────────────────────────
    "The Presence" — Pholio's intelligence layer for talent.
@@ -30,6 +36,16 @@ const LINES = [
 export default function SceneIntelligence() {
   const ref = useRef<HTMLElement>(null);
   const headerInView = useInView(ref, { once: true, margin: "-120px" });
+  const rm = useReducedMotion();
+
+  // 0 when the section top reaches the viewport bottom, 1 when its bottom
+  // leaves the top. Thread draws across the middle of that range.
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+  // DRAW_RANGE knob — narrows the span over which the thread completes.
+  const drawn = useTransform(scrollYProgress, [0.08, 0.82], [0, 1]);
 
   return (
     <section
@@ -39,14 +55,32 @@ export default function SceneIntelligence() {
     >
       <div className="absolute inset-x-0 top-0 h-px divider-gold-center" />
 
-      {/* Thread — full-height background element (static for now). */}
+      {/* Thread — the intelligence. Draws as the section scrolls past. */}
       <svg
         aria-hidden
         className="pointer-events-none absolute inset-y-0 left-0 h-full w-[42%] max-w-[440px]"
         viewBox="0 0 100 1000"
         preserveAspectRatio="none"
       >
-        <path
+        <defs>
+          <filter id="thread-glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3" />
+          </filter>
+        </defs>
+        {/* glow */}
+        <motion.path
+          d={THREAD_D}
+          fill="none"
+          stroke={GOLD}
+          strokeWidth={5}
+          strokeLinecap="round"
+          vectorEffect="non-scaling-stroke"
+          filter="url(#thread-glow)"
+          opacity={0.22}
+          style={rm ? { pathLength: 1 } : { pathLength: drawn }}
+        />
+        {/* crisp thread */}
+        <motion.path
           d={THREAD_D}
           fill="none"
           stroke={GOLD}
@@ -54,6 +88,7 @@ export default function SceneIntelligence() {
           strokeLinecap="round"
           vectorEffect="non-scaling-stroke"
           opacity={0.9}
+          style={rm ? { pathLength: 1 } : { pathLength: drawn }}
         />
       </svg>
 
