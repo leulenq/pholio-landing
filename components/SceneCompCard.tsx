@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import {
   AnimatePresence,
+  cubicBezier,
   motion,
   useMotionValueEvent,
   useReducedMotion,
@@ -12,6 +13,9 @@ import {
 import { CompCardBack, CompCardFront } from "./compcard";
 
 const ease = [0.22, 1, 0.36, 1] as const;
+// Ease-in-out for every scroll segment: the card accelerates out of a pose
+// and decelerates into the next, so each beat reads as an arrival, not a slide.
+const GLIDE = cubicBezier(0.65, 0, 0.35, 1);
 
 /* One headline + one sentence per beat. Nothing else. */
 const SCENES = [
@@ -75,47 +79,68 @@ export default function SceneCompCard() {
     else setPhase(0);
   });
 
-  // ── The choreography: restrained, object-like, and readable ─────
-  // One intentional turn: front -> angled front -> reverse side.
+  // ── The choreography ─────────────────────────────────────────────
+  // ONE physical card, driven directly off (Lenis-smoothed) scroll, through a
+  // single continuous turn: front → angled front → contact-sheet back → and
+  // back to front for the detail zoom. Each property is a clean hold → single
+  // eased move → hold, so nothing stops-and-starts mid-motion.
+  //   front 0–.18 · tilt → angle .18–.30 · flip → back .48–.64
+  //   back hold .64–.78 · turn back to front .78–.92 · detail hold .92–1
   const rotateY = useTransform(
     scrollYProgress,
-    [0, 0.16, 0.3, 0.52, 0.58, 0.68, 1],
-    [0, 0, -18, -18, -82, -180, -180]
+    [0, 0.18, 0.3, 0.48, 0.64, 0.78, 0.92, 1],
+    [0, 0, -18, -18, -180, -180, -360, -360],
+    { ease: GLIDE }
   );
+  // A subtle nod during the angle beat — one rise, one return.
   const rotateX = useTransform(
     scrollYProgress,
-    [0, 0.22, 0.42, 0.58, 0.72, 0.84, 1],
-    [0, 0, 5, 0, 0, 0, 0]
+    [0, 0.3, 0.4, 0.48, 1],
+    [0, 0, 3, 0, 0],
+    { ease: GLIDE }
   );
-  const rotateZ = useTransform(scrollYProgress, [0, 0.3, 0.56, 0.72, 0.84, 1], [0, -1.2, 0.8, 0.4, 0, 0]);
-  // Small depth changes keep the card light instead of lunging at the viewer.
+  // A whisper of lean during the angle beat — kept tiny so it never wobbles.
+  const rotateZ = useTransform(
+    scrollYProgress,
+    [0, 0.3, 0.42, 0.48, 1],
+    [0, 0, -1, 0, 0],
+    { ease: GLIDE }
+  );
+  // Depth: leans toward the viewer at the rest poses, recedes through the flip,
+  // then comes well forward for the detail beat as it turns back to front.
   const z = useTransform(
     scrollYProgress,
-    [0, 0.16, 0.3, 0.48, 0.58, 0.72, 0.84, 1],
-    [0, 20, 20, -36, 16, 16, 70, 90]
+    [0, 0.18, 0.48, 0.56, 0.64, 0.78, 0.92, 1],
+    [0, 14, 14, -18, 8, 8, 36, 36],
+    { ease: GLIDE }
   );
-  // Restrained scale: the card stays precise and composed.
+  // Restrained breathing — settle, a dip through the flip, then the detail zoom
+  // (capped ~1.28× so it stays clear of the header and caption band).
   const scale = useTransform(
     scrollYProgress,
-    [0, 0.16, 0.3, 0.44, 0.58, 0.72, 0.84, 1],
-    [0.92, 0.96, 1, 1, 0.94, 1.02, 1.02, 1.02]
+    [0, 0.18, 0.48, 0.56, 0.64, 0.78, 0.92, 1],
+    [0.94, 1, 1, 0.96, 0.98, 0.98, 1.28, 1.28],
+    { ease: GLIDE }
   );
-  // lateral composition: right (angle) → left (back) → right (detail)
+  // Lateral composition: drifts right for the left-side angle caption, left for
+  // the right-side back caption, then re-centers for the detail zoom.
   const x = useTransform(
     scrollYProgress,
-    [0, 0.16, 0.3, 0.42, 0.52, 0.68, 0.84, 1],
-    ["0%", "0%", "12%", "12%", "-10%", "-10%", "0%", "0%"]
+    [0, 0.18, 0.36, 0.48, 0.62, 0.78, 0.92, 1],
+    ["0%", "0%", "12%", "12%", "-10%", "-10%", "0%", "0%"],
+    { ease: GLIDE }
   );
-  // State 1 sits high enough to clear the caption; later beats ease back to
-  // neutral because their captions are composed left/right.
+  // State 1 sits high to clear the bottom-center caption; settles to neutral,
+  // then a hair lower for the zoom so the enlarged card stays under the header.
   const y = useTransform(
     scrollYProgress,
-    [0, 0.18, 0.26, 0.72, 0.84, 1],
-    ["-6%", "-6%", "-2%", "-2%", "-2%", "-2%"]
+    [0, 0.18, 0.32, 0.78, 0.92, 1],
+    ["-6%", "-6%", "-2%", "-2%", "2%", "2%"],
+    { ease: GLIDE }
   );
 
   // ── State 1: the four-frame fan that gathers into one ─────────
-  const gather = useTransform(scrollYProgress, [0, 0.16], [1, 0]);
+  const gather = useTransform(scrollYProgress, [0, 0.16], [1, 0], { ease: GLIDE });
   const fanOpacity = useTransform(gather, [0, 1], [0, 0.42]);
   // wide, balanced spread; the third card lifts up + back (not a centered overlap)
   const fan = [
@@ -141,14 +166,9 @@ export default function SceneCompCard() {
     { x: fanX2, y: fanY2, rotateZ: fanR2, scale: fanS2 },
   ];
 
-  // No entrance fade: the four-card spread should be visible as soon as
-  // the first caption is visible. The only early motion is the gather.
-  const mainCardOpacity = useTransform(scrollYProgress, [0, 0.8, 0.86, 1], [1, 1, 0, 0]);
-  const finalFrontOpacity = useTransform(scrollYProgress, [0.78, 0.84, 0.94, 1], [0, 1, 1, 0.55]);
-  const finalFrontScale = useTransform(scrollYProgress, [0.78, 0.9, 1], [1, 1.24, 1.34]);
-  const finalFrontY = useTransform(scrollYProgress, [0.78, 1], ["-2%", "9%"]);
-  const frontFaceOpacity = useTransform(scrollYProgress, [0, 0.5, 0.56], [1, 1, 0]);
-  const backFaceOpacity = useTransform(scrollYProgress, [0.5, 0.56, 1], [0, 1, 1]);
+  // The card stays present the whole way through — including the detail zoom,
+  // which is now the same card turned back to front (no overlay double). The
+  // front/back faces swap automatically via backfaceVisibility as it turns.
 
   // ── Progress (minimal: four slim ticks) ───────────────────────
   const seg0 = useTransform(scrollYProgress, [0, 0.22], [0, 1]);
@@ -193,7 +213,6 @@ export default function SceneCompCard() {
         {/* the card, in 3D space — sits high, clear of the caption */}
         <motion.div
           className="absolute inset-0 z-10 flex items-center justify-center px-6 pt-12 pb-36"
-          style={{ opacity: rm ? 1 : mainCardOpacity }}
         >
           <div
             className="relative w-[14.25rem] sm:w-[15.25rem] md:w-[16.25rem] lg:w-[17.5rem]"
@@ -223,10 +242,9 @@ export default function SceneCompCard() {
                   transformOrigin: "left center",
                 }}
               />
-              <motion.div
+              <div
                 className="absolute inset-0 overflow-hidden rounded-[0.55rem]"
                 style={{
-                  opacity: rm ? 1 : frontFaceOpacity,
                   backfaceVisibility: "hidden",
                   WebkitBackfaceVisibility: "hidden",
                   boxShadow: faceShadow,
@@ -234,11 +252,10 @@ export default function SceneCompCard() {
                 }}
               >
                 <CompCardFront />
-              </motion.div>
-              <motion.div
+              </div>
+              <div
                 className="absolute inset-0 overflow-hidden rounded-[0.55rem]"
                 style={{
-                  opacity: rm ? 0 : backFaceOpacity,
                   backfaceVisibility: "hidden",
                   WebkitBackfaceVisibility: "hidden",
                   transform: "rotateY(180deg) translateZ(1px)",
@@ -246,23 +263,9 @@ export default function SceneCompCard() {
                 }}
               >
                 <CompCardBack />
-              </motion.div>
+              </div>
             </motion.div>
           </div>
-        </motion.div>
-
-        {/* final object beat — front-facing and free of the back-side turn */}
-        <motion.div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 z-[11] flex items-center justify-center px-6 pt-12 pb-36"
-          style={{ opacity: rm ? 0 : finalFrontOpacity }}
-        >
-          <motion.div
-            className="relative w-[14.25rem] overflow-hidden rounded-[0.55rem] sm:w-[15.25rem] md:w-[16.25rem] lg:w-[17.5rem]"
-            style={{ aspectRatio: "2 / 3", scale: finalFrontScale, y: finalFrontY, boxShadow: faceShadow }}
-          >
-            <CompCardFront />
-          </motion.div>
         </motion.div>
 
         {/* caption — one headline, one line, composed per scene */}

@@ -12,6 +12,9 @@ import SceneStudioWeb from "@/components/SceneStudioWeb";
 import SceneAgencyView from "@/components/SceneAgencyView";
 import SceneCurated from "@/components/SceneCurated";
 import SceneNetwork from "@/components/SceneNetwork";
+// Product-true sections after Studio/Website:
+import SceneReveal from "@/components/SceneReveal"; // slot 4 — The Reveal / Scout AI fit-score radar (ink)
+import SceneInTheOpen from "@/components/SceneInTheOpen"; // slot 5 — Smart Match + pipeline transparency (cream)
 import PricingSection from "@/components/PricingSection";
 import MarketingFooter from "@/components/MarketingFooter";
 
@@ -48,11 +51,13 @@ export default function ClientPage() {
         {/* ── STUDIO WEB ────────────────────────────────────────────────── */}
         <SceneStudioWeb />
 
-        {/* ── AGENCY VIEW ───────────────────────────────────────────────── */}
-        <SceneAgencyView />
+        {/* ── SLOT 4 — The Reveal: the platform understands you ──────────── */}
+        {/* (retired: SceneAgencyView dashboard preview — repeated the device idea) */}
+        <SceneReveal />
 
-        {/* ── HOW IT WORKS ──────────────────────────────────────────────── */}
-        <SceneCurated />
+        {/* ── SLOT 5 — In the open: Smart Match + visible pipeline ────────── */}
+        {/* (retired: SceneCurated "How it works" icon grid) */}
+        <SceneInTheOpen />
 
         {/* ── PRICING ───────────────────────────────────────────────────── */}
         <PricingSection />
