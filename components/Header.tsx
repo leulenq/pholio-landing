@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { ChevronDown, ExternalLink, Menu, Settings, LogOut, Sparkles, X } from "lucide-react";
 import { MARKETING_NAV_LINKS } from "@/lib/marketing-nav-links";
 import { PHOLIO_APP_ORIGIN as APP_URL } from "@/lib/pholio-app-origin";
+import { STUDIO_PLUS_SIGNUP_URL } from "@/lib/marketing-pricing";
 import { usePholioAuth } from "@/lib/pholio-auth/PholioAuthProvider";
 
 export interface HeaderProps {
@@ -364,7 +365,7 @@ export default function Header({ theme = "dark" }: HeaderProps) {
                       </a>
                       {!authData?.subscription?.isPro && (
                         <a
-                          href={`${APP_URL}/signup?plan=studio`}
+                          href={STUDIO_PLUS_SIGNUP_URL}
                           className="dropdown-item upgrade-item"
                           onClick={() => setIsProfileOpen(false)}
                         >

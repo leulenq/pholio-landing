@@ -8,7 +8,15 @@ import {
   AnimatePresence,
   useReducedMotion,
 } from "framer-motion";
-import { PHOLIO_APP_ORIGIN as APP_URL } from "@/lib/pholio-app-origin";
+import {
+  FREE_SIGNUP_URL,
+  STUDIO_PLUS_ANNUAL_EQUIVALENT_MONTHLY,
+  STUDIO_PLUS_PRICE_ANNUAL,
+  STUDIO_PLUS_PRICE_MONTHLY,
+  STUDIO_PLUS_SIGNUP_URL,
+  STUDIO_PLUS_TRIAL_DAYS,
+  formatMoney,
+} from "@/lib/marketing-pricing";
 
 const FREE_FEATURES = [
   "Profile visible to agencies on Pholio",
@@ -39,19 +47,15 @@ const ENTERPRISE_FEATURES = [
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-function formatMoney(n: number) {
-  return n.toFixed(n % 1 === 0 ? 0 : 2);
-}
-
 export default function PricingSection() {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
   const reduceMotion = useReducedMotion();
   const [yearly, setYearly] = useState(false);
 
-  const monthlyPrice = 9.99;
-  const yearlyPricePerMo = 7.99;
-  const yearlyTotal = Math.round(yearlyPricePerMo * 12 * 100) / 100;
+  const monthlyPrice = STUDIO_PLUS_PRICE_MONTHLY;
+  const yearlyPricePerMo = STUDIO_PLUS_ANNUAL_EQUIVALENT_MONTHLY;
+  const yearlyTotal = STUDIO_PLUS_PRICE_ANNUAL;
   const price = yearly ? yearlyPricePerMo : monthlyPrice;
 
   const motionFade = reduceMotion
@@ -211,7 +215,7 @@ export default function PricingSection() {
                 </span>
               </div>
               <a
-                href={`${APP_URL}/signup`}
+                href={FREE_SIGNUP_URL}
                 className="mb-6 block w-full rounded-lg border border-[var(--color-cream-dark)] px-6 py-3 text-center text-sm font-semibold text-[var(--color-ink)] transition-all duration-300 hover:bg-black/[0.02] hover:shadow-sm"
               >
                 Get started free
@@ -321,16 +325,16 @@ export default function PricingSection() {
               )}
 
               <a
-                href={`${APP_URL}/signup?plan=studio`}
+                href={STUDIO_PLUS_SIGNUP_URL}
                 className="btn-gold mb-3 block w-full rounded-lg text-center"
               >
-                Start 14-day free trial
+                Start {STUDIO_PLUS_TRIAL_DAYS}-day free trial
               </a>
               <p
                 className="mb-8 text-center text-[11px] leading-relaxed sm:text-xs"
                 style={{ color: "var(--color-text-muted)" }}
               >
-                No charge for 14 days. Cancel before the trial ends and you won&apos;t be
+                No charge for {STUDIO_PLUS_TRIAL_DAYS} days. Cancel before the trial ends and you won&apos;t be
                 charged. After that, billing follows the plan you chose (monthly or annual).
               </p>
 

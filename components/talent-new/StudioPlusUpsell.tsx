@@ -9,7 +9,13 @@ import {
   useReducedMotion,
 } from "framer-motion";
 
-import { PHOLIO_APP_ORIGIN as APP_URL } from "@/lib/pholio-app-origin";
+import {
+  FREE_ONBOARDING_URL,
+  STUDIO_PLUS_ANNUAL_EQUIVALENT_MONTHLY,
+  STUDIO_PLUS_PRICE_MONTHLY,
+  STUDIO_PLUS_SIGNUP_URL,
+  STUDIO_PLUS_TRIAL_DAYS,
+} from "@/lib/marketing-pricing";
 const ease = [0.22, 1, 0.36, 1] as const;
 
 const WALKS_IN = [
@@ -43,7 +49,9 @@ export default function StudioPlusUpsell() {
   const [yearly, setYearly] = useState(false);
   const prefersReducedMotion = useReducedMotion();
 
-  const price = yearly ? 7.99 : 9.99;
+  const price = yearly
+    ? STUDIO_PLUS_ANNUAL_EQUIVALENT_MONTHLY
+    : STUDIO_PLUS_PRICE_MONTHLY;
 
   return (
     <section
@@ -321,7 +329,7 @@ export default function StudioPlusUpsell() {
 
           <div className="flex flex-wrap items-center justify-center gap-4">
             <a
-              href={`${APP_URL}/onboarding`}
+              href={FREE_ONBOARDING_URL}
               className="inline-flex items-center gap-2 rounded-full border border-[rgba(26,24,21,0.12)] px-7 py-3.5"
               style={{
                 fontFamily: "var(--font-sans)",
@@ -336,7 +344,7 @@ export default function StudioPlusUpsell() {
               Start with Pholio
             </a>
             <a
-              href={`${APP_URL}/signup?plan=studio`}
+              href={STUDIO_PLUS_SIGNUP_URL}
               className="inline-flex items-center gap-2 rounded-full px-8 py-3.5"
               style={{
                 background: "linear-gradient(135deg, #C9A55A 0%, #A88C44 100%)",
@@ -363,7 +371,7 @@ export default function StudioPlusUpsell() {
               lineHeight: 1.6,
             }}
           >
-            14-day trial on Studio+ · cancel when the season ends
+            {STUDIO_PLUS_TRIAL_DAYS}-day trial on Studio+ · cancel anytime
           </p>
         </motion.div>
       </div>

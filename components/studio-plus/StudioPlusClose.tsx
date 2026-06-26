@@ -8,7 +8,13 @@ import {
   useReducedMotion,
 } from "framer-motion";
 
-import { PHOLIO_APP_ORIGIN as APP_URL } from "@/lib/pholio-app-origin";
+import {
+  FREE_ONBOARDING_URL,
+  STUDIO_PLUS_ANNUAL_EQUIVALENT_MONTHLY,
+  STUDIO_PLUS_PRICE_MONTHLY,
+  STUDIO_PLUS_SIGNUP_URL,
+  STUDIO_PLUS_TRIAL_DAYS,
+} from "@/lib/marketing-pricing";
 const ease = [0.22, 1, 0.36, 1] as const;
 
 const INCLUDED = [
@@ -25,7 +31,9 @@ export default function StudioPlusClose() {
   const inView = useInView(ref, { once: true, margin: "-80px" });
   const prefersReducedMotion = useReducedMotion();
   const [yearly, setYearly] = useState(false);
-  const price = yearly ? 7.99 : 9.99;
+  const price = yearly
+    ? STUDIO_PLUS_ANNUAL_EQUIVALENT_MONTHLY
+    : STUDIO_PLUS_PRICE_MONTHLY;
 
   return (
     <section
@@ -106,7 +114,7 @@ export default function StudioPlusClose() {
                 opacity: inView ? 1 : prefersReducedMotion ? 1 : 0,
               }}
             >
-              Fourteen days on us. No card required to explore. When you are ready,
+              Fourteen days on us. Stripe handles checkout when you subscribe.
               Studio+ stays beside your craft—not in front of it.
             </motion.p>
 
@@ -121,7 +129,7 @@ export default function StudioPlusClose() {
               }}
             >
               <motion.a
-                href={`${APP_URL}/signup?plan=studio`}
+                href={STUDIO_PLUS_SIGNUP_URL}
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.98 }}
                 className="inline-flex items-center gap-2"
@@ -139,10 +147,10 @@ export default function StudioPlusClose() {
                   boxShadow: "0 12px 40px -8px rgba(201,165,90,0.35)",
                 }}
               >
-                Start 14-day trial
+                Start {STUDIO_PLUS_TRIAL_DAYS}-day trial
               </motion.a>
               <a
-                href={`${APP_URL}/onboarding`}
+                href={FREE_ONBOARDING_URL}
                 style={{
                   fontFamily: "var(--font-sans)",
                   fontWeight: 500,

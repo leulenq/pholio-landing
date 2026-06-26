@@ -168,47 +168,80 @@ export function AboutContent() {
         </div>
       </section>
 
-      {/* ── 04. THE COLLECTIVE — Legacy Section ────────────────────────── */}
+      {/* ── 04. THE COLLECTIVE — Team Section ────────────────────────── */}
       <section className="relative py-40 md:py-64 bg-[#FAF7F2] text-[#050505]">
         <div className="max-w-[1440px] mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-            
-            <RevealSection className="relative order-2 lg:order-1">
-              <div className="aspect-[4/5] overflow-hidden rounded-[2px] shadow-2xl">
-                <img 
-                  src="/images/about_editorial_vision.png" 
-                  alt="Editorial texture" 
-                  className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000 ease-in-out" 
-                />
-              </div>
-              {/* Floating aesthetic label */}
-              <div className="absolute -bottom-8 -right-8 w-40 h-40 bg-white shadow-xl flex items-center justify-center p-8 hidden md:flex">
-                <span className="font-editorial text-5xl opacity-10">P.</span>
-              </div>
-            </RevealSection>
+          <RevealSection className="mb-24 text-center">
+            <span className="text-label text-[#C9A55A] mb-8 block">THE COLLECTIVE</span>
+            <h3 className="font-editorial text-5xl md:text-7xl leading-[0.95] mb-8 tracking-tight">
+              Engineered by <br className="hidden md:block" />
+              <span className="font-editorial-italic italic text-[#C9A55A]">Visionaries.</span>
+            </h3>
+            <p className="text-black/60 font-sans text-lg font-light leading-relaxed max-w-2xl mx-auto">
+              Pholio is a convergence of editorial minds, technical engineers, and industry veterans committed to building the next standard for human identity.
+            </p>
+          </RevealSection>
 
-            <RevealSection className="lg:pl-20 order-1 lg:order-2">
-              <span className="text-label text-[#C9A55A] mb-12 block">THE COLLECTIVE</span>
-              <h3 className="font-editorial text-5xl md:text-7xl leading-[0.95] mb-12 tracking-tight">
-                Engineered by <br />
-                <span className="font-editorial-italic italic text-[#C9A55A]">Visionaries.</span>
-              </h3>
-              <p className="text-black/60 font-sans text-lg font-light leading-relaxed mb-10 max-w-md">
-                Pholio is a convergence of editorial minds, technical engineers, and industry veterans committed to building the next standard for human identity.
-              </p>
-              
-              <div className="grid grid-cols-1 gap-6 pt-10 border-t border-black/5">
-                {[
-                  "Creative Direction — Florence, Italy",
-                  "Identity Cryptography — Zug, Switzerland",
-                  "Product Architecture — London, UK",
-                  "Verified Scouting — New York, USA"
-                ].map((role) => (
-                  <div key={role} className="flex items-center gap-4 text-[11px] tracking-[0.15em] font-bold uppercase opacity-40">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#C9A55A]" />
-                    {role}
+          <div className="flex flex-col gap-16 mt-16 max-w-6xl mx-auto">
+            
+            {/* Co-Founders Row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20">
+              {/* Leul Enquanhone */}
+              <RevealSection className="group cursor-pointer">
+                <div className="aspect-[4/5] overflow-hidden rounded-[2px] shadow-xl mb-8 relative bg-white">
+                  <img src="/assets/Leul_Portrait.PNG" alt="Leul Enquanhone" className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-in-out" />
+                  <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-700"></div>
+                </div>
+                <div className="text-center md:text-left flex flex-col items-center md:items-start">
+                  <p className="text-[10px] tracking-[0.2em] font-bold uppercase text-[#C9A55A] mb-3">Co-Founder & Head of Engineering</p>
+                  <h4 className="font-editorial text-4xl lg:text-5xl">Leul <span className="text-[#C9A55A] italic font-editorial-italic">Enquanhone</span></h4>
+                  <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-in-out opacity-0 group-hover:opacity-100">
+                    <div className="overflow-hidden">
+                      <p className="font-sans text-base text-black/60 font-light leading-relaxed max-w-sm pt-4">
+                        A native of Ethiopia, Leul architects the technical foundation of Pholio. Specializing in cryptographic identity infrastructure and systems engineering, he translates complex verification models into the high-fidelity platform that powers our discovery engine.
+                      </p>
+                    </div>
                   </div>
-                ))}
+                </div>
+              </RevealSection>
+
+              {/* Natan Getahun */}
+              <RevealSection delay={0.1} className="group cursor-pointer">
+                <div className="aspect-[4/5] overflow-hidden rounded-[2px] shadow-xl mb-8 relative bg-white">
+                  <img src="/assets/Natan_Portrait.png" alt="Natan Getahun" className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-in-out" />
+                  <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-700"></div>
+                </div>
+                <div className="text-center md:text-left flex flex-col items-center md:items-start">
+                  <p className="text-[10px] tracking-[0.2em] font-bold uppercase text-[#C9A55A] mb-3">Co-Founder & Head of Business</p>
+                  <h4 className="font-editorial text-4xl lg:text-5xl">Natan <span className="text-[#C9A55A] italic font-editorial-italic">Getahun</span></h4>
+                  <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-in-out opacity-0 group-hover:opacity-100">
+                    <div className="overflow-hidden">
+                      <p className="font-sans text-base text-black/60 font-light leading-relaxed max-w-sm pt-4">
+                        A native of Ethiopia and the CEO of PXI LABS—Pholio's parent company—Natan specializes in scaling event-driven technologies. He drives the strategic vision for Pholio, forging the global partnerships necessary to connect emerging talent with premier agencies.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </RevealSection>
+            </div>
+
+            {/* Advisor Row */}
+            <RevealSection delay={0.2} className="group cursor-pointer mt-8">
+              <div className="flex flex-col md:flex-row items-center gap-8 lg:gap-12 bg-white/40 hover:bg-white/60 transition-colors duration-500 p-8 lg:p-10 shadow-sm rounded-[2px] border border-black/5">
+                <div className="w-32 h-32 lg:w-48 lg:h-48 flex-shrink-0 overflow-hidden rounded-full shadow-inner bg-[#050505]/5 flex items-center justify-center relative">
+                  <span className="font-editorial text-[#C9A55A]/30 italic text-6xl lg:text-8xl">A.</span>
+                </div>
+                <div className="text-center md:text-left flex-1">
+                  <p className="text-[10px] tracking-[0.2em] font-bold uppercase text-[#C9A55A] mb-3">Industry Advisor & FWB Co-Producer</p>
+                  <h4 className="font-editorial text-4xl lg:text-5xl">Alex <span className="text-[#C9A55A] italic font-editorial-italic">Rieder</span></h4>
+                  <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-in-out opacity-0 group-hover:opacity-100">
+                    <div className="overflow-hidden">
+                      <p className="font-sans text-base text-black/60 font-light leading-relaxed max-w-xl mx-auto md:mx-0 pt-4">
+                        Leveraging deep industry expertise to curate talent and align Pholio's standards with the pinnacle of the fashion world.
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </RevealSection>
 

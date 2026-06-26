@@ -2,8 +2,8 @@
 
 import { motion } from "framer-motion";
 
-const LAST_UPDATED = "March 19, 2026";
-const EFFECTIVE_DATE = "March 19, 2026";
+const LAST_UPDATED = "June 25, 2026";
+const EFFECTIVE_DATE = "June 25, 2026";
 const CONTACT_EMAIL = "privacy@pholio.studio";
 const COMPANY_NAME = "Pholio Studio, Inc.";
 

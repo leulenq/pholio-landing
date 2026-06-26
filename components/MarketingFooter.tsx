@@ -35,6 +35,9 @@ const footerLinks = [
       { label: "Privacy Policy", href: "/privacy" },
       { label: "Terms of Service", href: "/terms" },
       { label: "Cookie Policy", href: "/cookies" },
+      { label: "DMCA Policy", href: "/dmca" },
+      { label: "Community Guidelines", href: "/community-guidelines" },
+      { label: "AI Notice", href: "/ai-notice" },
     ],
   },
 ];
@@ -320,8 +323,8 @@ export default function MarketingFooter({ theme = "light" }: MarketingFooterProp
               reserved.
             </span>
 
-            <div className="flex flex-row gap-[20px]">
-              {footerLinks[2].links.map((link) => (
+            <div className="flex flex-row flex-wrap gap-[20px]">
+              {footerLinks[2].links.slice(0, 3).map((link) => (
                 <a
                   key={link.label}
                   href={link.href}

@@ -4,7 +4,10 @@ import { useLayoutEffect, useRef, useState, useEffect } from "react";
 import gsap from "gsap";
 import { motion, useReducedMotion } from "framer-motion";
 
-import { PHOLIO_APP_ORIGIN as APP_URL } from "@/lib/pholio-app-origin";
+import {
+  FREE_ONBOARDING_URL,
+  STUDIO_PLUS_SIGNUP_URL,
+} from "@/lib/marketing-pricing";
 const ease = [0.22, 1, 0.36, 1] as const;
 
 const noiseBg = {
@@ -183,7 +186,7 @@ export default function StudioPlusHero() {
               style={{ opacity: prefersReducedMotion ? 1 : 0 }}
             >
               <motion.a
-                href={`${APP_URL}/signup?plan=studio`}
+                href={STUDIO_PLUS_SIGNUP_URL}
                 className="inline-flex items-center gap-2"
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.98 }}
@@ -205,7 +208,7 @@ export default function StudioPlusHero() {
                 Begin Studio+
               </motion.a>
               <a
-                href={`${APP_URL}/onboarding`}
+                href={FREE_ONBOARDING_URL}
                 className="inline-flex items-center"
                 style={{
                   fontFamily: "var(--font-sans)",
