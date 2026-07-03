@@ -123,6 +123,7 @@ export default function Header({ theme = "dark" }: HeaderProps) {
       initial="visible"
       animate={hidden ? "hidden" : "visible"}
       transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1] }}
+      aria-hidden={isHomePage && !isHomeHeaderActive}
       style={{
         opacity: isHomePage && !isHomeHeaderActive ? 0 : 1,
         pointerEvents: isHomePage && !isHomeHeaderActive ? "none" : "auto",
