@@ -212,7 +212,7 @@ export function Hero({ ready = false }: HeroProps) {
       </motion.div>
 
       <motion.div
-        className="sticky top-0 h-[100svh] w-full overflow-hidden flex items-center justify-center"
+        className="sticky top-0 h-[100dvh] w-full overflow-hidden flex items-center justify-center"
         style={{ opacity: heroOpacity }}
       >
 
@@ -223,7 +223,7 @@ export function Hero({ ready = false }: HeroProps) {
 
         {/* ── Background Typography (Z-10) ── */}
         <motion.div
-          className="absolute inset-0 z-10 flex items-start justify-center pt-[26vh] md:pt-[15vh] pointer-events-none px-6"
+          className="absolute inset-0 z-10 flex items-start justify-center pt-[17vh] md:pt-[15vh] pointer-events-none px-6"
           style={{ opacity: textOpacity, y: textY, willChange: "transform" }}
         >
           <motion.h1
@@ -282,7 +282,7 @@ export function Hero({ ready = false }: HeroProps) {
             <img
               src="/images/model2-nobg.png"
               alt="Editorial fashion model cutout"
-              className="h-[100svh] w-auto max-w-[134vw] object-contain object-bottom md:max-w-none"
+              className="h-[100dvh] w-auto max-w-[134vw] translate-y-[6vh] object-contain object-bottom md:translate-y-0 md:max-w-none"
             />
           </motion.div>
         </motion.div>
