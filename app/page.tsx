@@ -1,5 +1,5 @@
-import PageWrapper from "@/components/PageWrapper";
+import TemporaryLanding from "@/components/TemporaryLanding";
 
 export default function Home() {
-  return <PageWrapper />;
+  return <TemporaryLanding />;
 }
