@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { EditorialVerticalDivider } from "@/components/EditorialVerticalDivider";
 
 export function CareersHero() {
   return (
@@ -37,13 +38,7 @@ export function CareersHero() {
           className="flex flex-col items-center gap-4"
         >
           <span className="text-[9px] uppercase tracking-[0.2em] text-white/40">Explore Roles</span>
-          <div className="w-[1px] h-12 bg-gradient-to-b from-[#C9A55A]/50 to-transparent origin-top">
-            <motion.div 
-              className="w-full bg-[#C9A55A]"
-              animate={{ height: ["0%", "100%", "0%"], top: ["0%", "0%", "100%"] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            />
-          </div>
+          <EditorialVerticalDivider />
         </motion.div>
       </div>
     </section>

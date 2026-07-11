@@ -1,13 +1,13 @@
 "use client";
 
-import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+import { EditorialVerticalDivider } from "@/components/EditorialVerticalDivider";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 export function AboutHero() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const prefersReducedMotion = useReducedMotion();
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -124,13 +124,7 @@ export function AboutHero() {
           className="flex flex-col items-center gap-4"
         >
           <span className="text-[8px] uppercase tracking-[0.3em] text-white/20 whitespace-nowrap">Explore our manifesto</span>
-          <div className="w-[1px] h-14 bg-gradient-to-b from-gold/40 to-transparent relative overflow-hidden">
-            <motion.div 
-              className="absolute top-0 left-0 w-full bg-gold"
-              animate={{ height: ["0%", "100%", "0%"], top: ["0%", "0%", "100%"] }}
-              transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-            />
-          </div>
+          <EditorialVerticalDivider />
         </motion.div>
       </div>
     </section>

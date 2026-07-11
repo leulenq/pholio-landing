@@ -38,6 +38,10 @@ const footerLinks = [
       { label: "DMCA Policy", href: "/dmca" },
       { label: "Community Guidelines", href: "/community-guidelines" },
       { label: "AI Notice", href: "/ai-notice" },
+      {
+        label: "Submission Program",
+        href: "/legal/submission-program",
+      },
     ],
   },
 ];

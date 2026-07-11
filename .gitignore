@@ -4,3 +4,12 @@ out/
 next-env.d.ts
 video/node_modules/
 video/out/
+
+# OS/IDE files
+.DS_Store
+tsconfig.tsbuildinfo
+
+# Agent configs
+.agents/
+.claude/
+skills-lock.json

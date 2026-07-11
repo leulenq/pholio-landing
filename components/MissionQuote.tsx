@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import { EditorialVerticalDivider } from "@/components/EditorialVerticalDivider";
 
 export default function MissionQuote() {
   const ref = useRef<HTMLElement>(null);
@@ -30,13 +31,7 @@ export default function MissionQuote() {
           &rdquo;
         </motion.blockquote>
 
-        <motion.div
-          className="mx-auto mt-10 w-[1px] bg-current"
-          style={{ backgroundColor: "var(--color-gold)", height: 80 }}
-          initial={{ scaleY: 0, originY: 0, transformOrigin: "top" }}
-          animate={inView ? { scaleY: 1 } : {}}
-          transition={{ delay: 0.4, duration: 0.6, ease: "easeOut" }}
-        />
+        <EditorialVerticalDivider className="mx-auto mt-10" />
       </div>
     </section>
   );

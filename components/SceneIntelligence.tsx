@@ -115,8 +115,6 @@ export default function SceneIntelligence() {
       className="relative flex min-h-[160vh] items-center overflow-hidden texture-grain"
       style={{ backgroundColor: "#050505", color: CREAM }}
     >
-      <div className="absolute inset-x-0 top-0 h-px divider-gold-center" />
-
       <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-16 px-6 py-32 lg:grid-cols-12 lg:gap-12 lg:px-8">
         {/* ── Words: kicker, headline, composed direction ─────────────── */}
         <motion.div

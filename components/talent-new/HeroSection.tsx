@@ -4,6 +4,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, useReducedMotion, AnimatePresence } from "framer-motion";
 
+import { EditorialVerticalDivider } from "@/components/EditorialVerticalDivider";
 import { PHOLIO_APP_ORIGIN as APP_URL } from "@/lib/pholio-app-origin";
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -231,11 +232,7 @@ export default function HeroSection() {
         transition={{ delay: 1.4, duration: 0.6 }}
         className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2"
       >
-        <motion.div
-          style={{ width: 1, height: 36, transformOrigin: "top", background: "linear-gradient(to bottom, transparent, rgba(201,165,90,0.3), transparent)" }}
-          animate={prefersReducedMotion ? {} : { scaleY: [0, 1, 0], y: [0, 12, 24], opacity: [0, 0.6, 0] }}
-          transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-        />
+        {!prefersReducedMotion && <EditorialVerticalDivider />}
       </motion.div>
     </section>
   );

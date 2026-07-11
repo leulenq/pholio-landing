@@ -1,14 +1,16 @@
 # Pholio Landing — Working Notes
 
 Next.js + Tailwind v4 + framer-motion marketing site for Pholio (a verified-talent
-platform). This file captures conventions and hard-won lessons. The canonical design
-authority is the two reference docs in the sibling app repo:
+platform). This file captures conventions and hard-won lessons. 
 
-- `../pholio-app/Design Philosophy.html` — principles ("composure over composition",
-  one italic word per headline, ink/cream as moods, motion = arrival not loop).
-- `../pholio-app/Brand Reference.html` — lockup, pricing pattern, pill system, specs.
+## 🚧 Repo Boundaries (CRITICAL)
 
-When the two disagree with anything here, the reference docs win.
+- **Marketing Site (`pholio-landing`):** `/Users/lenquanhone/Projects/pholio-landing`
+  - Handles all public-facing marketing pages.
+  - Handles all legal pages (Terms of Service, Privacy Policy, Submission Program Notice).
+  - Any marketing-site content must go here.
+- **Application Product (`pholio-app`):** `/Users/lenquanhone/Projects/pholio-app`
+  - This is the application product repo *only*. Do not put marketing or legal site pages there, and do not put application dashboard/API logic here.
 
 ## Brand system (non-negotiable)
 

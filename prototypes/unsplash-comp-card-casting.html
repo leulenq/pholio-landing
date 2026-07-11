@@ -1,0 +1,776 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pholio — Free Unsplash Comp Card Casting</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --paper: #f3efe7;
+        --muted: rgba(243, 239, 231, 0.56);
+        --faint: rgba(243, 239, 231, 0.12);
+        --gold: #c9a55a;
+        --black: #080808;
+        --green: #a9c5a0;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--black);
+        color: var(--paper);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+      a { color: inherit; }
+      main {
+        width: min(1440px, calc(100% - 40px));
+        margin: 0 auto;
+        padding: 72px 0 120px;
+      }
+      header {
+        max-width: 850px;
+        margin-bottom: 92px;
+      }
+      .eyebrow,
+      .meta,
+      .frame-role {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+      .eyebrow {
+        margin: 0 0 20px;
+        color: var(--gold);
+        font-size: 11px;
+      }
+      h1, h2 {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-weight: 400;
+        letter-spacing: -0.035em;
+      }
+      h1 {
+        max-width: 780px;
+        font-size: clamp(44px, 7vw, 86px);
+        line-height: 0.96;
+      }
+      .intro {
+        max-width: 700px;
+        margin: 30px 0 0;
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.65;
+      }
+      .license-note {
+        display: inline-flex;
+        gap: 10px;
+        align-items: center;
+        margin-top: 24px;
+        padding: 10px 13px;
+        border: 1px solid rgba(169, 197, 160, 0.28);
+        color: var(--green);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+      .license-note::before {
+        width: 6px;
+        height: 6px;
+        border-radius: 999px;
+        background: var(--green);
+        content: "";
+      }
+      .set {
+        padding: 64px 0 88px;
+        border-top: 1px solid var(--faint);
+      }
+      .set-head {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(280px, 470px);
+        gap: 56px;
+        align-items: end;
+        margin-bottom: 34px;
+      }
+      .rank {
+        margin: 0 0 12px;
+        color: var(--gold);
+        font-size: 11px;
+      }
+      h2 {
+        font-size: clamp(34px, 4.5vw, 64px);
+        line-height: 1;
+      }
+      .set-copy {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.65;
+      }
+      .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 18px;
+        margin: 22px 0 0;
+        color: rgba(243, 239, 231, 0.42);
+        font-size: 9px;
+      }
+      .meta .free { color: var(--green); }
+      .meta a {
+        color: var(--paper);
+        text-underline-offset: 4px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+      }
+      figure {
+        min-width: 0;
+        margin: 0;
+      }
+      figure.hero {
+        grid-column: span 2;
+        grid-row: span 2;
+      }
+      .image-wrap {
+        position: relative;
+        overflow: hidden;
+        aspect-ratio: 4 / 5;
+        background: #121212;
+      }
+      figure.hero .image-wrap {
+        height: 100%;
+        min-height: 640px;
+        aspect-ratio: auto;
+      }
+      img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .frame-role {
+        position: absolute;
+        right: 12px;
+        bottom: 12px;
+        left: 12px;
+        color: white;
+        font-size: 9px;
+        text-shadow: 0 1px 16px rgba(0, 0, 0, 0.9);
+      }
+      figcaption {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 11px 2px 20px;
+        color: rgba(243, 239, 231, 0.46);
+        font-size: 11px;
+      }
+      figcaption a {
+        color: rgba(243, 239, 231, 0.76);
+        text-underline-offset: 3px;
+      }
+      .warning { color: #d6b978; }
+      @media (max-width: 900px) {
+        .set-head { grid-template-columns: 1fr; gap: 24px; }
+        .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        figure.hero { grid-column: span 2; }
+      }
+      @media (max-width: 560px) {
+        main { width: min(100% - 24px, 1440px); padding-top: 48px; }
+        header { margin-bottom: 64px; }
+        .set { padding: 48px 0 64px; }
+        .grid { gap: 8px; }
+        figure.hero .image-wrap { min-height: 520px; }
+        figcaption { font-size: 9px; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Pholio / free Unsplash casting shortlist</p>
+        <h1>One talent.<br />No Plus license.</h1>
+        <p class="intro">
+          Every selected image is hosted on regular <code>images.unsplash.com</code>, is marked
+          non-premium in Unsplash’s public photo data, and links to an individual free-download
+          page. Each set was also checked frame by frame to confirm that it shows one talent.
+        </p>
+        <div class="license-note">Free under the Unsplash License</div>
+      </header>
+
+      <section class="set">
+        <div class="set-head">
+          <div>
+            <p class="rank eyebrow">01 / Existing option</p>
+            <h2>Nick Pliahas<br />Black Tailoring</h2>
+            <div class="meta">
+              <span>Same talent verified</span>
+              <span>8 selected frames</span>
+              <span class="free">Download free</span>
+              <a href="https://unsplash.com/@nick_pliachas" target="_blank" rel="noreferrer">Photographer profile ↗</a>
+            </div>
+          </div>
+          <p class="set-copy">
+            Retained from the first free shortlist. Clean studio light, direct eye contact,
+            tailoring, full seated compositions, close crops, and enough pose change to make the
+            card feel deliberately edited rather than repetitive.
+          </p>
+        </div>
+        <div class="grid">
+          <figure class="hero">
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1717765698239-88731a968d20?auto=format&amp;fit=crop&amp;q=84&amp;w=1800" alt="Talent in a black suit seated on a chair" />
+              <span class="frame-role">Strongest front / hero candidate</span>
+            </div>
+            <figcaption><span>Direct tailored portrait</span><a href="https://unsplash.com/photos/a-woman-in-a-black-suit-sitting-on-a-chair-7ErqsqczKng" target="_blank" rel="noreferrer">Download free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1717765699217-2e169670f6e1?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent seated with an extended arm" />
+              <span class="frame-role">Three-quarter</span>
+            </div>
+            <figcaption><span>Extended pose</span><a href="https://unsplash.com/photos/a-woman-sitting-in-a-chair-with-her-legs-crossed-7Feuve0ipeg" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1717765697681-5a160db970d5?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent sitting back in a chair" />
+              <span class="frame-role">Relaxed range</span>
+            </div>
+            <figcaption><span>Relaxed tailoring</span><a href="https://unsplash.com/photos/a-woman-sitting-in-a-chair-with-her-legs-crossed-EO-7zKHfhEo" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1717765697689-bfe380461903?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent shown full length on a chair" />
+              <span class="frame-role">Full composition</span>
+            </div>
+            <figcaption><span>Full seated look</span><a href="https://unsplash.com/photos/a-woman-sitting-in-a-chair-with-her-legs-crossed-Kkof6AgLPIQ" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1717765698199-52c7dc14a180?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent seated forward on a wooden chair" />
+              <span class="frame-role">Alternate front</span>
+            </div>
+            <figcaption><span>Forward seated</span><a href="https://unsplash.com/photos/a-woman-sitting-on-top-of-a-wooden-chair-KuxTCEmP67c" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1717765697742-6b2f48f4a1fa?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent standing in a cropped black jacket" />
+              <span class="frame-role">Standing crop</span>
+            </div>
+            <figcaption><span>Jacket portrait</span><a href="https://unsplash.com/photos/a-woman-in-a-black-jacket-is-posing-for-a-picture-h-jIyccjUwU" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1717765700129-fb47a51bc086?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent wearing sunglasses and a black jacket" />
+              <span class="frame-role">Editorial alternate</span>
+            </div>
+            <figcaption><span>Eyewear look</span><a href="https://unsplash.com/photos/a-woman-wearing-sunglasses-and-a-black-jacket-b3qNPvc29VU" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1717765697685-9f83a62e84ae?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent in a close fashion portrait with sunglasses" />
+              <span class="frame-role">Tight editorial crop</span>
+            </div>
+            <figcaption><span>Eyewear close-up</span><a href="https://unsplash.com/photos/a-woman-in-a-black-bikini-top-and-sunglasses-poeQQRGoH18" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="set">
+        <div class="set-head">
+          <div>
+            <p class="rank eyebrow">02 / Editorial option</p>
+            <h2>Joss Broward<br />Green Studio</h2>
+            <div class="meta">
+              <span>Same talent verified</span>
+              <span>8 selected frames</span>
+              <span class="free">Download free</span>
+              <a href="https://unsplash.com/@jossbroward" target="_blank" rel="noreferrer">Photographer profile ↗</a>
+            </div>
+          </div>
+          <p class="set-copy">
+            The most cinematic free set. It has a recognizable face, a controlled palette,
+            full-body and low-angle positions, direct and withdrawn expressions, plus a monochrome
+            alternate. Best if the section should lean editorial rather than commercial.
+          </p>
+        </div>
+        <div class="grid">
+          <figure class="hero">
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1700150595270-499a1ce07804?auto=format&amp;fit=crop&amp;q=84&amp;w=1800" alt="Talent in a monochrome green sweater portrait" />
+              <span class="frame-role">Strongest clean front</span>
+            </div>
+            <figcaption><span>Monochrome portrait</span><a href="https://unsplash.com/photos/a-black-and-white-photo-of-a-woman-in-a-sweater-MBxS7Rb8s2w" target="_blank" rel="noreferrer">Download free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1700150624576-c6c0641e54fe?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent balancing on a stool" />
+              <span class="frame-role">Full-body position</span>
+            </div>
+            <figcaption><span>Stool composition</span><a href="https://unsplash.com/photos/a-woman-sitting-on-a-stool-posing-for-a-picture-3KZxzCKbg2Q" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1700150594432-7024e06005c4?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent extending a hand toward the camera" />
+              <span class="frame-role">Direct expression</span>
+            </div>
+            <figcaption><span>Forward gesture</span><a href="https://unsplash.com/photos/a-woman-in-a-green-sweater-pointing-at-the-camera-mXiuvvh1K4E" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1700150642328-a527e0eacdd6?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent seated on a metal stool" />
+              <span class="frame-role">Seated full frame</span>
+            </div>
+            <figcaption><span>Low-angle seated</span><a href="https://unsplash.com/photos/a-woman-sitting-on-top-of-a-metal-stool-yqh76DGNdp0" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1700150649421-f0577c19fa69?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent leaning over a metal chair" />
+              <span class="frame-role">Expression range</span>
+            </div>
+            <figcaption><span>Chair portrait</span><a href="https://unsplash.com/photos/a-woman-sitting-on-top-of-a-metal-chair-qQ0g2swKLhU" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1700150601112-9774b1c86ede?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent seated in a low-angle portrait" />
+              <span class="frame-role">Alternate angle</span>
+            </div>
+            <figcaption><span>Low perspective</span><a href="https://unsplash.com/photos/a-young-man-sitting-on-the-ground-with-his-hand-on-his-hip-xYC27CM5I3I" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1700150607117-ebff107cbe2b?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent in a green sweater and black trousers" />
+              <span class="frame-role">Three-quarter</span>
+            </div>
+            <figcaption><span>Green three-quarter</span><a href="https://unsplash.com/photos/a-man-in-a-green-sweater-and-black-pants-cTi0omFcZo0" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1700150657589-594f6968f0f2?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent seated near a suitcase" />
+              <span class="frame-role">Narrative alternate</span>
+            </div>
+            <figcaption><span>Quiet seated frame</span><a href="https://unsplash.com/photos/a-woman-sitting-on-top-of-a-bed-next-to-a-suitcase-ntL66sH7P7o" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="set">
+        <div class="set-head">
+          <div>
+            <p class="rank eyebrow">03 / Minimal agency option</p>
+            <h2>Ola Szkolda<br />Black Minimal</h2>
+            <div class="meta">
+              <span>Same talent verified</span>
+              <span>4 selected frames</span>
+              <span class="free">Download free</span>
+              <a href="https://unsplash.com/@olaszkolda" target="_blank" rel="noreferrer">Photographer profile ↗</a>
+            </div>
+          </div>
+          <p class="set-copy">
+            The most traditional model-card read: neutral studio, clean black wardrobe, strong
+            proportions, full-length options, and a usable beauty close-up. The limitation is
+            quantity—there are exactly four verified frames, with little room for substitution.
+          </p>
+        </div>
+        <div class="grid">
+          <figure class="hero">
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1779400203611-44f699f505ae?auto=format&amp;fit=crop&amp;q=84&amp;w=1800" alt="Blonde talent looking over shoulder in a black dress" />
+              <span class="frame-role">Strongest front / beauty</span>
+            </div>
+            <figcaption><span>Beauty close-up</span><a href="https://unsplash.com/photos/blonde-woman-in-black-open-back-dress-looking-over-shoulder-sfD0lII7oQw" target="_blank" rel="noreferrer">Download free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1779400202016-b3b936dd830b?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent wearing a black blazer" />
+              <span class="frame-role">Three-quarter</span>
+            </div>
+            <figcaption><span>Blazer portrait</span><a href="https://unsplash.com/photos/a-blonde-woman-in-a-black-blazer-and-sheer-socks-EwZWYzoJjao" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1779400205156-e21b3d8d1e4f?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent standing full length in a black romper" />
+              <span class="frame-role">Full length</span>
+            </div>
+            <figcaption><span>Romper full length</span><a href="https://unsplash.com/photos/young-woman-in-black-romper-and-socks-on-white-background-ThZwoUcVQM4" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1779400202112-f1661a4c8637?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent standing in a black blazer and platform shoes" />
+              <span class="frame-role">Full length alternate</span>
+            </div>
+            <figcaption><span>Blazer full length</span><a href="https://unsplash.com/photos/blonde-woman-in-black-blazer-and-platform-shoes-on-white-f1bGNPDeDO0" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="set">
+        <div class="set-head">
+          <div>
+            <p class="rank eyebrow">04 / Beauty-led alternate</p>
+            <h2>Brandy Glover<br />Emerald Beauty</h2>
+            <div class="meta">
+              <span>Same talent verified</span>
+              <span>4 selected frames</span>
+              <span class="free">Download free</span>
+              <a href="https://unsplash.com/@branglover" target="_blank" rel="noreferrer">Photographer profile ↗</a>
+            </div>
+          </div>
+          <p class="set-copy">
+            Conventionally castable, polished, and closest to a luxury beauty campaign.
+            <span class="warning">The set has no true full-length frame, so it should only be chosen
+            if the comp-card narrative can lean beauty/commercial rather than complete agency
+            coverage.</span>
+          </p>
+        </div>
+        <div class="grid">
+          <figure class="hero">
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1776262145095-39d46d047537?auto=format&amp;fit=crop&amp;q=84&amp;w=1800" alt="Talent in an emerald dress with red lipstick" />
+              <span class="frame-role">Strongest beauty front</span>
+            </div>
+            <figcaption><span>Emerald portrait</span><a href="https://unsplash.com/photos/a-woman-in-a-green-dress-with-red-lipstick-TgSL5OPvI6g" target="_blank" rel="noreferrer">Download free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1776262145093-ab3f69760686?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent seated on a blue couch" />
+              <span class="frame-role">Seated beauty</span>
+            </div>
+            <figcaption><span>Blue couch portrait</span><a href="https://unsplash.com/photos/woman-in-a-green-dress-sitting-on-a-blue-couch-cBBELCY6piU" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1776262144909-302004bd1b33?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent in an emerald corset" />
+              <span class="frame-role">Three-quarter</span>
+            </div>
+            <figcaption><span>Corset portrait</span><a href="https://unsplash.com/photos/woman-in-a-green-corset-with-red-lipstick-geLj-_UNsSI" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1776262144962-bb88a3281353?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent reclining in a blue chair" />
+              <span class="frame-role">Reclined alternate</span>
+            </div>
+            <figcaption><span>Chair portrait</span><a href="https://unsplash.com/photos/woman-in-green-corset-sitting-in-blue-chair-kINxQKS8N0k" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="set">
+        <div class="set-head">
+          <div>
+            <p class="rank eyebrow">05 / Recommended new option</p>
+            <h2>Christian Agbede<br />Modern Black Suit</h2>
+            <div class="meta">
+              <span>Same talent verified</span>
+              <span>4 selected frames</span>
+              <span class="free">Download free</span>
+              <a href="https://unsplash.com/@chriscreations__" target="_blank" rel="noreferrer">Photographer profile ↗</a>
+            </div>
+          </div>
+          <p class="set-copy">
+            The strongest new addition. Conventionally castable, polished, and complete enough
+            for the narrative: direct beauty, seated three-quarter, a different floor position,
+            and a true full-length tailoring frame.
+          </p>
+        </div>
+        <div class="grid">
+          <figure class="hero">
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1701450707710-23c24144c983?auto=format&amp;fit=crop&amp;q=84&amp;w=1800" alt="Talent in a black suit seated in a studio" />
+              <span class="frame-role">Strongest front / hero candidate</span>
+            </div>
+            <figcaption><span>Direct portrait</span><a href="https://unsplash.com/photos/a-woman-sitting-in-a-chair-with-her-hand-on-her-head--gattmMQX4c" target="_blank" rel="noreferrer">Download free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1701450706464-20a1376739bc?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent sitting in a black suit" />
+              <span class="frame-role">Seated three-quarter</span>
+            </div>
+            <figcaption><span>Chair portrait</span><a href="https://unsplash.com/photos/a-woman-in-a-black-suit-sitting-on-a-chair-noec9eJp8DU" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1701450706445-f3abfe5fefe8?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent sitting on the studio floor" />
+              <span class="frame-role">Position change</span>
+            </div>
+            <figcaption><span>Floor portrait</span><a href="https://unsplash.com/photos/a-woman-sitting-on-the-ground-in-a-black-dress-ySA2IjR4EX8" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1701450707728-dc66fd42da83?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent shown full length in a black suit" />
+              <span class="frame-role">Full length</span>
+            </div>
+            <figcaption><span>Full tailoring look</span><a href="https://unsplash.com/photos/a-woman-in-a-black-suit-posing-for-a-picture-zDfYD7jkeks" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="set">
+        <div class="set-head">
+          <div>
+            <p class="rank eyebrow">06 / Commercial option</p>
+            <h2>Olena Bohovyk<br />White Shirt Study</h2>
+            <div class="meta">
+              <span>Same talent verified</span>
+              <span>5 selected frames</span>
+              <span class="free">Download free</span>
+              <a href="https://unsplash.com/@olenkasergienko" target="_blank" rel="noreferrer">Photographer profile ↗</a>
+            </div>
+          </div>
+          <p class="set-copy">
+            The most mainstream commercial option. Clean skin, warm daylight, direct and smiling
+            expressions, plus enough seated and horizontal variation to build a credible back page.
+            It reads approachable without becoming casual stock.
+          </p>
+        </div>
+        <div class="grid">
+          <figure class="hero">
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1634149136549-47350a401065?auto=format&amp;fit=crop&amp;q=84&amp;w=1800" alt="Talent in a clean white shirt beauty portrait" />
+              <span class="frame-role">Strongest commercial front</span>
+            </div>
+            <figcaption><span>Clean beauty portrait</span><a href="https://unsplash.com/photos/a-woman-in-a-white-shirt-is-holding-her-ear-4vqJpF4q4kA" target="_blank" rel="noreferrer">Download free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1634149136804-ec20fefb0533?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent posed horizontally in a white shirt" />
+              <span class="frame-role">Editorial angle</span>
+            </div>
+            <figcaption><span>Horizontal portrait</span><a href="https://unsplash.com/photos/a-woman-in-a-white-shirt-is-posing-for-a-picture-3BX7bcMhzOI" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1634149135349-d03e6f9bfedc?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent sitting on a chair" />
+              <span class="frame-role">Seated range</span>
+            </div>
+            <figcaption><span>Chair composition</span><a href="https://unsplash.com/photos/a-woman-sitting-on-a-chair-with-her-legs-crossed-6k1jWLqYxHs" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1634149136898-f7168613ac7f?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent reclining in a close portrait" />
+              <span class="frame-role">Reclined close-up</span>
+            </div>
+            <figcaption><span>Soft close-up</span><a href="https://unsplash.com/photos/a-woman-laying-on-a-table-with-a-watch-on-her-arm-dYBWQTAe7Hk" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1634149134664-ca3598f29da5?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent smiling in a white shirt" />
+              <span class="frame-role">Expression change</span>
+            </div>
+            <figcaption><span>Commercial smile</span><a href="https://unsplash.com/photos/a-woman-with-a-watch-on-her-wrist-eh9f505ljSA" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="set">
+        <div class="set-head">
+          <div>
+            <p class="rank eyebrow">07 / Commercial-fashion option</p>
+            <h2>Olena Bohovyk<br />Curly Black Tailoring</h2>
+            <div class="meta">
+              <span>Same talent verified</span>
+              <span>7 selected frames</span>
+              <span class="free">Download free</span>
+              <a href="https://unsplash.com/@olenkasergienko" target="_blank" rel="noreferrer">Photographer profile ↗</a>
+            </div>
+          </div>
+          <p class="set-copy">
+            A different talent from option six. Strong facial recognition, approachable beauty,
+            black tailoring, movement, and both neutral and smiling expressions. The strongest
+            choice if the card should balance commercial warmth with agency polish.
+          </p>
+        </div>
+        <div class="grid">
+          <figure class="hero">
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1636393915605-359f65e81082?auto=format&amp;fit=crop&amp;q=84&amp;w=1800" alt="Curly-haired talent smiling in a black studio portrait" />
+              <span class="frame-role">Strongest front / commercial beauty</span>
+            </div>
+            <figcaption><span>Clean smiling portrait</span><a href="https://unsplash.com/photos/a-close-up-of-a-person-wearing-a-black-shirt-xZ7KRaUJYug" target="_blank" rel="noreferrer">Download free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1636393914828-a40812451662?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent in a black jacket" />
+              <span class="frame-role">Neutral beauty</span>
+            </div>
+            <figcaption><span>Jacket portrait</span><a href="https://unsplash.com/photos/a-woman-with-curly-hair-and-a-black-jacket-I0qn6l2Z3SA" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1636393915517-3e8eed9b5d88?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent in a black outfit against a warm curtain" />
+              <span class="frame-role">Three-quarter</span>
+            </div>
+            <figcaption><span>Warm studio</span><a href="https://unsplash.com/photos/a-woman-posing-for-a-picture-in-front-of-a-curtain-D2A5UJ1Gu3w" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1636393915447-cd108d60de7d?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent seated with arms crossed" />
+              <span class="frame-role">Seated range</span>
+            </div>
+            <figcaption><span>Crossed-arm portrait</span><a href="https://unsplash.com/photos/a-woman-with-her-arms-crossed-sitting-in-a-chair-KocNwI72Bps" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1636393913936-187da0a372e3?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent moving in a black tailored outfit" />
+              <span class="frame-role">Movement</span>
+            </div>
+            <figcaption><span>Tailoring movement</span><a href="https://unsplash.com/photos/a-woman-in-a-black-top-and-black-pants-OjKtyHLwbKI" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1636393913918-f4742e2d2259?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent wrapped in a black jacket" />
+              <span class="frame-role">Editorial alternate</span>
+            </div>
+            <figcaption><span>Black drape</span><a href="https://unsplash.com/photos/a-woman-in-a-black-dress-is-posing-for-a-picture-fVFJjSlhDuc" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1636393915073-331bea6a6397?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent sitting in a chair" />
+              <span class="frame-role">Alternate front</span>
+            </div>
+            <figcaption><span>Chair front</span><a href="https://unsplash.com/photos/a-woman-sitting-in-a-chair-posing-for-a-picture-nWur6IlIZ4c" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="set">
+        <div class="set-head">
+          <div>
+            <p class="rank eyebrow">08 / Color-fashion option</p>
+            <h2>Brian Lawson<br />Red + Blue Studio</h2>
+            <div class="meta">
+              <span>Same talent verified</span>
+              <span>8 selected frames</span>
+              <span class="free">Download free</span>
+              <a href="https://unsplash.com/@visualartery" target="_blank" rel="noreferrer">Photographer profile ↗</a>
+            </div>
+          </div>
+          <p class="set-copy">
+            Conventionally attractive and highly legible at card size. The red/blue light creates
+            a distinct market direction while the wardrobe stays neutral. The limitation is that
+            most frames are waist-up, so this is better for beauty or commercial than runway.
+          </p>
+        </div>
+        <div class="grid">
+          <figure class="hero">
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1612904369997-f1f03237d0da?auto=format&amp;fit=crop&amp;q=84&amp;w=1800" alt="Talent in a white top under red and blue studio light" />
+              <span class="frame-role">Strongest front / hero candidate</span>
+            </div>
+            <figcaption><span>Red-lit portrait</span><a href="https://unsplash.com/photos/woman-in-white-tank-top-and-black-pants-801q4A7yomo" target="_blank" rel="noreferrer">Download free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1612904370981-bc1e031ae40e?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent standing under blue and red light" />
+              <span class="frame-role">Three-quarter</span>
+            </div>
+            <figcaption><span>Crossed-arm portrait</span><a href="https://unsplash.com/photos/woman-in-white-tank-top-and-black-skirt-LXzRbd_SCZ8" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1612904370193-72d578a78d67?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent standing in profile under colored light" />
+              <span class="frame-role">Profile</span>
+            </div>
+            <figcaption><span>Color profile</span><a href="https://unsplash.com/photos/woman-in-white-tank-top-and-black-skirt-PN6LflfvoVk" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1612904370392-d1dde7a8ddc8?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent holding a white cup under studio light" />
+              <span class="frame-role">Commercial alternate</span>
+            </div>
+            <figcaption><span>Prop portrait</span><a href="https://unsplash.com/photos/woman-in-blue-tank-top-holding-white-ceramic-mug-Wt0yAec1G4w" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1612904372219-885abc44dfa8?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent in a side-facing portrait" />
+              <span class="frame-role">Alternate angle</span>
+            </div>
+            <figcaption><span>Side portrait</span><a href="https://unsplash.com/photos/woman-in-white-tank-top-and-black-pants-gGwIo37Y9kA" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1612904370780-fbc1a5a4f46d?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent in blue light" />
+              <span class="frame-role">Cool market</span>
+            </div>
+            <figcaption><span>Blue portrait</span><a href="https://unsplash.com/photos/woman-in-white-tank-top-and-black-skirt-hSl4cWp27FA" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1612904370314-68f344e324dd?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent looking over her shoulder" />
+              <span class="frame-role">Expression alternate</span>
+            </div>
+            <figcaption><span>Over-shoulder</span><a href="https://unsplash.com/photos/woman-in-white-tank-top-with-blue-hair-hoEthzNbiio" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1612904370665-4d5e8a4bf382?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent moving with arms raised" />
+              <span class="frame-role">Movement</span>
+            </div>
+            <figcaption><span>Raised-arm frame</span><a href="https://unsplash.com/photos/woman-in-white-tank-top-and-black-bottoms-wuFdtnJ4Qj8" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="set">
+        <div class="set-head">
+          <div>
+            <p class="rank eyebrow">09 / Glamour-beauty option</p>
+            <h2>Dibakar Roy<br />Classic Beauty</h2>
+            <div class="meta">
+              <span>Same talent verified</span>
+              <span>5 selected frames</span>
+              <span class="free">Download free</span>
+              <a href="https://unsplash.com/@dibakar16roy" target="_blank" rel="noreferrer">Photographer profile ↗</a>
+            </div>
+          </div>
+          <p class="set-copy">
+            The most traditional glamour option: conventionally attractive, clear facial
+            consistency, controlled makeup, direct eye contact, and a useful neutral-to-smiling
+            expression range. <span class="warning">It has no full-length frame, so it is best for
+            a beauty-led card rather than a complete runway book.</span>
+          </p>
+        </div>
+        <div class="grid">
+          <figure class="hero">
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1662222445732-76208e42ea07?auto=format&amp;fit=crop&amp;q=84&amp;w=1800" alt="Talent in a classic glamour beauty portrait" />
+              <span class="frame-role">Strongest beauty front</span>
+            </div>
+            <figcaption><span>Classic beauty portrait</span><a href="https://unsplash.com/photos/a-woman-with-long-hair-UEoQqqRL92M" target="_blank" rel="noreferrer">Download free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1662222443958-83ad69b7bf9a?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent in a monochrome glamour portrait" />
+              <span class="frame-role">Monochrome alternate</span>
+            </div>
+            <figcaption><span>Black-and-white portrait</span><a href="https://unsplash.com/photos/a-woman-with-curly-hair-Cv4WbfR3gi0" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1662222445742-786ebc487b42?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent in a red commercial portrait" />
+              <span class="frame-role">Commercial expression</span>
+            </div>
+            <figcaption><span>Red look</span><a href="https://unsplash.com/photos/a-person-with-the-hands-up-H_CDuQ-UdO0" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1662222443334-7b18f6dfe050?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent seated in a dark beauty portrait" />
+              <span class="frame-role">Seated beauty</span>
+            </div>
+            <figcaption><span>Dark seated portrait</span><a href="https://unsplash.com/photos/a-woman-with-long-hair-WCfwCXs8pMQ" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+          <figure>
+            <div class="image-wrap">
+              <img src="https://images.unsplash.com/photo-1662222446265-2519dc8634c9?auto=format&amp;fit=crop&amp;q=84&amp;w=1200" alt="Same talent with her hand under her chin" />
+              <span class="frame-role">Alternate front</span>
+            </div>
+            <figcaption><span>Chin portrait</span><a href="https://unsplash.com/photos/a-woman-with-her-hand-on-her-chin-d7THVi6eETQ" target="_blank" rel="noreferrer">Free ↗</a></figcaption>
+          </figure>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

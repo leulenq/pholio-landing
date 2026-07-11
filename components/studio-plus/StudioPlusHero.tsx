@@ -3,6 +3,7 @@
 import { useLayoutEffect, useRef, useState, useEffect } from "react";
 import gsap from "gsap";
 import { motion, useReducedMotion } from "framer-motion";
+import { EditorialVerticalDivider } from "@/components/EditorialVerticalDivider";
 
 import {
   FREE_ONBOARDING_URL,
@@ -321,17 +322,7 @@ export default function StudioPlusHero() {
         className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 hidden md:block"
         aria-hidden="true"
       >
-        {!prefersReducedMotion && (
-          <motion.div
-            style={{
-              width: 1,
-              height: 48,
-              background: "linear-gradient(to bottom, transparent, rgba(201,165,90,0.35), transparent)",
-            }}
-            animate={{ scaleY: [0.3, 1, 0.3], opacity: [0.2, 0.7, 0.2] }}
-            transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-          />
-        )}
+        {!prefersReducedMotion && <EditorialVerticalDivider />}
       </motion.div>
     </section>
   );

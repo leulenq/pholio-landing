@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import { EditorialVerticalDivider } from "@/components/EditorialVerticalDivider";
 
 export default function BeliefSection() {
   const ref = useRef<HTMLElement>(null);
@@ -32,12 +33,11 @@ export default function BeliefSection() {
           </span>
         </motion.h2>
 
-        <motion.div
-          className="mx-auto mt-16 w-[1px]"
-          style={{ backgroundColor: "var(--color-gold)", height: 100 }}
-          initial={{ scaleY: 0, originY: 0 }}
-          animate={inView ? { scaleY: 1 } : {}}
-          transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
+        <EditorialVerticalDivider
+          animation="reveal"
+          className="mx-auto mt-16"
+          height={100}
+          revealed={inView}
         />
       </div>
     </section>
