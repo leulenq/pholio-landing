@@ -56,9 +56,9 @@ export default function SceneDock() {
         <motion.p
           style={{
             marginTop: 24,
-            fontFamily: "var(--font-sans)",
-            fontSize: 15,
-            lineHeight: 1.75,
+            fontFamily: "var(--font-serif)",
+            fontSize: "clamp(1.05rem, 1.8vw, 1.3rem)",
+            lineHeight: 1.6,
             color: ON_INK_SOFT,
           }}
           initial={{ opacity: 0, y: reduce ? 0 : 14 }}
@@ -66,8 +66,8 @@ export default function SceneDock() {
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6, ease: EASE, delay: 0.15 }}
         >
-          Upload two photos and get your first read tonight. Applying to
-          agencies is free.
+          Every talent gets a live book at a pholio.studio address. Yours is
+          one read away.
         </motion.p>
 
         <motion.div
@@ -82,17 +82,6 @@ export default function SceneDock() {
           </DockLink>
         </motion.div>
 
-        <motion.div
-          style={{ marginTop: 40 }}
-          initial={{ opacity: 0, y: reduce ? 0 : 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6, ease: EASE, delay: 0.45 }}
-        >
-          <Mono color={ON_INK_FAINT} size={9} tracking="0.24em">
-            APP.PHOLIO.STUDIO — FREE TO START · FREE TO APPLY
-          </Mono>
-        </motion.div>
       </div>
 
       {/* three checkable promises — the compressed charter */}
@@ -104,45 +93,32 @@ export default function SceneDock() {
         transition={{ duration: 0.7, ease: EASE, delay: 0.5 }}
       >
         {[
-          {
-            claim: "Applying is free.",
-            sub: "You never pay to be seen or to submit.",
-          },
-          {
-            claim: "Your images stay yours.",
-            sub: "Rights and releases are recorded per photo.",
-          },
-          {
-            claim: "Leave with everything.",
-            sub: "Export your whole record; deletion means deletion.",
-          },
-        ].map((p, i) => (
+          "You never pay to apply.",
+          "Your images stay yours.",
+          "Leave with everything.",
+        ].map((claim, i) => (
           <div
-            key={p.claim}
+            key={claim}
             className="px-6"
-            style={{
-              borderLeft: i > 0 ? `1px solid ${HAIR_INK}` : "none",
-            }}
+            style={{ borderLeft: i > 0 ? `1px solid ${HAIR_INK}` : "none" }}
           >
-            <div
-              className="font-editorial"
-              style={{ fontSize: 19, color: ON_INK, lineHeight: 1.3 }}
-            >
-              {p.claim}
-            </div>
-            <div
-              style={{
-                marginTop: 8,
-                fontFamily: "var(--font-sans)",
-                fontSize: 12.5,
-                lineHeight: 1.6,
-                color: ON_INK_FAINT,
-              }}
-            >
-              {p.sub}
-            </div>
+            <Mono color={ON_INK} size={10} tracking="0.24em">
+              {claim}
+            </Mono>
           </div>
         ))}
+      </motion.div>
+
+      <motion.div
+        className="relative mt-10"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 0.7, ease: EASE, delay: 0.65 }}
+      >
+        <Mono color={ON_INK_FAINT} size={8} tracking="0.2em">
+          Under 18 — guardian-consented, private by default.
+        </Mono>
       </motion.div>
     </section>
   );

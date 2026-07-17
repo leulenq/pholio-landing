@@ -40,8 +40,8 @@ const PULLS = [
 ];
 
 const ANNOTATIONS = [
-  { index: 9, label: "NEW DIGITALS", align: "center" as const },
-  { index: 21, label: "APPLIED — METRO MODELS", align: "right" as const },
+  { index: 9, label: "AGENCY · MILAN", align: "center" as const },
+  { index: 21, label: "CLIENT · LONDON", align: "right" as const },
 ];
 
 const LEDGER = [
@@ -101,11 +101,10 @@ export default function SceneSignal() {
           className="flex flex-col justify-center"
         >
           <Caption dark={false} headline={<>{"See who "}<V>leaned in</V>{"."}</>}>
-            Send a named, revocable link to one booker — and know when it was
-            opened. Reviews, advances, card pulls: measured day by day, your
-            own moves annotated on the spikes so surges have causes. And when
-            a sample is too small to mean anything, Pholio says so — it never
-            invents a number.
+            Every share link is yours to track and to revoke. You see when an
+            agency opens your book — which market, which kind of viewer —
+            never a vanity number, and never invented. When the read is too
+            thin to trust, it says so.
           </Caption>
         </motion.div>
 
@@ -288,10 +287,18 @@ export default function SceneSignal() {
             ))}
           </div>
 
+          {/* the reverse-demand readout — mined from real agency searches */}
+          <div className="mt-8" style={{ borderTop: `1px solid ${HAIR_CREAM}`, paddingTop: 16 }}>
+            <Mono color="rgba(26,26,26,0.62)" size={9} tracking="0.16em" style={{ display: "block", lineHeight: 1.9 }}>
+              Agencies ran 214 searches this week filtering by eye color.{" "}
+              <span style={{ color: GOLD }}>Yours is blank.</span>
+            </Mono>
+          </div>
+
           {/* footnote */}
-          <div className="mt-6">
+          <div className="mt-4">
             <Mono color={ON_CREAM_FAINT} size={9} tracking="0.16em">
-              Under 20 views, Intel says: too early to read
+              Under 20 views — too early to read. It never invents a number.
             </Mono>
           </div>
         </motion.div>

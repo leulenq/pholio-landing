@@ -4,12 +4,14 @@
    Scene 4 — "Editions" (comp-card engine, scrollytelling setpiece)
    Re-stages the product's comp-card composition engine using the REAL
    renders it produced for one talent (already in /public/generated).
-   Desktop: a sticky stage where SCROLL asks for the next take — each
-   beat half-flips the card to a new art direction, with four slim gold
-   progress ticks (the house progress idiom). The four renders are only
-   ever labeled "takes"; the nine real edition names are listed as
-   clerical fact, never mapped to the take on screen.
-   Mobile / reduced-motion: a tap-driven "New direction" card instead.
+   Full-bleed poster theater: the card sits dead-center on the sticky
+   stage, ghost architectural type ("Nine" / "editions.") reads as
+   depth behind it, and the nine real edition names live as a clerical
+   progress rail pinned to the stage's bottom edge — no side-by-side
+   caption/image split. The four renders are only ever labeled "takes";
+   the nine real edition names are listed as clerical fact, never
+   mapped to the take on screen.
+   Mobile / reduced-motion: a tap-driven "New direction" card, centered.
    ═══════════════════════════════════════════════════════════════════ */
 
 /* eslint-disable @next/next/no-img-element */
@@ -23,14 +25,17 @@ import {
   useMotionValueEvent,
   useReducedMotion,
   useScroll,
+  useTransform,
 } from "framer-motion";
 import {
   CREAM_WARM,
   EASE,
   GOLD,
+  ON_CREAM,
+  ON_CREAM_SOFT,
   ON_CREAM_FAINT,
+  HAIR_CREAM,
   PRODUCT_SERIF,
-  Caption,
   Mono,
   V,
 } from "@/components/talent-cinema/shared";
@@ -75,41 +80,45 @@ function RedoGlyph() {
   );
 }
 
-function CaptionBlock() {
+function HeadlineBlock({ compact = false }: { compact?: boolean }) {
   return (
-    <>
-      <Caption
-        dark={false}
-        headline={
-          <>
-            Nine editions. One <V>you</V>.
-          </>
-        }
+    <div className="mx-auto text-center" style={{ maxWidth: 620 }}>
+      <h2
+        className="font-editorial"
+        style={{
+          fontSize: "clamp(1.6rem, 2.6vw, 2.4rem)",
+          lineHeight: 1.15,
+          letterSpacing: "-0.01em",
+          color: ON_CREAM,
+          textWrap: "balance",
+          margin: 0,
+        }}
       >
-        The comp-card engine art-directs like a studio: nine named editions,
-        eight typographic voices, printed to a two-sided 5.5 × 8.5 PDF. An
-        edition only unlocks when your photos genuinely support it — pin your
-        hero frame, or ask for a new direction and let the house take another
-        pass.
-      </Caption>
-
-      <div className="mt-7 max-w-[460px]">
-        <Mono
-          color={ON_CREAM_FAINT}
-          size={10}
-          tracking="0.2em"
-          style={{ display: "block", lineHeight: 2.2 }}
+        {"Nine editions. Made to "}
+        <V>standard</V>
+        {"."}
+      </h2>
+      {!compact ? (
+        <p
+          style={{
+            marginTop: 12,
+            fontFamily: "var(--font-sans)",
+            fontSize: 13.5,
+            lineHeight: 1.75,
+            color: ON_CREAM_SOFT,
+            maxWidth: "60ch",
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
         >
-          {EDITIONS.join(" · ")}
-        </Mono>
-      </div>
-
-      <div className="mt-2 max-w-[460px]">
-        <Mono color={ON_CREAM_FAINT} size={9} style={{ display: "block" }}>
-          SAVED CARDS — UP TO 40, TAGGED BY BOARD AND MARKET · NYC LA MIAMI LONDON PARIS MILAN TOKYO
-        </Mono>
-      </div>
-    </>
+          Each edition is a full art direction composed from your own photos —
+          the crop, the palette, the type all read off your pixels. Your face is
+          never covered, and your name never ships unless it stays legible over
+          the image. Re-roll for a genuinely different direction, not the same
+          card in a new color.
+        </p>
+      ) : null}
+    </div>
   );
 }
 
@@ -153,6 +162,7 @@ function CardFace({ index, rotateY }: { index: number; rotateY: ReturnType<typeo
   return (
     <div
       style={{
+        height: "100%",
         aspectRatio: "5.5 / 8.5",
         borderRadius: 3,
         boxShadow: CARD_SHADOW,
@@ -175,14 +185,80 @@ function CardFace({ index, rotateY }: { index: number; rotateY: ReturnType<typeo
   );
 }
 
-/* ── Desktop: scroll asks for the next take ─────────────────────────── */
+/* Ghost architectural type behind the card — depth, not headline. */
+function GhostType({ progress }: { progress: ReturnType<typeof useScroll>["scrollYProgress"] }) {
+  const nineY = useTransform(progress, [0, 1], [0, -40]);
+  const editionsY = useTransform(progress, [0, 1], [0, 40]);
+  const ghostStyle: React.CSSProperties = {
+    color: "rgba(26,26,26,0.07)",
+    whiteSpace: "nowrap",
+    fontSize: "clamp(4rem, 13vw, 12rem)",
+    margin: 0,
+    lineHeight: 1,
+  };
+  return (
+    <>
+      <motion.p
+        aria-hidden="true"
+        className="font-editorial absolute select-none"
+        style={{ ...ghostStyle, left: "4vw", top: "12vh", y: nineY }}
+      >
+        Nine
+      </motion.p>
+      <motion.p
+        aria-hidden="true"
+        className="font-editorial absolute select-none"
+        style={{ ...ghostStyle, right: "4vw", bottom: "18vh", y: editionsY }}
+      >
+        editions.
+      </motion.p>
+    </>
+  );
+}
+
+/* Bottom edge rail — the nine edition names double as the act's progress
+   indicator, lighting gold as scroll advances. */
+function EditionsRail({ progress }: { progress: number }) {
+  return (
+    <div
+      className="absolute inset-x-0 bottom-0 z-10"
+      style={{ borderTop: `1px solid ${HAIR_CREAM}` }}
+    >
+      <div className="px-6 pt-3 text-center">
+        <Mono color={ON_CREAM_FAINT} size={8} tracking="0.2em">
+          5.5 × 8.5 IN · TWO-SIDED · PRINT-READY
+        </Mono>
+      </div>
+      <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 px-6 py-4 lg:flex-nowrap lg:justify-between">
+        {EDITIONS.map((name, i) => (
+          <Mono
+            key={name}
+            color={progress > i / EDITIONS.length ? GOLD : ON_CREAM_FAINT}
+            size={9}
+            tracking="0.18em"
+            style={{
+              whiteSpace: "nowrap",
+              transition: "color 0.45s cubic-bezier(0.22,1,0.36,1)",
+            }}
+          >
+            {name}
+          </Mono>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── Desktop: scroll asks for the next take, centered poster stage ──── */
 function EditionsScroll() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: wrapRef, offset: ["start start", "end end"] });
   const deck = useFlipDeck();
   const [beat, setBeat] = useState(0);
+  const [railProgress, setRailProgress] = useState(0);
 
   useMotionValueEvent(scrollYProgress, "change", (v) => {
+    setRailProgress(v);
     const b = Math.max(0, Math.min(TAKES.length - 1, Math.floor(v * 4.4)));
     if (b !== beat) {
       setBeat(b);
@@ -192,51 +268,48 @@ function EditionsScroll() {
 
   return (
     <div ref={wrapRef} className="relative h-[300vh]">
-      <div className="sticky top-0 flex h-screen items-center overflow-hidden">
-        <div className="mx-auto grid w-full max-w-7xl grid-cols-2 items-center gap-20 px-8">
-          <div className="mx-auto w-full max-w-[400px]">
-            <div className="mb-4 flex items-center justify-between">
-              <Mono color={ON_CREAM_FAINT}>{`TAKE 0${deck.index + 1} / 04`}</Mono>
-              {/* the house progress idiom: four slim gold ticks */}
-              <div className="flex items-center gap-2" aria-hidden="true">
-                {TAKES.map((_, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      width: 26,
-                      height: 1,
-                      backgroundColor: i <= beat ? GOLD : "rgba(26,26,26,0.16)",
-                      transition: "background-color 0.45s cubic-bezier(0.22,1,0.36,1)",
-                    }}
-                  />
-                ))}
-              </div>
-            </div>
+      <div className="sticky top-0 h-screen overflow-hidden">
+        <GhostType progress={scrollYProgress} />
 
-            <CardFace index={deck.index} rotateY={deck.rotateY} />
+        <div className="mx-auto flex h-full max-w-[1600px] flex-col items-center px-6 pb-24 pt-16 lg:px-10">
+          <div className="z-10">
+            <HeadlineBlock />
+          </div>
 
-            <div
-              className="mt-5 inline-flex items-baseline gap-2"
-              style={{ fontFamily: PRODUCT_SERIF, fontSize: "1.05rem", color: GOLD }}
-            >
-              New direction
-              <RedoGlyph />
-              <Mono color={ON_CREAM_FAINT} size={9} tracking="0.18em" style={{ marginLeft: 10 }}>
-                Keep scrolling
-              </Mono>
+          <div className="relative z-10 mt-8 flex flex-1 items-center justify-center">
+            <div className="relative" style={{ height: "min(64vh, 78vw)" }}>
+              <CardFace index={deck.index} rotateY={deck.rotateY} />
             </div>
           </div>
 
-          <div>
-            <CaptionBlock />
+          <div className="z-10 mb-2 flex items-center gap-4">
+            <Mono color={ON_CREAM_FAINT}>{`DIRECTION 0${deck.index + 1} / 04`}</Mono>
+            <div className="flex items-center gap-2" aria-hidden="true">
+              {TAKES.map((_, i) => (
+                <div
+                  key={i}
+                  style={{
+                    width: 26,
+                    height: 1,
+                    backgroundColor: i <= beat ? GOLD : "rgba(26,26,26,0.16)",
+                    transition: "background-color 0.45s cubic-bezier(0.22,1,0.36,1)",
+                  }}
+                />
+              ))}
+            </div>
+            <Mono color={ON_CREAM_FAINT} size={9} tracking="0.18em">
+              Keep scrolling
+            </Mono>
           </div>
         </div>
+
+        <EditionsRail progress={railProgress} />
       </div>
     </div>
   );
 }
 
-/* ── Mobile / reduced-motion: tap-driven takes ──────────────────────── */
+/* ── Mobile / reduced-motion: tap-driven takes, centered single column ─ */
 function EditionsStatic({ reduced }: { reduced: boolean }) {
   const deck = useFlipDeck();
   const [fadeIndex, setFadeIndex] = useState(0);
@@ -260,12 +333,15 @@ function EditionsStatic({ reduced }: { reduced: boolean }) {
   });
 
   return (
-    <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-16 px-6 py-24 lg:grid-cols-2 lg:gap-20 lg:px-8">
-      <motion.div className="order-2 lg:order-1" {...entrance()}>
-        <div className="mx-auto w-full max-w-[420px]">
-          <div className="mb-4 flex items-center gap-3">
-            <Mono color={ON_CREAM_FAINT}>{`TAKE 0${shown + 1} / 04`}</Mono>
-            <div className="h-px flex-1" style={{ background: "rgba(26,26,26,0.14)" }} />
+    <div className="mx-auto flex max-w-xl flex-col items-center gap-10 px-6 py-24 text-center lg:px-8">
+      <motion.div {...entrance()}>
+        <HeadlineBlock />
+      </motion.div>
+
+      <motion.div className="w-full" {...entrance(0.1)}>
+        <div className="mx-auto w-full max-w-[320px]">
+          <div className="mb-4 flex items-center justify-center gap-3">
+            <Mono color={ON_CREAM_FAINT}>{`DIRECTION 0${shown + 1} / 04`}</Mono>
           </div>
 
           {reduced ? (
@@ -308,8 +384,18 @@ function EditionsStatic({ reduced }: { reduced: boolean }) {
         </div>
       </motion.div>
 
-      <motion.div className="order-1 lg:order-2" {...entrance(0.12)}>
-        <CaptionBlock />
+      <motion.div className="w-full max-w-[420px]" {...entrance(0.18)}>
+        <Mono
+          color={ON_CREAM_FAINT}
+          size={10}
+          tracking="0.2em"
+          style={{ display: "block", lineHeight: 2.2 }}
+        >
+          {EDITIONS.join(" · ")}
+        </Mono>
+        <Mono color={ON_CREAM_FAINT} size={9} style={{ display: "block", marginTop: 6 }}>
+          5.5 × 8.5 IN · TWO-SIDED · PRINT-READY
+        </Mono>
       </motion.div>
     </div>
   );

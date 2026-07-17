@@ -29,11 +29,16 @@ import {
 const SHEETS = [
   { n: "01", title: "The Board", body: "Which agency — and which of its open boards you're answering." },
   { n: "02", title: "Digitals", lead: "Raw, current, unretouched.", body: "The truth check agencies read first." },
-  { n: "03", title: "Stats", body: "Your measurements, exactly as the booker will read them." },
+  { n: "03", title: "Measurements", body: "Exactly as the booker will read them." },
   { n: "04", title: "The Book", body: "Only work that earns its place. It supports the digitals, never replaces them." },
   { n: "05", title: "The Card", body: "The leave-behind — from your saved cards, or composed live." },
-  { n: "06", title: "The Message", body: "A short note, addressed to a person." },
-  { n: "07", title: "Review & Send", body: "Sent once, frozen as a record. Withdraw any time; resubmit when you're ready." },
+  { n: "06", title: "The Note", body: "Short, and addressed to a person." },
+  {
+    n: "07",
+    title: "Review",
+    body: "Sent once, frozen as a record. Withdraw any time.",
+    check: ["Digitals — current", "Measurements — complete", "Full-length — on file", "Image rights — cleared", "— Ready to send"],
+  },
 ] as const;
 
 const RESTING_ROTATION = [-1.2, 0.8, -1.2, 0.8, -1.2, 0.8, -1.2];
@@ -74,6 +79,22 @@ function Sheet({ sheet, index, stacked }: { sheet: (typeof SHEETS)[number]; inde
         ) : null}
         <p style={{ margin: 0 }}>{sheet.body}</p>
       </div>
+      {"check" in sheet ? (
+        /* the package check — the front-desk read, resolved */
+        <div className="mt-auto flex flex-col gap-1.5" style={{ paddingTop: 16 }}>
+          {sheet.check.map((line, i) => (
+            <Mono
+              key={line}
+              color={i === sheet.check.length - 1 ? GOLD : ON_CREAM_FAINT}
+              size={8}
+              tracking="0.16em"
+              style={{ display: "block" }}
+            >
+              {line}
+            </Mono>
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -157,10 +178,10 @@ export default function SceneDossier() {
         maxWidth={820}
         headline={<>{"The whole package, before you "}<V>send</V>{"."}</>}
       >
-        Seven pages, addressed to the agency — and the package audit runs before
-        anything leaves: nothing mislabeled, nothing missing, nothing stale. Made,
-        checked, and sent from the same studio your media, card, and public book
-        already live in.
+        Seven sheets, addressed to the agency: your board, your digitals, your
+        measurements, your book, your card, your note. Before it goes, a package
+        check reads it the way their front desk will — nothing missing, nothing
+        stale, images cleared as yours. Applying costs nothing.
       </Caption>
     </motion.div>
   );
