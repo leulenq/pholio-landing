@@ -49,6 +49,8 @@
    ══════════════════════════════════════════════════════════ */
 
 html {
+  /* next/font-loaded JetBrains Mono (see app/layout.tsx) backs the theme's mono token */
+  --font-mono: var(--font-jbmono), "JetBrains Mono", "SF Mono", monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
