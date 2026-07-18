@@ -70,7 +70,7 @@ const sections: LegalSection[] = [
       `Use the in-product report tool where available. It is intended for ordinary account, message, or content concerns, but it may not collect every fact required for a statutory notice.`,
       `Immediate danger: contact local emergency services first, then send the account, URL, time, and non-graphic circumstances to ${LEGAL_EMAIL}.`,
       `Child-safety concerns: send only identifying URLs, account information, and circumstances to ${LEGAL_EMAIL}. Do not download or redistribute suspected material.`,
-      `Nonconsensual intimate image or digital forgery: send ${LEGAL_EMAIL} the content location, depicted person's name, requester's relationship or authority, contact information, a good-faith and accuracy statement, and a physical or electronic signature. Valid requests covered by the TAKE IT DOWN Act are processed within 48 hours as required by law, including known identical copies where required.`,
+      `Nonconsensual intimate image or digital forgery: use www.pholio.studio/take-it-down or send ${LEGAL_EMAIL} the content location, depicted person's name, requester's relationship or authority, contact information, a good-faith and accuracy statement, and a physical or electronic signature. Valid requests covered by the TAKE IT DOWN Act are processed within 48 hours as required by law, including known identical copies where required.`,
       `Privacy, unwanted likeness, or personal-data complaints: ${PRIVACY_EMAIL}. Copyright complaints: ${DMCA_EMAIL}. General help: ${SUPPORT_EMAIL}.`,
       `Do not make a knowingly false report, impersonate a victim or rights holder, or use reporting to harass another person.`,
     ],

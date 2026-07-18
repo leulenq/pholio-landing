@@ -85,7 +85,7 @@ const sections: LegalSection[] = [
     title: "Other Image and Safety Complaints",
     content: [
       `Copyright is different from privacy, publicity, consent, intimate-image, impersonation, harassment, and child-safety law. A person shown in an image who does not own the copyright can still have a separate complaint.`,
-      `Nonconsensual intimate images or digital forgeries: contact ${LEGAL_EMAIL} with the location, identity of the depicted person or authorized representative, contact information, a statement that the request is accurate and made in good faith, and a signature. Valid requests subject to the TAKE IT DOWN Act are handled under the legally required 48-hour process, including known identical copies where required.`,
+      `Nonconsensual intimate images or digital forgeries: use the public process at www.pholio.studio/take-it-down or contact ${LEGAL_EMAIL} with the location, identity of the depicted person or authorized representative, contact information, a statement that the request is accurate and made in good faith, and a signature. Valid requests subject to the TAKE IT DOWN Act are handled under the legally required 48-hour process, including known identical copies where required.`,
       `Apparent child sexual abuse material or immediate danger: do not download, forward, or attach the material. Send the location and circumstances to ${LEGAL_EMAIL} and contact emergency services where necessary. Pholio reports apparent violations to NCMEC or law enforcement when required by law after obtaining actual knowledge.`,
       `Other privacy or likeness complaints: ${PRIVACY_EMAIL}. Trademark or other legal complaints: ${LEGAL_EMAIL}.`,
     ],

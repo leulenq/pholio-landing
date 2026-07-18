@@ -72,6 +72,7 @@ export const GROUP_TRUST: FooterGroup = {
   title: "Trust & safety",
   links: [
     { label: "Community guidelines", href: "/community-guidelines" },
+    { label: "Intimate image removal", href: "/take-it-down" },
     { label: "Submission program", href: "/legal/submission-program" },
     { label: "AI notice", href: "/ai-notice" },
   ],
