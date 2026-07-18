@@ -5,96 +5,88 @@ import {
   type LegalSection,
 } from "@/components/LegalDocumentLayout";
 import {
-  COMPANY_NAME,
   COMPANY_ADDRESS,
-  LAST_UPDATED,
+  COMPANY_NAME,
   EFFECTIVE_DATE,
+  LAST_UPDATED,
   LEGAL_EMAIL,
   PRIVACY_EMAIL,
 } from "@/lib/legal-constants";
 
 const sections: LegalSection[] = [
   {
-    title: "Purpose of This Notice",
+    title: "Purpose and Scope",
     content: [
-      `${COMPANY_NAME} ("Pholio," "we," "our," or "us") uses artificial intelligence (AI) and machine learning technologies as part of optional features on the Pholio platform (www.pholio.studio and app.pholio.studio, collectively the "Platform").`,
-      `This AI Notice explains what AI systems we use, how they work, what data they process, the limitations and risks of AI-generated outputs, and your rights with respect to AI features. We are committed to transparency about our use of AI so you can make informed decisions about whether and how to use these features.`,
-      `This Notice supplements our Privacy Policy (www.pholio.studio/privacy) and Terms of Service (www.pholio.studio/terms). In the event of any conflict, the Privacy Policy governs with respect to data handling.`,
+      `${COMPANY_NAME} ("Pholio," "we," "our," or "us") uses automated and artificial-intelligence systems in parts of the Pholio platform. This Notice describes the systems currently used or supported, the information they may process, how outputs can affect search or presentation, and available controls.`,
+      `This Notice supplements the Privacy Policy and Terms of Service. It is a notice, not a representation that an AI output is accurate, fair, legally compliant for every Recipient, or suitable for a particular casting, representation, employment, or event decision.`,
+      `An opportunity-specific notice may state that AI or automated ranking is disabled, limited, or used differently for that opportunity. The opportunity-specific notice controls for that submission.`,
     ],
   },
   {
-    title: "AI Systems We Use",
+    title: "Systems and Providers",
     content: [
-      `2a. Groq — Photo Quality Analysis\nWe use the Groq, Inc. inference API to process portfolio photographs uploaded by Talent users who have opted into AI-assisted features. Groq's large language model infrastructure analyzes image composition, lighting quality, technical sharpness, and overall presentation suitability to generate curation recommendations and quality scores. Images submitted to Groq are processed transiently for inference purposes and are governed by Groq's data processing terms. We do not permit Groq to use submitted images for model training.`,
-      `2b. OpenAI — Semantic Embeddings\nWe use the OpenAI API to generate vector embeddings of talent profile text data (such as biography, portfolio categories, and professional descriptors). These embeddings are numerical representations stored in our vector database (pgvector) and are used to power semantic search and agency-talent match scoring features. Profile text submitted to OpenAI is processed under our data processing agreement with OpenAI and is not used for training OpenAI's general models.`,
-      `2c. Match Scoring\nWe compute agency-talent match scores using a combination of OpenAI-generated embeddings and rule-based signals (e.g., geographic proximity, category alignment, profile completeness). Match scores are displayed to Agency users as a ranking aid when reviewing talent applications and search results.`,
-      `2d. No Other AI Systems\nAs of the Effective Date of this Notice, we do not use any other AI systems for decisions that affect users on the Platform. If we introduce additional AI capabilities in the future, we will update this Notice and notify users in accordance with our standard notification procedures.`,
+      `2a. Image analysis\nSelected portfolio images may be transmitted to Groq, Inc. or another disclosed inference provider. Current image analysis can describe visible facial structure, apparent body impression, styling or presentation characteristics, image quality, aesthetic or market signals, and indicative runway, editorial, commercial, or lifestyle fit. These are machine-generated estimates, not verified facts or professional assessments.`,
+      `2b. Profile embeddings\nProfile text and structured profile information may be sent to OpenAI or another disclosed embedding provider to create numerical vectors used for semantic search and discovery. Depending on the index or feature version, source text may include biography, location, experience, categories, languages, gender or division information, age band, height, body type, hair or eye color, ethnicity or heritage, and AI-generated image descriptions.`,
+      `2c. Match, ranking, and quality signals\nPholio may combine embeddings with rule-based signals, Recipient criteria, profile completeness, location, measurements, activity, and image-derived information to calculate compatibility, quality, ranking, or ordering information. A Recipient may see these signals when reviewing search results or applications.`,
+      `2d. Provider terms\nProvider processing is governed by Pholio's account configuration, the provider's applicable service terms, and any contract then in effect. Pholio does not authorize a provider to use Talent data for general model training unless that use is separately disclosed and lawfully authorized. Contact ${PRIVACY_EMAIL} for current provider information.`,
     ],
   },
   {
-    title: "Opt-In Consent Required",
+    title: "Image Settings, Embeddings, and Consent",
     content: [
-      `AI-assisted photo analysis is an opt-in feature only. We will not transmit your portfolio images to any AI system without your explicit, affirmative consent.`,
-      `You provide consent by enabling the AI analysis feature in your account settings. The consent screen clearly identifies that images will be sent to Groq for processing and describes what the analysis produces.`,
-      `You may withdraw your consent at any time by disabling AI features in your account settings. Withdrawal of consent will stop any future AI processing of your images. It does not retroactively delete prior analysis results already stored in your account, but you may request deletion of those results by contacting ${PRIVACY_EMAIL}.`,
-      `OpenAI embedding generation for profile text is a backend feature that applies to all Talent accounts as part of the Platform's core search and matching infrastructure. You may opt out of match scoring features by contacting ${PRIVACY_EMAIL}; note that opting out may affect your discoverability to Agency users.`,
+      `Image analysis and profile embeddings are separate processing activities. Turning off an image-analysis setting does not necessarily stop profile embeddings, search indexing, rule-based ranking, or processing already completed.`,
+      `For an eligible account, the image-analysis setting may initially be enabled. You can disable an available image-analysis setting in account settings. Disabling it is intended to stop new image-analysis requests after the change is processed; it does not automatically delete prior scores, descriptions, logs, embeddings, or Recipient copies.`,
+      `Profile embeddings may be generated as part of search and discovery even when image analysis is disabled. You may object to qualifying profiling or request deletion or re-indexing by contacting ${PRIVACY_EMAIL}. An opt-out may reduce or prevent discoverability where the feature technically depends on the data.`,
+      `Where applicable law requires consent for a specific person, data category, or purpose, Pholio will request that consent or restrict the processing. A general acknowledgment of the Terms or Privacy Policy is not a substitute for a separate consent where one is legally required.`,
     ],
   },
   {
-    title: "Advisory Nature of AI Outputs",
+    title: "Sensitive Attributes and Facial Analysis",
     content: [
-      `ALL AI-generated outputs on the Pholio platform are advisory only. This includes:`,
-      `— Photo quality scores and curation recommendations generated by Groq;`,
-      `— Agency-talent match scores computed using OpenAI embeddings;`,
-      `— Any ranking, sorting, or suggested ordering of talent profiles in agency search results.`,
-      `AI outputs do not constitute professional opinions, editorial judgments, casting decisions, or any form of contractual representation. They are tools to assist users — not automated decision-makers.`,
-      `Match scores and recommendations should be treated as one signal among many. Agency users are expected to apply their own professional judgment when evaluating talent. Talent users should not rely on AI scores as an authoritative assessment of their professional viability or suitability for any particular opportunity.`,
-      `PHOLIO MAKES NO WARRANTY OR REPRESENTATION REGARDING THE ACCURACY, RELIABILITY, COMPLETENESS, OR SUITABILITY OF ANY AI-GENERATED OUTPUT. AI SYSTEMS CAN AND DO PRODUCE INACCURATE, OUTDATED, OR CONTEXTUALLY INAPPROPRIATE RESULTS.`,
+      `Profile and image systems can process information that is sensitive in context or correlates with protected characteristics, including age band, gender or division information, height, weight or other measurements, body type, ethnicity or heritage, skin tone or contrast, hair, facial structure, and appearance descriptors.`,
+      `Pholio does not use uploaded photographs for identity authentication or one-to-one facial recognition as part of the Talent experience described in this Notice. Image analysis nevertheless processes facial and body characteristics. Whether a provider creates or retains face geometry, landmarks, templates, or other legally regulated biometric information depends on the provider and technical configuration. Contact ${PRIVACY_EMAIL} for a current technical description before relying on this Notice for a biometric-law determination.`,
+      `Do not upload a government ID, medical image, intimate image, or image you lack authority to process through an AI feature.`,
     ],
   },
   {
-    title: "Human Review Available",
+    title: "Advisory Outputs and Human Decisions",
     content: [
-      `No AI output on the Pholio platform produces a legally binding or solely automated decision that determines your access to services, your account status, or any outcome with significant real-world consequences.`,
-      `If you believe an AI-generated output — including a match score, a quality assessment, or a search ranking — is incorrect, misleading, or has unfairly affected your use of the Platform, you have the right to request a human review.`,
-      `To request human review of an AI output, contact ${LEGAL_EMAIL} with a description of the output you are disputing and the basis for your concern. We will investigate within a reasonable time and respond substantively.`,
-      `This human review right is in addition to any rights you may have under the GDPR's Article 22 (automated individual decision-making) or equivalent provisions under applicable data protection law.`,
+      `AI outputs are probabilistic and can be wrong, incomplete, culturally narrow, or biased. A quality score or match score is not an objective measure of attractiveness, identity, employability, representation potential, or likely professional success.`,
+      `Pholio does not enter a representation, employment, booking, or event contract solely through an AI output. Recipients make their own decisions and remain responsible for human review and for compliance with civil-rights, employment, model-management, accessibility, candidate-notice, and automated-decision laws.`,
+      `Where an automated tool substantially assists screening for a regulated opportunity, the responsible employer, employment agency, client, or Recipient may need to provide notices, an alternative process, information about assessed characteristics, or an independent bias audit. The availability of a Pholio score does not satisfy those obligations.`,
+      `You may request information about, correction of, or human review of an output by contacting ${LEGAL_EMAIL}. Human review cannot require a Recipient to offer representation, work, or another outcome.`,
     ],
   },
   {
-    title: "Bias and Limitations",
+    title: "Bias, Validation, and Appropriate Use",
     content: [
-      `We acknowledge that AI systems — including those we use — can reflect and amplify biases present in their training data. We are committed to responsible AI use and disclose the following known limitations:`,
-      `6a. Visual Bias in Photo Analysis\nAI photo quality models trained predominantly on certain aesthetic or demographic norms may produce biased quality assessments. For example, models may score images differently based on skin tone, hair type, or body type in ways that reflect underlying biases in training data rather than objective quality. We treat photo quality scores as approximate and encourage users not to treat low scores as definitive judgments.`,
-      `6b. Embedding Bias in Match Scoring\nSemantic embeddings of profile text may reflect language and cultural biases present in the model's training corpus. Match scores should not be used as the sole basis for any representation or hiring decision.`,
-      `6c. No Discriminatory Use\nPholio does not and will not use any AI feature to make decisions based on race, ethnicity, national origin, religion, disability, age, sex, gender identity, sexual orientation, or any other protected characteristic. Match scoring is based on professional profile data, portfolio content, and agency search parameters — not personal protected attributes.`,
-      `6d. Evolving Technology\nAI capabilities and their limitations evolve rapidly. We commit to periodic review of our AI features and this Notice, and to updating our practices as better information, tools, and standards become available.`,
+      `Models and embeddings can reproduce bias from their training data, prompts, labels, and user behavior. Appearance, language, geography, disability, age, gender, race or ethnicity, and body characteristics can affect outputs directly or through proxies.`,
+      `Recipients must not use an AI output as the sole basis for an opportunity decision or use a Pholio feature in a discriminatory or otherwise unlawful manner. A user-selected filter may also create legal risk even when the underlying software is neutral.`,
+      `Unless Pholio publishes an opportunity-specific validation or audit, no representation is made that a model or score has been independently validated for employment selection, meets a four-fifths or other statistical test, or has been audited under New York City Local Law 144 or another automated-decision law.`,
     ],
   },
   {
-    title: "Minors and AI Processing",
+    title: "Minors",
     content: [
-      `Pholio does not apply AI photo analysis to portfolio images of users identified as minors (under 18) without the explicit consent of the minor's parent or legal guardian.`,
-      `If you are the parent or guardian of a minor with a Pholio account and you have questions or concerns about AI processing of that minor's images, please contact ${PRIVACY_EMAIL}.`,
-      `Pholio does not use AI to infer age from photographs and does not use age inference as a basis for any platform decision. Age on the Platform is determined by the information provided at account registration, which is subject to our standard age verification policies.`,
+      `Users under 13 are not permitted to provide personal information through a Pholio account. A parent or guardian who believes an under-13 child created an account should contact ${PRIVACY_EMAIL} immediately.`,
+      `For a known user aged 13 to 17, nonessential AI or profiling may require the minor's separate informed consent in addition to guardian involvement. A guardian email or account-level authorization does not automatically authorize every AI purpose.`,
+      `Pholio may restrict AI features for known minors or for a specific opportunity. A minor and guardian should review both this Notice and the opportunity-specific terms before submitting.`,
     ],
   },
   {
-    title: "Data Handling for AI Features",
+    title: "Retention, Deletion, and Provider Copies",
     content: [
-      `Images sent to Groq for photo analysis are transmitted over encrypted connections and processed solely for the purpose of generating quality assessment outputs. We have a data processing agreement with Groq that prohibits use of submitted data for any purpose beyond fulfilling the API request.`,
-      `Profile text sent to OpenAI for embedding generation is similarly covered by our data processing agreement with OpenAI. We have configured our OpenAI API use to disable training data opt-in.`,
-      `Vector embeddings (numerical representations of profile text) are stored in our pgvector database as part of your account data. You may request deletion of your embeddings by contacting ${PRIVACY_EMAIL}; this will affect match scoring features.`,
-      `For full details on how AI-related data is handled, retained, and your rights regarding that data, please review our Privacy Policy.`,
+      `AI-derived descriptions, scores, and embeddings may remain associated with an active profile and may be regenerated when profile data changes. Logs, application records, moderation records, backups, and copies already made available to a Recipient can have different retention periods.`,
+      `Disabling a setting does not itself remove historical outputs. You may request deletion of qualifying AI-derived data at ${PRIVACY_EMAIL}. We may retain limited records where reasonably necessary for security, legal compliance, disputes, or proof of consent or withdrawal. Provider deletion can take additional time and may be subject to provider backup cycles.`,
+      `If removal of an AI output requires re-indexing or materially disables a search feature, we will explain that effect when responding to the request.`,
     ],
   },
   {
-    title: "Contact and Questions",
+    title: "Contact",
     content: [
-      `If you have questions about our use of AI, wish to exercise rights related to AI processing, or have concerns about the accuracy or fairness of any AI output, please contact:`,
-      `Email: ${LEGAL_EMAIL}`,
-      `Mailing address: ${COMPANY_ADDRESS}`,
-      `We aim to respond to all substantive AI-related inquiries within five (5) business days.`,
+      `Privacy, consent, opt-out, access, or deletion requests: ${PRIVACY_EMAIL}`,
+      `Fairness, human-review, legal, or opportunity-specific questions: ${LEGAL_EMAIL}`,
+      `Include the account email, affected image or profile, feature involved, and the output or decision you are asking us to review. Do not send passwords, government IDs, or intimate images by email.`,
     ],
   },
 ];
@@ -103,13 +95,13 @@ export function AiNoticeContent() {
   return (
     <LegalDocumentLayout
       title="AI Notice"
-      subtitle="Pholio uses AI for optional photo analysis and match scoring features. This Notice explains what AI systems we use, how they work, the advisory nature of all AI outputs, and your rights — including opt-in consent and human review."
+      subtitle="This Notice explains Pholio's current image analysis, profile embeddings, search and ranking signals, sensitive inputs, limitations, and available controls. Image settings and profile embeddings are separate processing activities."
       lastUpdated={LAST_UPDATED}
       effectiveDate={EFFECTIVE_DATE}
       sections={sections}
-      contactEmail={LEGAL_EMAIL}
-      footerTitle="Questions About Our AI Features?"
-      footerBody="For questions about our AI practices, opt-out requests, or to request human review of any AI-generated output, contact our legal team."
+      contactEmail={PRIVACY_EMAIL}
+      footerTitle="Questions About AI Processing?"
+      footerBody="Contact the Privacy Team about AI data, settings, consent, opt-out, deletion, or provider processing. Contact the Legal Team to request human review of an output."
       companyName={COMPANY_NAME}
       companyAddress={COMPANY_ADDRESS}
     />

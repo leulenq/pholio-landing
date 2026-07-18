@@ -17,7 +17,7 @@ export interface LegalDocumentLayoutProps {
   footerTitle: string;
   footerBody?: string;
   companyName: string;
-  companyAddress: string;
+  companyAddress?: string;
 }
 
 function renderParagraph(paragraph: string, key: number) {
@@ -199,9 +199,11 @@ export function LegalDocumentLayout({
               {footerBody}
             </p>
           )}
-          <p className="font-sans text-[#050505]/40 text-sm mb-8">
-            Mailing address: {companyAddress}
-          </p>
+          {companyAddress && (
+            <p className="font-sans text-[#050505]/40 text-sm mb-8">
+              Mailing address: {companyAddress}
+            </p>
+          )}
           <a
             href={`mailto:${contactEmail}`}
             className="font-editorial text-2xl text-[#C9A55A] hover:underline transition-all underline-offset-8"

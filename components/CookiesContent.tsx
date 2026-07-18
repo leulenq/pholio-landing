@@ -1,304 +1,112 @@
 "use client";
 
-import { motion } from "framer-motion";
+import {
+  LegalDocumentLayout,
+  type LegalSection,
+} from "@/components/LegalDocumentLayout";
+import {
+  COMPANY_ADDRESS,
+  COMPANY_NAME,
+  EFFECTIVE_DATE,
+  LAST_UPDATED,
+  PRIVACY_EMAIL,
+} from "@/lib/legal-constants";
 
-const LAST_UPDATED = "June 25, 2026";
-const EFFECTIVE_DATE = "June 25, 2026";
-const CONTACT_EMAIL = "privacy@pholio.studio";
-const COMPANY_NAME = "Pholio Studio, Inc.";
-
-const sections = [
+const sections: LegalSection[] = [
   {
-    title: "What Are Cookies?",
+    title: "Scope",
     content: [
-      `Cookies are small text files placed on your device (computer, tablet, or mobile phone) by a website when you visit it. They are widely used to make websites function efficiently, remember your preferences, and provide information to website owners.`,
-      `In addition to cookies, we may use similar technologies such as web beacons (also called pixel tags or clear GIFs), local storage (including HTML5 localStorage and sessionStorage), and server-side session identifiers. Throughout this policy, we use the word "cookies" to refer to all such technologies collectively, unless otherwise specified.`,
-      `Cookies can be "session cookies," which expire and are automatically deleted when you close your browser, or "persistent cookies," which remain on your device for a defined period or until you delete them. They can also be "first-party cookies," set directly by Pholio, or "third-party cookies," set by another domain (such as an analytics or authentication provider).`,
+      `This Cookie Policy explains cookies, browser storage, session identifiers, and related technologies used by ${COMPANY_NAME} ("Pholio," "we," "our," or "us") on www.pholio.studio, app.pholio.studio, and public portfolio pages.`,
+      `Cookies are small files or values stored by a browser. Similar technologies include localStorage, sessionStorage, authentication refresh information, URL tokens, and server records linked to a browser identifier.`,
+      `This inventory reflects the Platform configuration reviewed as of the Effective Date. Browser, provider, and deployment behavior can change. Contact ${PRIVACY_EMAIL} if you observe a technology not described here.`,
     ],
   },
   {
-    title: "Who Sets Cookies on Pholio?",
+    title: "Why We Use These Technologies",
     content: [
-      `${COMPANY_NAME} ("Pholio," "we," "our," or "us") operates the Platform accessible at www.pholio.studio and app.pholio.studio. We are the primary party responsible for cookies set on our own domains.`,
-      `We also integrate certain third-party services that may set their own cookies or use similar technologies when you interact with features powered by those services. These third parties are identified in Section 5 below. Each third party's use of cookies is governed by their own privacy and cookie policies, not ours.`,
-      `For questions about our cookie practices, contact our Privacy Team at ${CONTACT_EMAIL}.`,
+      `We use cookies and similar technologies to authenticate users, maintain sessions, secure requests, remember a consent preference, operate payment checkout, track public portfolio audiences and interactions, prevent abuse, troubleshoot, and measure product use.`,
+      `We do not currently use third-party advertising pixels or cookies for cross-context behavioral advertising on the authenticated application. Public portfolio analytics are first-party analytics, but they are not necessarily anonymous when collected because the records can include persistent identifiers, IP address, user agent, referrer, and timestamps.`,
     ],
   },
   {
-    title: "Why We Use Cookies",
+    title: "Current First-Party Cookies and Storage",
     content: [
-      `We use cookies for the following purposes:`,
-      `— To keep you logged in and maintain your authenticated session securely across page loads and browser tabs;`,
-      `— To protect against cross-site request forgery (CSRF) attacks and other security threats;`,
-      `— To remember your preferences and settings, such as display configurations and onboarding progress, so you do not need to re-enter them each visit;`,
-      `— To understand how users interact with the Platform at an aggregate level, enabling us to improve features, fix bugs, and optimize performance;`,
-      `— To ensure the Platform functions correctly on your device and browser; and`,
-      `— To comply with legal and security obligations.`,
-      `We do NOT use cookies for advertising, retargeting, behavioral profiling, or cross-site tracking. We do not participate in third-party advertising networks or sell data derived from cookie-based tracking.`,
+      `connect.sid\nPurpose: Maintains the Express authenticated session. Type: strictly necessary. Storage: first-party HttpOnly cookie. Configured duration: up to seven days. It may be shared across Pholio subdomains when the production cookie domain is configured that way. Logging out the current browser removes or invalidates the current session, but a separately persisted identity-provider login may be capable of creating a new Platform session.`,
+      `pholio_visitor_id\nPurpose: Recognizes a browser as a returning visitor across public portfolio pages and supports Talent analytics. Type: first-party portfolio analytics. Storage: HttpOnly cookie. Configured duration: up to one year.`,
+      `pholio_session_<profile identifier>\nPurpose: Associates interactions during a visit with a particular public portfolio. Type: first-party portfolio analytics. Storage: HttpOnly cookie. Configured duration: approximately 30 minutes.`,
+      `pholio_cookie_consent_v1\nPurpose: Remembers the necessary/analytics preference selected in the application. Type: preference record. Storage: localStorage, not a cookie. Duration: until cleared, replaced, or site data is deleted. This preference does not itself erase prior analytics and may not currently gate every server-side security or public-portfolio event.`,
+      `Firebase browser storage\nPurpose: Maintains the user's Firebase identity-provider state and permits token refresh. Type: strictly necessary authentication storage. Storage and duration depend on Firebase configuration, logout, token expiry, and revocation. Ending only a Pholio server session may not remove the Firebase state from that browser.`,
+      `Onboarding and recovery storage\nPurpose: Remembers parts of onboarding, a submission draft, or browser recovery state. Type: functional or necessary local/session storage. Keys and duration vary by feature; some browser recovery records are designed to expire after approximately seven days.`,
     ],
   },
   {
-    title: "Categories of Cookies We Use",
+    title: "Third-Party Technologies",
     content: [
-      `4a. Strictly Necessary Cookies\nThese cookies are essential for the Platform to function. Without them, core services — including logging in, maintaining your session, and using secure features — cannot be provided. Because they are necessary, they do not require your consent under most applicable laws, though we are transparent about their use here.`,
-      `4b. Preference (Functional) Cookies\nThese cookies remember choices you make and personalize your experience. For example, they may store your selected portfolio layout, onboarding step progress, or UI display preferences. They are not strictly required for the Platform to operate, but disabling them means your preferences will reset each visit.`,
-      `4c. Analytics Cookies (First-Party)\nWe collect aggregated, anonymized usage data — such as pages visited, features used, and general traffic patterns — using server-side logging and first-party analytics. This data helps us understand platform usage and improve the user experience. We do not use Google Analytics, Mixpanel, or other third-party analytics scripts on the authenticated application.`,
-      `4d. Security Cookies\nCertain cookies and server-side tokens are used exclusively for security purposes, including session integrity validation, CSRF token verification, and rate-limit enforcement. These are strictly necessary and cannot be disabled.`,
-      `4e. What We Do Not Use\nWe do not use: advertising cookies or pixels (e.g., Meta Pixel, Google Ads tags); cross-site tracking cookies; third-party behavioral profiling tools; or social media tracking widgets that follow you across the web.`,
+      `Firebase / Google\nFirebase manages authentication and may use browser storage, OAuth state, or provider cookies during sign-in. Google sign-in can also involve cookies on Google-controlled domains. Google's terms and privacy policy govern its independent processing.`,
+      `Stripe\nStripe may set fraud-prevention, checkout, and session cookies when you open a Stripe-hosted checkout or customer portal. Stripe's terms and privacy policy govern those technologies.`,
+      `Other providers\nCloudflare, Netlify, and security or infrastructure providers may process network identifiers or set operational cookies when required to deliver or protect their services. We do not represent that an infrastructure log is anonymous merely because no browser cookie is set.`,
     ],
   },
   {
-    title: "Third-Party Cookies and Services",
+    title: "Public Portfolio Analytics",
     content: [
-      `Certain third-party services integrated into the Platform may set their own cookies or use similar technologies. Below is a complete list of third-party services active on the Platform and the technologies they use:`,
-      `5a. Firebase Authentication (Google LLC)\nWhen you log in using Google OAuth or email/password, Firebase Authentication sets cookies and tokens to manage your authenticated state. These are strictly necessary for the login flow. Google's privacy policy applies to Firebase: policies.google.com/privacy`,
-      `5b. Stripe (Payment Processing)\nIf you access subscription management or checkout pages, Stripe may set cookies to prevent fraud and maintain session state during payment flows. Stripe's cookie use is limited to payment security. Stripe's privacy policy applies: stripe.com/privacy`,
-      `5c. No Other Third-Party Tracking\nBeyond Firebase and Stripe (for their specific functional purposes described above), no other third-party scripts, pixels, or tracking technologies are loaded on the authenticated application at app.pholio.studio. The marketing site at www.pholio.studio may be updated from time to time; any additions will be reflected in this policy.`,
+      `When a person other than the signed-in owner visits a public portfolio, Pholio can create or update a visitor session and record a view. Automated crawlers identified by user agent are generally excluded, but detection is not perfect.`,
+      `Recorded events can include profile views, returning status, image impressions and opens, dwell time, biography reads, contact or social clicks, scroll depth, link opens, referrer, share-token activity, approximate location or market, and timestamps. Server records can include the visitor identifier, profile-session identifier, IP address, and user agent.`,
+      `These analytics are shown to or used for the relevant Talent account and product operations. They are not used for cross-site advertising. The browser analytics preference does not currently guarantee that every server-side public-profile event is suppressed.`,
     ],
   },
   {
-    title: "Specific Cookies Set by Pholio",
+    title: "Consent and Legal Bases",
     content: [
-      `The table below describes the specific cookies we set, their purpose, type, and retention period.`,
-      `pholio.session — Purpose: Maintains your authenticated login session. Type: Strictly Necessary / Session. Set by: Pholio (first-party). Retention: 30 days of inactivity, then expires. Deleted on logout.`,
-      `pholio.csrf — Purpose: Cross-site request forgery (CSRF) protection token. Verifies that form submissions originate from the Platform. Type: Strictly Necessary / Security. Set by: Pholio (first-party). Retention: Duration of the browser session.`,
-      `pholio.prefs — Purpose: Stores non-sensitive UI preferences such as display settings and onboarding progress markers. Type: Preference. Set by: Pholio (first-party). Retention: Up to 1 year.`,
-      `pholio.onboarding — Purpose: Records onboarding flow step completion so the wizard resumes from where you left off. Type: Preference / Strictly Necessary. Set by: Pholio (first-party). Retention: Until onboarding is completed or account is deleted.`,
-      `__stripe_mid, __stripe_sid — Purpose: Stripe fraud detection and session management during payment flows. Type: Strictly Necessary (payment). Set by: Stripe, Inc. (third-party). Retention: Up to 1 year (stripe_mid); session (stripe_sid).`,
-      `Firebase auth tokens — Purpose: Firebase stores authentication tokens in browser localStorage to maintain your Google or email sign-in state. Not a traditional cookie; stored in HTML5 localStorage. Type: Strictly Necessary. Set by: Firebase / Google LLC. Retention: Until logout or token expiry (typically 1 hour for ID tokens; refresh tokens persist until revoked).`,
+      `Strictly necessary authentication, security, and requested-service technologies are used to provide the service and generally cannot be disabled through a Pholio preference. Blocking them may prevent login, checkout, or core features.`,
+      `Where law requires consent before nonessential analytics or storage, Pholio must obtain that consent before the relevant technology is used. The presence of a preference control does not by itself establish that a particular collection is legally necessary or exempt from consent.`,
+      `Known minors can have additional consent and default-privacy rights. A guardian authorization does not replace a minor's separate choice where applicable law gives that choice to the minor.`,
     ],
   },
   {
-    title: "Legal Basis for Cookie Use",
+    title: "Your Choices",
     content: [
-      `Under the EU ePrivacy Directive and the General Data Protection Regulation (GDPR), as implemented in EU member state law, we rely on the following legal bases for our cookie use:`,
-      `Strictly Necessary: No consent is required for cookies that are essential to provide a service you have explicitly requested. This covers session authentication, CSRF protection, and security cookies.`,
-      `Legitimate Interests (Art. 6(1)(f) GDPR): We rely on legitimate interests for first-party analytics and preference cookies, where our interest in improving and personalizing the Platform is balanced against your reasonable expectation of privacy. These do not involve cross-site tracking or behavioral profiling.`,
-      `Consent (Art. 6(1)(a) GDPR): Where required by applicable law, we will obtain your consent before placing non-essential cookies. Our current Platform does not use advertising or third-party behavioral tracking cookies that would require consent under the ePrivacy Directive. If this changes, we will update this policy and present a consent mechanism.`,
-      `For users in the United Kingdom, the same framework applies under the UK GDPR and the Privacy and Electronic Communications Regulations (PECR).`,
-      `For users in California, our cookie use does not constitute "sale" or "sharing" of personal information as defined under the California Consumer Privacy Act (CCPA/CPRA), as we do not share cookie data with third parties for cross-context behavioral advertising.`,
+      `You can use available account preferences, clear site data, block cookies through the browser, use private-browsing controls, or contact ${PRIVACY_EMAIL}. Clearing connect.sid or Firebase storage can sign you out. Blocking Stripe cookies can interfere with checkout.`,
+      `A browser "Do Not Track" signal is not a substitute for a legally recognized universal opt-out signal, and Pholio does not claim that all current server-side analytics respond to DNT. Because Pholio does not sell data or use it for cross-context behavioral advertising, a sale/share opt-out signal has limited application to the practices described here.`,
+      `To request deletion of server-side visitor or analytics records, contact ${PRIVACY_EMAIL}. We may need information sufficient to locate and verify the records, and legal or security exceptions can apply.`,
     ],
   },
   {
-    title: "How to Control and Manage Cookies",
+    title: "Retention",
     content: [
-      `You have several options for managing cookies. Please note that restricting certain cookies may affect your ability to use the Platform.`,
-      `8a. Browser Settings\nAll modern browsers allow you to view, manage, block, and delete cookies through their settings. The exact steps depend on your browser:`,
-      `— Google Chrome: Settings → Privacy and Security → Cookies and other site data`,
-      `— Mozilla Firefox: Settings → Privacy & Security → Cookies and Site Data`,
-      `— Apple Safari: Preferences → Privacy → Manage Website Data`,
-      `— Microsoft Edge: Settings → Cookies and Site Permissions → Cookies and site data`,
-      `Blocking all cookies will prevent you from logging in to the Platform. Blocking third-party cookies specifically (a setting available in most browsers) will not materially affect your Pholio experience, as we do not rely on third-party tracking cookies for core functionality.`,
-      `8b. Opt-Out of Firebase Analytics\nIf you wish to limit Google's data collection via Firebase, you can use the Google Analytics Opt-Out Browser Add-on (available from Google) or adjust your Google account's data-sharing settings at myaccount.google.com.`,
-      `8c. Do Not Track (DNT)\nSome browsers offer a "Do Not Track" (DNT) signal. We respect DNT signals to the extent technically feasible. Because we do not engage in cross-site behavioral tracking, enabling DNT has minimal practical impact on your Pholio experience, but we honor it as a privacy preference.`,
-      `8d. Mobile Devices\nOn mobile devices, you can manage cookie preferences through your mobile browser settings, as described above. For native app functionality (if applicable), platform-level privacy controls (iOS Privacy Settings, Android Permission Manager) apply.`,
-      `8e. Local Storage\nFirebase authentication tokens stored in HTML5 localStorage can be cleared by clearing your browser's site data (under the same browser settings described in 8a). Clearing localStorage will log you out of the Platform.`,
+      `Cookie durations are described above. Deleting a browser cookie does not delete the associated server record. Server-side session, visitor, analytics, security, and fraud records are retained according to the criteria in the Privacy Policy and active operational schedules.`,
+      `We do not represent that all IP-bearing analytics are automatically purged after 90 days or that all expired server sessions are purged monthly. A verified deletion request can be sent to ${PRIVACY_EMAIL}.`,
     ],
   },
   {
-    title: "Data Collected via Cookies",
+    title: "Children",
     content: [
-      `Cookies and related technologies we use may collect or facilitate collection of the following data:`,
-      `— Session identifiers (randomly generated tokens linking your browser to your server-side session);`,
-      `— IP address (used for security and rate limiting; stored server-side, not in the cookie itself);`,
-      `— Browser type, version, and device type (derived from HTTP headers at the time of the request);`,
-      `— Pages visited and features interacted with on the Platform;`,
-      `— Timestamps of access events; and`,
-      `— Authentication state (logged-in vs. anonymous).`,
-      `We do not use cookies to collect financial data, health data, or precise geolocation. All data collected via cookies is processed in accordance with our Privacy Policy (www.pholio.studio/privacy), which describes retention periods, legal bases, your rights, and data sharing practices in full detail.`,
+      `The Platform is not directed to children under 13. If we learn that an under-13 child used the Platform and cookies or browser identifiers were associated with the child before the age screen was completed, we will investigate and delete or restrict the information as required by law.`,
+      `Parents or guardians can contact ${PRIVACY_EMAIL} about a child's account, browser identifier, or analytics data.`,
     ],
   },
   {
-    title: "Cookies and Children",
+    title: "Changes and Contact",
     content: [
-      `Our Platform is not directed to children under 16 (or 13 in the United States). We do not knowingly use cookies to collect data from minors. If you believe a child has used the Platform without appropriate consent, please contact us at ${CONTACT_EMAIL} and we will investigate promptly.`,
-    ],
-  },
-  {
-    title: "Changes to This Cookie Policy",
-    content: [
-      `We may update this Cookie Policy from time to time to reflect changes in our technology, legal obligations, or cookie practices. When we make material changes, we will update the "Last Updated" date at the top of this document and, where appropriate, notify users via email or a notice on the Platform.`,
-      `We encourage you to review this policy periodically. Continued use of the Platform after the updated policy's effective date constitutes your acceptance of the changes.`,
-      `A version history of this Cookie Policy is available upon request at ${CONTACT_EMAIL}.`,
-    ],
-  },
-  {
-    title: "Contact Us",
-    content: [
-      `If you have questions, concerns, or requests about our use of cookies or this Cookie Policy, please contact our Privacy Team:`,
-      `Email: ${CONTACT_EMAIL}`,
-      `We aim to respond to all substantive cookie-related inquiries within 5 business days. If you are located in the EEA or UK and are not satisfied with our response, you have the right to lodge a complaint with your local data protection supervisory authority.`,
+      `We may update this Policy as technology, providers, or law changes. We will update the dates above and provide any additional notice or consent required by applicable law.`,
+      `Cookie, analytics, browser-storage, or deletion questions: ${PRIVACY_EMAIL}`,
     ],
   },
 ];
 
 export function CookiesContent() {
   return (
-    <article className="bg-[#FAF7F2] text-[#050505] min-h-screen pt-40 pb-32 px-6 texture-grain">
-      <div className="max-w-3xl mx-auto">
-        <motion.header
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="mb-24 border-b border-[#050505]/10 pb-12"
-        >
-          <span className="text-[10px] uppercase tracking-[0.3em] text-[#C9A55A] mb-4 block font-semibold">
-            Legal &amp; Compliance
-          </span>
-          <h1 className="font-editorial text-5xl md:text-7xl mb-6">
-            Cookie Policy
-          </h1>
-          <div className="flex flex-col gap-1 mt-4">
-            <p className="text-sm text-[#050505]/40 font-sans tracking-wide">
-              Last Updated: {LAST_UPDATED}
-            </p>
-            <p className="text-sm text-[#050505]/40 font-sans tracking-wide">
-              Effective Date: {EFFECTIVE_DATE}
-            </p>
-          </div>
-          <p className="mt-6 text-base text-[#050505]/60 font-sans leading-relaxed font-light max-w-2xl">
-            This Cookie Policy explains what cookies are, which cookies and similar technologies {COMPANY_NAME} uses on the Pholio platform, why we use them, and how you can control them. For broader information about how we handle your personal data, please read our{" "}
-            <a
-              href="/privacy"
-              className="text-[#C9A55A] hover:underline underline-offset-4 transition-all"
-            >
-              Privacy Policy
-            </a>
-            .
-          </p>
-        </motion.header>
-
-        {/* Table of Contents */}
-        <motion.nav
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mb-20 p-8 border border-[#050505]/10 rounded-2xl bg-white/40 backdrop-blur-sm"
-        >
-          <h2 className="font-editorial text-xl mb-5 text-[#050505]/80">Table of Contents</h2>
-          <ol className="space-y-2">
-            {sections.map((section, i) => (
-              <li key={section.title}>
-                <a
-                  href={`#section-${i + 1}`}
-                  className="font-sans text-sm text-[#050505]/60 hover:text-[#C9A55A] transition-colors duration-200 flex items-baseline gap-3"
-                >
-                  <span className="text-[#C9A55A] font-semibold tabular-nums w-5 shrink-0">{i + 1}.</span>
-                  <span>{section.title}</span>
-                </a>
-              </li>
-            ))}
-          </ol>
-        </motion.nav>
-
-        <div className="space-y-20">
-          {sections.map((section, i) => (
-            <motion.section
-              key={section.title}
-              id={`section-${i + 1}`}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.6, delay: 0.05 }}
-              className="group scroll-mt-28"
-            >
-              <h2 className="font-editorial text-2xl md:text-3xl mb-6 text-[#050505]/90 group-hover:text-[#C9A55A] transition-colors duration-300">
-                {i + 1}. {section.title}
-              </h2>
-              <div className="space-y-4">
-                {section.content.map((paragraph, j) => {
-                  if (paragraph.includes("\n")) {
-                    const [heading, ...rest] = paragraph.split("\n");
-                    return (
-                      <div key={j} className="space-y-1.5">
-                        <p className="font-sans text-base font-semibold text-[#050505]/80">
-                          {heading}
-                        </p>
-                        <p className="font-sans text-base text-[#050505]/65 leading-relaxed font-light">
-                          {rest.join(" ")}
-                        </p>
-                      </div>
-                    );
-                  }
-
-                  if (paragraph.startsWith("—")) {
-                    return (
-                      <div key={j} className="flex gap-3 pl-4">
-                        <span className="text-[#C9A55A] shrink-0 mt-0.5">—</span>
-                        <p className="font-sans text-base text-[#050505]/65 leading-relaxed font-light">
-                          {paragraph.slice(2)}
-                        </p>
-                      </div>
-                    );
-                  }
-
-                  // Cookie table rows: "cookieName — Purpose: ..."
-                  if (/^(pholio\.|__stripe_|Firebase)/.test(paragraph)) {
-                    const [name, ...rest] = paragraph.split(" — ");
-                    return (
-                      <div
-                        key={j}
-                        className="rounded-xl border border-[#050505]/[0.07] bg-white/50 p-4 space-y-1"
-                      >
-                        <p className="font-sans text-sm font-semibold text-[#050505]/80 font-mono">
-                          {name}
-                        </p>
-                        <p className="font-sans text-sm text-[#050505]/55 leading-relaxed">
-                          {rest.join(" — ")}
-                        </p>
-                      </div>
-                    );
-                  }
-
-                  if (
-                    paragraph.startsWith("Email:") ||
-                    paragraph.startsWith("Mailing address:")
-                  ) {
-                    return (
-                      <p
-                        key={j}
-                        className="font-sans text-sm text-[#050505]/50 leading-relaxed pl-4 border-l-2 border-[#C9A55A]/30"
-                      >
-                        {paragraph}
-                      </p>
-                    );
-                  }
-
-                  return (
-                    <p
-                      key={j}
-                      className="font-sans text-base text-[#050505]/65 leading-relaxed font-light"
-                    >
-                      {paragraph}
-                    </p>
-                  );
-                })}
-              </div>
-            </motion.section>
-          ))}
-        </div>
-
-        <motion.footer
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="mt-32 pt-12 border-t border-[#050505]/10"
-        >
-          <h3 className="font-editorial text-2xl mb-4">Questions About Cookies?</h3>
-          <p className="font-sans text-[#050505]/60 mb-8 leading-relaxed">
-            Our Privacy Team is happy to help with any questions about our cookie practices. We aim to respond to all inquiries within 5 business days.
-          </p>
-          <a
-            href={`mailto:${CONTACT_EMAIL}`}
-            className="font-editorial text-2xl text-[#C9A55A] hover:underline transition-all underline-offset-8"
-          >
-            {CONTACT_EMAIL}
-          </a>
-          <p className="mt-12 text-xs text-[#050505]/30 font-sans">
-            © {new Date().getFullYear()} {COMPANY_NAME}. All rights reserved. This document does not constitute legal advice. Consult qualified legal counsel for advice specific to your circumstances.
-          </p>
-        </motion.footer>
-      </div>
-    </article>
+    <LegalDocumentLayout
+      title="Cookie Policy"
+      subtitle="This Policy identifies Pholio's current authenticated-session, Firebase, portfolio-visitor, profile-session, localStorage, checkout, and server-side analytics technologies."
+      lastUpdated={LAST_UPDATED}
+      effectiveDate={EFFECTIVE_DATE}
+      sections={sections}
+      contactEmail={PRIVACY_EMAIL}
+      footerTitle="Cookie or Analytics Questions?"
+      footerBody="Contact the Privacy Team to ask about a browser identifier, portfolio analytics, consent preference, or deletion request."
+      companyName={COMPANY_NAME}
+      companyAddress={COMPANY_ADDRESS}
+    />
   );
 }

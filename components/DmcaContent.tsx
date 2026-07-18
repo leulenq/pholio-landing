@@ -5,107 +5,97 @@ import {
   type LegalSection,
 } from "@/components/LegalDocumentLayout";
 import {
-  COMPANY_NAME,
   COMPANY_ADDRESS,
-  LAST_UPDATED,
-  EFFECTIVE_DATE,
+  COMPANY_NAME,
   DMCA_EMAIL,
+  EFFECTIVE_DATE,
+  LAST_UPDATED,
   LEGAL_EMAIL,
+  PRIVACY_EMAIL,
 } from "@/lib/legal-constants";
-
-const DESIGNATED_AGENT_NAME = "Legal Department, Pholio Studio, Inc.";
-const DESIGNATED_AGENT_EMAIL = DMCA_EMAIL;
 
 const sections: LegalSection[] = [
   {
-    title: "Overview",
+    title: "Purpose and Status of This Policy",
     content: [
-      `${COMPANY_NAME} ("Pholio," "we," "our," or "us") respects the intellectual property rights of others and expects all users of the Pholio platform (www.pholio.studio and app.pholio.studio, collectively the "Platform") to do the same.`,
-      `In accordance with the Digital Millennium Copyright Act of 1998 ("DMCA"), 17 U.S.C. § 512, Pholio has established a policy for addressing claims of copyright infringement. This DMCA Policy describes how to submit a takedown notice, how to file a counter-notification, and how Pholio handles repeat infringers.`,
-      `Pholio qualifies for the safe harbor protections under 17 U.S.C. § 512(c) as a service provider that stores user-generated content. Nothing in this Policy creates any liability for Pholio beyond what is required by applicable law.`,
+      `${COMPANY_NAME} ("Pholio," "we," "our," or "us") respects copyright and provides the notice, removal, counter-notice, and repeat-infringer process described here for content on www.pholio.studio and app.pholio.studio.`,
+      `The Digital Millennium Copyright Act ("DMCA"), 17 U.S.C. § 512, provides conditional limitations on liability for qualifying service providers that satisfy statutory requirements. Publication of this Policy does not itself establish, represent, or warrant that Pholio has satisfied every condition for a statutory safe harbor.`,
+      `The Copyright Office's public directory, rather than this Policy, controls whether a designated-agent registration is active. Until an active designation and complete service address are confirmed, ${DMCA_EMAIL} is Pholio's operational copyright-report contact and should not be described as proof of registration.`,
     ],
   },
   {
-    title: "Designated Copyright Agent",
+    title: "Where to Send a Copyright Notice",
     content: [
-      `Pholio has designated a Copyright Agent to receive notifications of claimed infringement. All DMCA-related notices must be directed to:`,
-      `Designated Agent: ${DESIGNATED_AGENT_NAME}`,
-      `Email: ${DESIGNATED_AGENT_EMAIL}`,
-      `Mailing address: ${COMPANY_ADDRESS}`,
-      `To be effective, your notice must comply with the requirements set out in Section 3 (Takedown Notice Requirements) below. Notices that do not substantially comply may be disregarded.`,
-      `For non-copyright matters, including general legal inquiries, please contact ${LEGAL_EMAIL}.`,
+      `Send copyright notices and counter-notices to:`,
+      `Email: ${DMCA_EMAIL}`,
+      `Subject: Copyright Notice — [URL or account]`,
+      `Do not send copyright notices only through a generic in-product report, social-media message, or employee account. If the Copyright Office directory identifies a different agent or service address, use the directory information in addition to the email above.`,
+      `For privacy, likeness, nonconsensual imagery, harassment, or safety issues rather than copyright ownership, contact ${PRIVACY_EMAIL} or ${LEGAL_EMAIL}.`,
     ],
   },
   {
-    title: "Takedown Notice Requirements",
+    title: "Copyright Notice Requirements",
     content: [
-      `If you are a copyright owner (or are authorized to act on behalf of a copyright owner) and believe that content on the Platform infringes your copyright, you may submit a DMCA takedown notice to our Copyright Agent. To be valid under 17 U.S.C. § 512(c)(3), your written notification must include ALL of the following:`,
-      `(a) A physical or electronic signature of the person authorized to act on behalf of the owner of the exclusive right that is allegedly being infringed;`,
-      `(b) Identification of the copyrighted work claimed to have been infringed, or — if multiple copyrighted works at a single online site are covered by a single notification — a representative list of such works;`,
-      `(c) Identification of the material that is claimed to be infringing or to be the subject of infringing activity, and information reasonably sufficient to permit Pholio to locate the material (e.g., the URL or specific location on the Platform where the material appears);`,
-      `(d) Information reasonably sufficient to permit Pholio to contact you, including your name, mailing address, telephone number, and email address;`,
-      `(e) A statement that you have a good-faith belief that use of the material in the manner complained of is not authorized by the copyright owner, its agent, or the law;`,
-      `(f) A statement that the information in the notification is accurate, and under penalty of perjury, that you are authorized to act on behalf of the owner of an exclusive right that is allegedly infringed.`,
-      `Submitting a false, misleading, or bad-faith DMCA notice may expose you to liability for damages, including costs and attorneys' fees, under 17 U.S.C. § 512(f). We strongly recommend consulting legal counsel before submitting a DMCA notice if you are uncertain whether the material infringes your copyright.`,
+      `A notice alleging copyright infringement should include:`,
+      `(a) a physical or electronic signature of the copyright owner or authorized agent;`,
+      `(b) identification of the copyrighted work, or a representative list where appropriate;`,
+      `(c) identification and location of the material at issue, including a direct URL, portfolio slug, image, or other information reasonably sufficient for us to locate it;`,
+      `(d) the claimant's name, mailing address, telephone number, and email address;`,
+      `(e) a statement of good-faith belief that the complained-of use is not authorized by the copyright owner, its agent, or the law; and`,
+      `(f) a statement that the information is accurate and, under penalty of perjury, that the sender is authorized to act for the owner of the allegedly infringed exclusive right.`,
+      `If a notice identifies the work and material but is incomplete, we may contact the sender for information reasonably necessary to evaluate it. Knowingly material misrepresentations can create liability under 17 U.S.C. § 512(f).`,
     ],
   },
   {
-    title: "How Pholio Processes Takedown Notices",
+    title: "Review and Removal",
     content: [
-      `Upon receipt of a valid takedown notice, Pholio will:`,
-      `(a) Promptly remove or disable access to the allegedly infringing material from the Platform;`,
-      `(b) Notify the user who uploaded or posted the affected content that the material has been removed or disabled; and`,
-      `(c) Provide the user with a copy of the takedown notice (with your personal contact information redacted if you request it) and inform them of their right to submit a counter-notification.`,
-      `We aim to process valid notices within five (5) business days of receipt. Complex or ambiguous notices may require additional time.`,
-      `Pholio reserves the right to restore removed content if it receives a valid counter-notification (see Section 5) or if we determine in our sole discretion that the original notice was defective, misleading, or made in bad faith.`,
+      `After receiving a substantially compliant notice, Pholio will locate the material, preserve an appropriate case record, and act expeditiously to remove or disable access where required or appropriate. Timing depends on completeness, location, emergency risk, and legal requirements.`,
+      `Where appropriate, we will notify the uploader, provide the substance of the complaint, and explain the counter-notice process. We may share the notice or counter-notice with the affected user, claimant, service providers, advisers, or authorities as necessary to administer the process or comply with law.`,
+      `Removal from Pholio does not remove a copy independently retained by another website, Recipient, search engine, cache, device, or person.`,
     ],
   },
   {
-    title: "Counter-Notification",
+    title: "Counter-Notice",
     content: [
-      `If you believe that material you uploaded to the Platform was removed or disabled as a result of a mistake or misidentification, you may submit a counter-notification to our Copyright Agent. To be valid under 17 U.S.C. § 512(g)(3), your written counter-notification must include ALL of the following:`,
-      `(a) Your physical or electronic signature;`,
-      `(b) Identification of the material that has been removed or disabled and the location at which the material appeared before it was removed or access to it was disabled;`,
-      `(c) A statement under penalty of perjury that you have a good-faith belief that the material was removed or disabled as a result of mistake or misidentification;`,
-      `(d) Your name, address, and telephone number; and`,
-      `(e) A statement that you consent to the jurisdiction of the Federal District Court for the judicial district in which your address is located (or, if you are located outside the United States, any judicial district in which Pholio may be found), and that you will accept service of process from the person who provided the original takedown notice.`,
-      `Upon receipt of a valid counter-notification, Pholio will forward it to the original complainant and inform them that we may restore the removed material in ten (10) to fourteen (14) business days unless the complainant files a court action and notifies Pholio. If no court action is filed within that period, Pholio may, in its discretion, restore the material.`,
-      `Submitting a false or bad-faith counter-notification may expose you to civil and criminal liability.`,
+      `An uploader who believes material was removed because of mistake or misidentification may send a counter-notice containing:`,
+      `(a) the uploader's physical or electronic signature;`,
+      `(b) identification of the removed material and its prior location;`,
+      `(c) a statement under penalty of perjury that the uploader has a good-faith belief the material was removed or disabled because of mistake or misidentification;`,
+      `(d) the uploader's name, address, and telephone number; and`,
+      `(e) consent to the jurisdiction and service-of-process statement required by 17 U.S.C. § 512(g)(3).`,
+      `We may forward a valid counter-notice to the original claimant. Where the statutory process applies, the material may be restored no sooner than ten and no later than fourteen business days after the counter-notice is forwarded unless we receive notice that the claimant filed an action seeking a court order. We may decline restoration for a separate policy, safety, rights, or legal reason.`,
     ],
   },
   {
-    title: "Repeat Infringer Policy",
+    title: "Repeat Infringers",
     content: [
-      `Pholio maintains a repeat infringer policy in accordance with 17 U.S.C. § 512(i). Under this policy:`,
-      `— We track takedown notices received against specific user accounts.`,
-      `— Users who receive two (2) or more valid DMCA takedown notices within any rolling twelve (12) month period will have their account suspended.`,
-      `— Users who receive three (3) or more valid DMCA takedown notices within any rolling twelve (12) month period will have their account permanently terminated.`,
-      `— Pholio reserves the right to terminate, at any time and in its sole discretion, the account of any user who is found to be a repeat or willful infringer, even on the basis of a single egregious violation.`,
-      `— Any content associated with a terminated account that was the subject of a valid DMCA notice will be permanently removed from the Platform.`,
-      `Counter-notifications that are subsequently upheld (i.e., the original notice is not pursued in court) will not count against the user for purposes of this repeat infringer policy.`,
+      `Pholio may warn, restrict, suspend, or terminate users who repeatedly or egregiously infringe copyright, taking account of valid notices, counter-notices, retractions, court outcomes, context, and abuse of the complaint process.`,
+      `We do not publish a rigid strike number that would require us to ignore context or treat a disputed notice as finally adjudicated. We maintain records reasonably necessary to apply the policy and may terminate a user after a single willful or severe infringement where appropriate.`,
     ],
   },
   {
-    title: "Portfolio Photographs and Modeling Industry Context",
+    title: "Portfolio Photography and Authority",
     content: [
-      `Pholio is a talent portfolio platform. Many users upload professional photographs taken by third-party photographers. By uploading images to Pholio, users represent and warrant that they have all necessary rights, licenses, and releases from the copyright holders (including photographers) to display those images on the Platform.`,
-      `If you are a photographer and believe your photographs have been uploaded to Pholio without proper authorization, please submit a DMCA takedown notice as described in Section 3. We take photographer copyright claims seriously and will process valid notices promptly.`,
-      `We encourage agencies and talent to maintain clear written agreements with photographers regarding portfolio usage rights before uploading images to the Platform. Pholio is not liable for rights disputes between talent and their photographers.`,
+      `The person depicted in a photograph does not necessarily own its copyright. Talent must have sufficient permission from the photographer or other copyright owner to upload, publish, create a comp card from, and submit each image.`,
+      `A model release or consent from the person depicted and a copyright license from the photographer address different rights. Pholio does not verify every license or release merely because a file can be uploaded.`,
+      `Recipients may use submitted media only for the authorized evaluation and administration purpose unless they obtain a separate license or release for publicity, advertising, merchandising, digital replicas, or another use.`,
     ],
   },
   {
-    title: "Limitations and Exclusions",
+    title: "Other Image and Safety Complaints",
     content: [
-      `This DMCA Policy addresses copyright infringement claims only. For other intellectual property concerns (trademark, trade secret, patent), please contact ${LEGAL_EMAIL}.`,
-      `For privacy complaints (e.g., images of you uploaded without consent), please contact our Privacy Team at privacy@pholio.studio.`,
-      `For content that is illegal but not copyright-related (e.g., CSAM, harassment), please refer to our Community Guidelines and contact ${LEGAL_EMAIL} immediately.`,
-      `Pholio is not required to, and does not, monitor all content uploaded to the Platform proactively for copyright compliance. Our obligations are reactive — we respond to valid notices in accordance with the DMCA safe harbor framework.`,
+      `Copyright is different from privacy, publicity, consent, intimate-image, impersonation, harassment, and child-safety law. A person shown in an image who does not own the copyright can still have a separate complaint.`,
+      `Nonconsensual intimate images or digital forgeries: contact ${LEGAL_EMAIL} with the location, identity of the depicted person or authorized representative, contact information, a statement that the request is accurate and made in good faith, and a signature. Valid requests subject to the TAKE IT DOWN Act are handled under the legally required 48-hour process, including known identical copies where required.`,
+      `Apparent child sexual abuse material or immediate danger: do not download, forward, or attach the material. Send the location and circumstances to ${LEGAL_EMAIL} and contact emergency services where necessary. Pholio reports apparent violations to NCMEC or law enforcement when required by law after obtaining actual knowledge.`,
+      `Other privacy or likeness complaints: ${PRIVACY_EMAIL}. Trademark or other legal complaints: ${LEGAL_EMAIL}.`,
     ],
   },
   {
-    title: "Changes to This Policy",
+    title: "Changes and Contact",
     content: [
-      `We may update this DMCA Policy from time to time. When we make material changes, we will update the "Last Updated" date at the top of this document and provide notice consistent with our general Terms of Service notification requirements. Your continued use of the Platform after such changes constitutes your acceptance of the updated Policy.`,
+      `We may update this Policy as law, registration status, contact details, or operations change. We will update the dates above and provide any additional notice required by law.`,
+      `Copyright reports and counter-notices: ${DMCA_EMAIL}`,
+      `General legal and safety matters: ${LEGAL_EMAIL}`,
     ],
   },
 ];
@@ -113,14 +103,14 @@ const sections: LegalSection[] = [
 export function DmcaContent() {
   return (
     <LegalDocumentLayout
-      title="DMCA Policy"
-      subtitle="Pholio respects copyright and responds to valid takedown notices under the Digital Millennium Copyright Act. This policy explains how to report infringement, submit counter-notifications, and how we handle repeat infringers."
+      title="Copyright and DMCA Policy"
+      subtitle="This Policy explains how to report copyright infringement, submit a counter-notice, and distinguish copyright complaints from privacy, likeness, intimate-image, and child-safety reports."
       lastUpdated={LAST_UPDATED}
       effectiveDate={EFFECTIVE_DATE}
       sections={sections}
-      contactEmail={DESIGNATED_AGENT_EMAIL}
+      contactEmail={DMCA_EMAIL}
       footerTitle="Submit a Copyright Notice"
-      footerBody="To report copyright infringement on the Pholio platform, email our designated Copyright Agent. Please include all required information as detailed in Section 3 to ensure prompt processing."
+      footerBody="Include the required ownership, location, contact, good-faith, accuracy, authority, and signature information so the report can be evaluated."
       companyName={COMPANY_NAME}
       companyAddress={COMPANY_ADDRESS}
     />

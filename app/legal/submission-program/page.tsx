@@ -4,9 +4,9 @@ import MarketingFooter from "@/components/MarketingFooter";
 import { SubmissionProgramNoticeContent } from "@/components/SubmissionProgramNoticeContent";
 
 export const metadata: Metadata = {
-  title: "Submission Program Notice | Pholio",
+  title: "Talent Submission and Opportunity Notice | Pholio",
   description:
-    "Notice concerning the collection, use, disclosure, retention, and deletion of personal data and materials submitted to agencies through Pholio.",
+    "Notice covering agency representation submissions and casting, event, fashion-week, brand, client, and other opportunity submissions through Pholio.",
 };
 
 export default function SubmissionProgramNoticePage() {

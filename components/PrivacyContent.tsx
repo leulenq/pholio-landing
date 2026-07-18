@@ -1,346 +1,174 @@
 "use client";
 
-import { motion } from "framer-motion";
+import {
+  LegalDocumentLayout,
+  type LegalSection,
+} from "@/components/LegalDocumentLayout";
+import {
+  COMPANY_ADDRESS,
+  COMPANY_NAME,
+  EFFECTIVE_DATE,
+  LAST_UPDATED,
+  LEGAL_EMAIL,
+  PRIVACY_EMAIL,
+} from "@/lib/legal-constants";
 
-const LAST_UPDATED = "June 25, 2026";
-const EFFECTIVE_DATE = "June 25, 2026";
-const CONTACT_EMAIL = "privacy@pholio.studio";
-const COMPANY_NAME = "Pholio Studio, Inc.";
-const COMPANY_ADDRESS = "Pholio Studio, Inc., [Your Address], [City, State, ZIP], United States";
-
-const sections = [
+const sections: LegalSection[] = [
   {
     title: "Who We Are and How to Contact Us",
     content: [
-      `${COMPANY_NAME} ("Pholio," "we," "our," or "us") operates the platform accessible at www.pholio.studio and app.pholio.studio (collectively, the "Platform"). We are the data controller responsible for your personal data.`,
-      `For all privacy-related questions, requests, or concerns, please contact our Privacy Team at:`,
-      `Email: ${CONTACT_EMAIL}`,
-      `Mailing address: ${COMPANY_ADDRESS}`,
-      `If you are located in the European Economic Area (EEA) or the United Kingdom, you also have the right to lodge a complaint with your local supervisory authority. We encourage you to contact us first so we can address your concern directly.`,
+      `${COMPANY_NAME} ("Pholio," "we," "our," or "us") operates www.pholio.studio and app.pholio.studio (together, the "Platform"). Pholio determines the purposes and means of the account, portfolio, submission, safety, and product data processing described in this Policy unless an opportunity-specific notice identifies a different arrangement.`,
+      `Privacy requests and questions: ${PRIVACY_EMAIL}`,
+      `Legal and safety questions: ${LEGAL_EMAIL}`,
+      `Do not send passwords, payment-card data, government identification, or intimate images by email. A counsel-approved postal service address will be published when available.`,
     ],
   },
   {
-    title: "Scope of This Policy",
+    title: "Scope and Territorial Availability",
     content: [
-      `This Privacy Policy applies to all personal data we collect when you: (a) visit our marketing website at www.pholio.studio; (b) create and use an account on our application at app.pholio.studio; (c) interact with us by email, social media, or any other channel; or (d) apply to or manage talent as an agency partner.`,
-      `This Policy does not apply to third-party websites, services, or applications that may be linked from our Platform. We encourage you to review the privacy policies of any third parties before providing them with personal data.`,
-      `If you are a talent user ("Talent"), this Policy explains how we handle your portfolio data, images, professional profile, and the casting analysis we generate to help agencies discover you. If you are an agency user ("Agency"), this Policy explains how we handle your roster management, team accounts, and business data. Some sections apply to both user types; where distinctions exist, we note them clearly.`,
+      `This Policy applies when you visit the marketing site, create or use a Platform account, publish or view a portfolio, submit to or review an opportunity, communicate through Pholio, subscribe, or contact us. It does not govern a third party's independent website or off-platform processing.`,
+      `An agency, casting organization, event producer, brand, client, or other Recipient may act as an independent controller or business for the copy of data it receives and for later off-platform activity. Review that Recipient's notice before proceeding.`,
+      `The initial production launch is directed to users in the United States. The Platform may be technically accessible elsewhere, but technical accessibility alone is not an offer in every jurisdiction. Users outside the United States should contact ${PRIVACY_EMAIL} before submitting sensitive data.`,
     ],
   },
   {
-    title: "Data We Collect and Why",
+    title: "Personal Data We Collect",
     content: [
-      `We collect personal data only when necessary for legitimate business purposes. Below is a full account of the categories of data we collect, the source of that data, and the purpose for which we use it.`,
-      `3a. Account and Identity Data\nWhen you register for Pholio, we collect your full name, email address, password (stored as a hashed credential via Firebase Authentication), role (Talent or Agency), email verification status, and account timestamps. If you choose to sign in with a third-party provider, we receive limited identity data from that provider: with Google sign-in, your Google account email and basic profile; with Instagram sign-in, your Instagram user ID, username (handle), account type, and profile picture URL. We use this data to create and authenticate your account, communicate with you about your account, and maintain platform security. Legal basis (GDPR): Performance of a contract; Legitimate interests (fraud prevention and security).`,
-      `3b. Profile and Portfolio Data (Talent)\nTalent users voluntarily provide professional profile information, which may include display name, pronouns, biography, date of birth, location (city and country), languages, training and experience level, social media handles (such as Instagram and OnlyFans), modeling categories and booking lanes, comp card layout and styling preferences, and physical attributes such as height, weight, bust, waist, hip and shoe measurements, eye color, hair color, body type, and ethnicity or heritage. Some of these fields — in particular ethnicity/heritage and certain physical attributes — may constitute special category data. They are optional and provided at your discretion. This data is used to build your portfolio, generate PDF comp cards, and help agencies discover and evaluate you. Legal basis (GDPR): Performance of a contract; Consent (for special category data).`,
-      `3c. Images and Media\nTalent users upload photographs and other media to their portfolios. Uploaded files are processed (resized, converted, and thumbnailed) and stored with our object-storage provider, Cloudflare R2, and served via its content delivery network through your portfolio URL, subject to your visibility settings. We retain original, processed, and thumbnail versions of your images. We use uploaded images to display your portfolio, generate comp card PDFs, and produce the automated photo analysis described in Section 3g. Agency users may upload a workspace logo and related business imagery. Legal basis (GDPR): Performance of a contract; Consent (where images are processed for casting analysis).`,
-      `3d. Agency and Business Data\nAgency users provide business name, agency description, website URL, logo, social links, and contact details. Agencies may invite team members, who are assigned roles and permissions (role-based access control). Agencies may also create casting boards and booking lanes, and store internal notes, tags, application statuses, interview schedules, reminder entries, and commission records related to talent they manage. This data is used to operate agency dashboards, manage talent rosters, and facilitate applications between talent and agencies. Legal basis (GDPR): Performance of a contract; Legitimate interests.`,
-      `3e. Application and Communication Data\nWhen a Talent applies to an Agency, we record the application submission date, application status (such as pending, reviewed, accepted, declined, withdrawn, or kept on file), and any messages exchanged within the platform. We generate email notifications for certain events (such as new messages and application updates) and may include secure reply tokens so you can respond to a message directly from your email. We also maintain in-app notifications. This data is visible to the relevant Talent and Agency. Legal basis (GDPR): Performance of a contract.`,
-      `3f. Payment and Subscription Data\nWe use Stripe, Inc. as our payment processor for all subscription billing and transaction management. When you subscribe to a paid plan, Stripe collects and stores your payment card details, billing address, and transaction history directly on their PCI-DSS-compliant infrastructure. We do not store full card numbers or CVV codes on our servers. We receive from Stripe only a tokenized reference, subscription status, plan tier, trial status, and billing cycle dates. Stripe's Privacy Policy governs their handling of your payment data: stripe.com/privacy. Legal basis (GDPR): Performance of a contract; Legal obligation (tax and accounting records).`,
-      `3g. AI-Assisted and Derived Data\nTo operate our casting and discovery features, we process portfolio images and profile text using third-party AI services. Uploaded headshots are submitted to Groq, Inc.'s vision API, which returns a structured casting assessment that may include estimated physical measurements and attributes such as skin tone, bone structure, feature contrast, look type, photo quality, market signals, booking strengths, and indicative fit scores. We also send profile text and these AI-generated descriptions (not the images themselves) to OpenAI to create vector embeddings that power agency semantic search ("Discover"). This analysis is performed automatically as part of profile processing and is integral to providing the Platform; it is advisory and supports — but does not replace — human casting decisions. Where this processing derives information that may relate to special categories (such as appearance or ethnicity), we rely on your explicit consent obtained when you submit such data. We do not permit Groq or OpenAI to use your images or data to train their models. Legal basis (GDPR): Performance of a contract; Legitimate interests; Consent (for special category inferences).`,
-      `3h. Technical, Device, and Location Data\nWhen you access the Platform, we automatically collect your IP address, browser type and version, operating system, device type, referring URL, and page interaction data (clicks, scroll depth, time on page). We use a third-party geolocation provider (ipapi.co) to derive approximate location (country, region, city, timezone, and coordinates) from IP addresses. We use this data to maintain platform security, debug errors, prevent abuse, improve performance, populate visitor analytics, and — for Talent — to cross-reference IP-derived location against the location you report on your profile as a signal of authenticity. Legal basis (GDPR): Legitimate interests.`,
-      `3i. Analytics and Usage Data\nWe collect aggregated usage statistics such as portfolio page views, unique visitors, geographic distribution of visitors, and application conversion rates. Talent users can view their own analytics in their dashboard. We use this data to help Talent understand their portfolio performance and to improve the Platform. Legal basis (GDPR): Legitimate interests; Performance of a contract.`,
-      `3j. Session and Cookie Data\nWe use server-side session cookies to maintain your authenticated state across visits. Session identifiers are stored in our database and associated with your account. We also use strictly necessary cookies required for security and authentication. Within your account settings you can adjust certain cookie and notification preferences (for example, analytics and marketing). We do not use third-party advertising cookies or behavioral tracking cookies. See Section 10 (Cookies) for full details. Legal basis (GDPR): Legitimate interests; Legal obligation.`,
-      `3k. Communications Data\nIf you contact us by email or through support channels, we retain the content of your communications and your contact details in order to resolve your inquiry and maintain a record for follow-up. Legal basis (GDPR): Legitimate interests.`,
-      `3l. Minor and Guardian Data\nWhere a Talent's date of birth indicates they are under 18, we record additional compliance data, including the timestamp of verified parent or guardian consent and, where applicable, whether a work permit is on file. Until guardian consent is recorded, we restrict the collection of sensitive measurements and prevent public exposure of the minor's portfolio. See Section 11 (Children's Privacy). Legal basis (GDPR): Legal obligation; Consent.`,
+      `3a. Account and identity data\nName, email address, Firebase user identifier, sign-in provider information, role, account status, email-verification status, dates and timestamps, and session identifiers. Firebase stores and verifies credentials; Pholio does not store your plaintext password. Account entry currently requests name and email before the onboarding flow requests date of birth.`,
+      `3b. Talent profile and professional data\nDisplay or professional name, pronouns, biography, date of birth, age band, city, country, market, languages, training, experience, specialties, representation history, union or work-eligibility information, availability, social-media handles, portfolio links, and other professional information you provide.`,
+      `3c. Measurements and appearance information\nHeight, weight, bust or chest, waist, hips, inseam, dress, suit and shoe measurements, hair and eye color, gender or division information, body type, tattoos, piercings, ethnicity or heritage, and related attributes. These fields can be sensitive in context and may reveal or correlate with protected characteristics.`,
+      `3d. Images, media, and metadata\nOriginal uploads, processed images, thumbnails, file names, dimensions, format, upload date, ordering, image type, moderation status, rights or release information, and technical metadata. Images are stored with Cloudflare R2. Processed files and, in some configurations, originals are addressed through direct CDN URLs. A URL that has already been copied or shared may remain reachable until the object is removed or the URL is invalidated.`,
+      `3e. Applications and opportunity data\nRecipient, opportunity or board, draft, selected images and comp card, submission note, package fingerprint, disclosure and confirmation records, submission time, status, withdrawal, messages, interviews, reminders, internal Recipient activity, and technical audit events.`,
+      `3f. Payments and subscriptions\nStripe customer and subscription identifiers, plan, interval, trial and renewal dates, status, and transaction references. Stripe collects card and billing information directly. Pholio does not store full card numbers or CVV values.`,
+      `3g. AI-assisted and derived data\nImages, profile text, AI-generated descriptions, embeddings, compatibility or match information, photo-quality or presentation signals, face-structure and body-impression descriptions, archetype or market-fit scores, and casting-style summaries. Depending on the feature and index version, inputs may include location, age band, gender or division information, measurements, body type, hair, eye color, ethnicity or heritage, and Recipient criteria. See the AI Notice.`,
+      `3h. Technical, security, and approximate-location data\nIP address, forwarded network address, browser, operating system, device type, user agent, referrer, timestamps, error records, rate-limit data, session records, and country, region, city, timezone, or coordinates derived from IP through ipapi.co or another configured provider.`,
+      `3i. Portfolio analytics\nPublic portfolio views and interactions, including profile views, returning-visitor status, image impressions or opens, image dwell, biography reads, contact or social clicks, scroll depth, referrer, share-token activity, and approximate market information. Portfolio analytics records can include a persistent visitor identifier, IP address, user agent, and timestamps; they are not necessarily anonymous when collected.`,
+      `3j. Guardian, age, and compliance data\nDate of birth, minor status, guardian name and email, consent or authorization status and token, submission-specific authorization, and self-reported work-permit status. A guardian email or work-permit indicator is not identity, relationship, custody, or government-document verification.`,
+      `3k. Rights, safety, and support data\nLegal acknowledgments, consent and withdrawal records, report details, moderation and enforcement events, deletion or provider-purge status, privacy requests, support communications, and information needed to investigate fraud, abuse, infringement, exploitation, or security incidents.`,
     ],
   },
   {
-    title: "Legal Bases for Processing (GDPR)",
+    title: "How We Use Personal Data",
     content: [
-      `If you are located in the EEA or UK, we rely on the following legal bases under the General Data Protection Regulation (GDPR) and UK GDPR:`,
-      `Performance of a Contract (Art. 6(1)(b)): Processing necessary to provide you with the Platform and its features — account creation, portfolio management, automated casting analysis and discovery, agency matching, and subscription management.`,
-      `Legitimate Interests (Art. 6(1)(f)): Processing necessary for our legitimate business interests, including platform security, fraud prevention, location verification, product improvement, and analytics — where those interests are not overridden by your rights.`,
-      `Consent (Art. 6(1)(a)): Processing of special category profile data and any optional communications such as marketing emails. You may withdraw consent at any time without affecting the lawfulness of prior processing.`,
-      `Legal Obligation (Art. 6(1)(c)): Processing required for compliance with applicable law, such as financial recordkeeping for tax purposes and verification of parental or guardian consent for minors.`,
-      `Where we process special categories of data — such as ethnicity/heritage, physical measurements, or appearance attributes derived from photo analysis, which may indirectly reveal racial or ethnic origin or health-related information — we rely on your explicit consent (Art. 9(2)(a) GDPR). You provide such data voluntarily as part of your professional profile; it is not mandatory.`,
+      `(a) create, authenticate, secure, support, and administer accounts;`,
+      `(b) build portfolios and comp cards and provide profile, application, messaging, analytics, and subscription features;`,
+      `(c) publish or make a profile discoverable according to the settings and product state associated with the account;`,
+      `(d) transmit a submission to the Recipient selected by Talent and maintain the associated record;`,
+      `(e) generate search indexes, embeddings, quality, compatibility, or ranking information as described in the AI Notice;`,
+      `(f) send transactional, safety, legal, application, billing, and, where authorized, marketing communications;`,
+      `(g) prevent, detect, investigate, and respond to fraud, abuse, infringement, exploitation, unsafe conduct, security events, and violations of our policies;`,
+      `(h) debug, measure, maintain, and improve the Platform; and`,
+      `(i) comply with law, lawful process, recordkeeping duties, disputes, and legal claims.`,
+      `Pholio does not sell personal data or share it for cross-context behavioral advertising as those terms are currently defined under applicable U.S. state privacy laws.`,
     ],
   },
   {
-    title: "How We Share Your Data",
+    title: "Public Profiles, Discoverability, and Blocking",
     content: [
-      `We do not sell your personal data. We share personal data only in the circumstances described below.`,
-      `5a. With Other Platform Users\nPublic portfolio pages are visible to anyone who accesses your portfolio URL, subject to your visibility settings and, for minors, to guardian consent. Talent profiles — including portfolio images and the casting attributes we derive (see Section 3g) — are made discoverable to Agency users through our semantic search ("Discover") feature. Agency users who receive an application from a Talent will see that Talent's profile data, portfolio images, and contact details as part of the application workflow. Agencies and their authorized team members manage this data as independent controllers for their own business purposes.`,
-      `5b. With Third-Party Service Providers\nWe share data with vendors who process data on our behalf under data processing agreements:`,
-      `— Firebase / Google LLC (Authentication and Identity): Manages login, credential verification, and Google sign-in. Privacy policy: firebase.google.com/support/privacy`,
-      `— Meta Platforms / Instagram (Optional Sign-In): Where you choose Instagram sign-in, we receive your Instagram user ID, handle, account type, and profile picture.`,
-      `— Stripe, Inc. (Payment Processing): Processes subscription payments and billing. Privacy policy: stripe.com/privacy`,
-      `— Groq, Inc. (AI Vision and Casting Analysis): Processes portfolio images to generate casting assessments.`,
-      `— OpenAI (Text Embeddings): Processes profile text and AI-generated descriptions (not images) to power semantic search. `,
-      `— Cloudflare, Inc. (Object Storage and CDN): Stores and serves portfolio images and media via Cloudflare R2.`,
-      `— Neon (Database Hosting): Hosts the PostgreSQL database in production environments. Data is encrypted at rest and in transit.`,
-      `— Netlify, Inc. (Hosting and Functions): Serves the Platform and executes serverless API functions.`,
-      `— ipapi.co (IP Geolocation): Receives IP addresses to return approximate location data for security, analytics, and location verification.`,
-      `— Email Service Provider (Transactional Email): Delivers account, application, and notification emails. [Provider to be confirmed and named once the production email service is finalized.]`,
-      `5c. For Legal Compliance and Safety\nWe may disclose personal data if required by law, court order, subpoena, or regulatory authority, or if we believe disclosure is necessary to protect the rights, property, or safety of Pholio, our users, or the public.`,
-      `5d. Business Transfers\nIf Pholio undergoes a merger, acquisition, restructuring, or sale of assets, personal data may be transferred as part of that transaction. We will notify affected users via email or prominent notice on the Platform at least 30 days before data becomes subject to a materially different privacy policy.`,
-      `5e. Aggregated and De-identified Data\nWe may share aggregated, anonymized, or de-identified data (from which you cannot reasonably be identified) with third parties for research, analytics, or product improvement purposes.`,
+      `A profile can have separate public-portfolio, agency-discoverability, contact-sharing, analytics, and field-visibility states. Some new or legacy accounts may begin with one or more visibility or analytics settings enabled. Review account settings before uploading or publishing sensitive information.`,
+      `When a portfolio is public, anyone with the URL may be able to view the fields and media rendered on it, including social handles and appearance or professional information. Search engines, recipients, viewers, and third parties may copy, screenshot, cache, download, or independently retain public information. Pholio cannot recall every copy made outside its systems.`,
+      `Agency discoverability can make profile information and derived search signals visible to authorized organization users even when the public portfolio is not the only source of access. Submitting to a Recipient separately authorizes that Recipient to receive the submitted package.`,
+      `A blocked-organization setting is intended to limit specified in-product activity, but it does not remove public information, recall a prior submission or download, prevent access through another account, or guarantee that every name or domain variation is matched. If blocking relates to harassment, exploitation, or personal safety, contact ${LEGAL_EMAIL} so we can apply and document additional restrictions.`,
+      `Turning a profile private or deleting media changes future Platform presentation after the request is processed; it does not immediately invalidate every CDN, cache, application snapshot, backup, analytics record, or Recipient copy.`,
     ],
   },
   {
-    title: "International Data Transfers",
+    title: "Recipients and Service Providers",
     content: [
-      `Pholio is based in the United States. If you access the Platform from outside the United States, your data may be transferred to, stored in, and processed in the United States or other countries where our service providers operate.`,
-      `For users in the EEA, UK, or Switzerland, we implement appropriate safeguards for international transfers in accordance with GDPR Chapter V, including Standard Contractual Clauses (SCCs) approved by the European Commission where applicable. A copy of our transfer mechanisms is available upon request at ${CONTACT_EMAIL}.`,
+      `6a. Opportunity Recipients\nAt Talent's direction, we disclose the selected submission package to the identified agency, event producer, casting organization, brand, client, or other Recipient and its authorized personnel. The Recipient may be an independent controller or business for its use, retention, decisions, and off-platform copies.`,
+      `6b. Service providers\nProviders used by the Platform may include Firebase or Google for authentication; Stripe for billing; Groq and OpenAI for AI processing; Cloudflare for object storage and delivery; Neon for database hosting; Netlify for hosting and functions; ipapi.co for IP-derived location; and a configured email-delivery provider for transactional email. Provider identity and configuration can change. Contact ${PRIVACY_EMAIL} for the current list relevant to a request.`,
+      `6c. Safety, legal process, and professional advisers\nWe may disclose information to law enforcement, NCMEC, regulators, courts, professional advisers, insurers, auditors, or other parties when required or permitted by law, necessary to report apparent unlawful material, protect a person, investigate misuse, or establish or defend legal claims.`,
+      `6d. Corporate transactions\nInformation may be transferred in a financing, merger, acquisition, reorganization, insolvency, or sale of assets, subject to applicable law and notice requirements.`,
+      `6e. De-identified information\nWe may use or disclose aggregated or de-identified information where we reasonably believe it cannot be linked to a person and where we commit not to re-identify it except to test the de-identification process or as permitted by law.`,
     ],
   },
   {
-    title: "Data Retention",
+    title: "Legal Bases, Consent, and United States Privacy Laws",
     content: [
-      `We retain personal data only for as long as necessary to fulfill the purposes for which it was collected, comply with legal obligations, resolve disputes, and enforce agreements.`,
-      `Account Data: Retained for the duration of your account and for up to 3 years after account deletion, unless a longer retention period is required by law.`,
-      `Portfolio Images and Media: Stored on Cloudflare R2 and deleted within 30 days of account deletion or upon your request, except where we are required to retain them for legal or dispute-resolution purposes.`,
-      `AI-Derived Data and Search Embeddings: Casting assessments and the embeddings used for discovery are retained while your profile is active and re-generated when your profile changes; they are deleted alongside your profile data on account deletion.`,
-      `Payment Records: Retained for 7 years in accordance with tax and financial recordkeeping obligations.`,
-      `Application Records: Retained for 2 years after the conclusion of an application process.`,
-      `Analytics Data: Aggregated analytics may be retained indefinitely as they do not identify individuals. Raw logs containing IP addresses are purged after 90 days.`,
-      `Session Data: Active sessions expire after 30 days of inactivity. Expired session records are purged monthly.`,
-      `Support Communications: Retained for 3 years from last contact to allow follow-up and resolve recurring issues.`,
-      `You may request early deletion of your data at any time (see Section 8, Your Rights).`,
+      `For United States users, we process information to provide requested services, operate and secure the Platform, comply with law, and pursue legitimate business purposes described above. Specific state laws may grant additional rights or require consent for minors, sensitive information, profiling, biometrics, or other processing.`,
+      `Where consent is legally required, the request should identify the data, purpose, and available choice. A Terms acceptance, Privacy Policy acknowledgment, guardian authorization, public-profile setting, image-AI setting, and opportunity submission are distinct actions and do not automatically authorize one another.`,
+      `Known New York users aged 13 to 17 may have the right to decline nonessential processing through a separate, informed and revocable choice. Refusal should not reduce service or increase price unless the processing is strictly necessary for that feature.`,
+      `Where the EU GDPR or UK GDPR lawfully applies, possible bases can include contract, legitimate interests, consent, legal obligation, and protection of vital interests. Special-category processing requires an Article 9 condition. This Policy does not represent that every current processing activity has been approved for EEA or UK rollout.`,
     ],
   },
   {
-    title: "Data Security",
+    title: "Children and Teen Privacy",
     content: [
-      `We implement technical and organizational security measures proportionate to the sensitivity of the data we hold. These measures include:`,
-      `— Encryption in transit: All data transmitted between your browser and our servers is encrypted using TLS (HTTPS).`,
-      `— Encryption at rest: Database records are encrypted at rest on Neon's managed PostgreSQL infrastructure, and media is stored on Cloudflare R2.`,
-      `— Authentication security: Passwords are never stored in plaintext. We use Firebase Authentication, which applies secure hashing and credential storage.`,
-      `— Access controls: Only authorized personnel with a legitimate business need have access to personal data. Agency team access is governed by role-based permissions, and access is logged.`,
-      `— Session integrity: Sessions use cryptographically signed, server-stored tokens. Session IDs are rotated on authentication events.`,
-      `— Third-party security: Our payment data is handled exclusively by Stripe, a PCI-DSS Level 1 certified payment processor.`,
-      `Despite these measures, no system is completely immune to security risks. If you suspect unauthorized access to your account, please contact us immediately at ${CONTACT_EMAIL}. In the event of a data breach that affects your rights and freedoms, we will notify you and relevant authorities in accordance with applicable law (within 72 hours for GDPR-covered incidents).`,
+      `The Platform is not directed to children under 13, and under-13 users may not create accounts or provide personal information. Because date of birth is requested after initial account entry, an under-13 user may have provided name, email, account, device, or session information before the age screen is completed. If we learn this occurred, we will investigate and delete or restrict that information as required by law.`,
+      `Users aged 13 to 17 may use the Platform only with guardian involvement and subject to applicable law and opportunity-specific eligibility. A user-supplied guardian email is not proof of identity, adulthood, relationship, custody, or legal authority. We may request additional evidence.`,
+      `Guardian authorization for account use or a submission does not itself authorize employment, travel, test shoots, publicity, commercial image use, digital replicas, medical examinations, or other later activity. Child-performer permits, employer certificates, work hours, education, trust accounts, insurance, supervision, and other protections may apply before work.`,
+      `A known minor may also have independent consent and privacy rights. Parents, guardians, and minors can contact ${PRIVACY_EMAIL} to review, revoke, restrict, or delete qualifying information.`,
     ],
   },
   {
-    title: "Your Privacy Rights",
+    title: "Cookies and Portfolio Analytics",
     content: [
-      `Depending on where you reside, you have rights regarding your personal data. We honor these rights for all users regardless of location, to the extent technically feasible. Many of these can be exercised directly in your account settings, which include data export and erasure requests, account deactivation, portfolio visibility controls, the ability to block specific agencies, and contact, cookie, and notification preferences.`,
-      `Right of Access: You may request a copy of the personal data we hold about you, along with information about how and why we process it.`,
-      `Right to Rectification: You may request that we correct inaccurate or incomplete personal data. Most profile data can be updated directly in your account settings.`,
-      `Right to Erasure ("Right to Be Forgotten"): You may request deletion of your personal data. We will delete your data subject to applicable retention obligations (e.g., financial records we must keep by law).`,
-      `Right to Restriction: You may request that we limit how we process your data, for example while a dispute is being resolved.`,
-      `Right to Data Portability: You may request an export of your personal data in a structured, commonly used, machine-readable format (JSON or CSV).`,
-      `Right to Object: You may object to processing based on legitimate interests, including profiling. We will cease such processing unless we can demonstrate compelling legitimate grounds.`,
-      `Right to Withdraw Consent: Where processing is based on consent (e.g., special category profile data, marketing emails), you may withdraw consent at any time without penalty.`,
-      `Right to Non-Discrimination (CCPA): California residents have the right not to be discriminated against for exercising their privacy rights. We will not deny services, charge different prices, or provide a lower quality of service based on the exercise of these rights.`,
-      `Right to Opt-Out of Sale: We do not sell personal data as defined under the California Consumer Privacy Act (CCPA) and California Privacy Rights Act (CPRA). No opt-out mechanism is required, but if our practices change, we will update this Policy and provide an opt-out link.`,
-      `To exercise any of these rights, submit a request to ${CONTACT_EMAIL} with the subject line "Privacy Rights Request." We will verify your identity before processing the request and respond within 30 days (extendable by an additional 60 days for complex requests, with notice). We do not charge a fee for reasonable requests.`,
+      `Authenticated sessions currently use a first-party Express session cookie commonly named connect.sid with a configured lifetime of up to seven days. Firebase stores authentication credentials or refresh information in browser storage until logout, revocation, or expiry. Stripe may use cookies during checkout.`,
+      `A non-owner visit to a public portfolio can set pholio_visitor_id for up to one year and a profile-specific pholio_session_<profile identifier> cookie for approximately 30 minutes. Associated server records can include visitor and session identifiers, IP address, user agent, referrer, returning-visitor status, timestamps, and interaction events.`,
+      `The application may store pholio_cookie_consent_v1 in localStorage to remember a necessary/analytics preference. This browser preference does not itself delete prior analytics and may not govern every server-side security or public-portfolio event currently collected.`,
+      `We do not currently use third-party advertising pixels or cross-context behavioral-advertising cookies on the authenticated application. See the Cookie Policy for a fuller inventory.`,
     ],
   },
   {
-    title: "Cookies and Tracking Technologies",
+    title: "Retention and Deletion",
     content: [
-      `We use cookies and similar technologies to operate the Platform. The table below describes the cookies we set.`,
-      `Strictly Necessary Cookies: These are required for the Platform to function and cannot be disabled. They include session authentication cookies (to keep you logged in), CSRF protection tokens, and security-related identifiers. Legal basis: Legitimate interests / Legal obligation.`,
-      `Preference Cookies: These store your preferences such as display settings and onboarding state, so you do not need to reconfigure them on each visit. Legal basis: Legitimate interests.`,
-      `Analytics Cookies (First-Party): We use server-side analytics to track aggregated page views and feature usage. We do not use Google Analytics, Facebook Pixel, or other third-party tracking scripts on the authenticated application. Legal basis: Legitimate interests.`,
-      `No Advertising Cookies: We do not use cookies for advertising, retargeting, or cross-site behavioral tracking.`,
-      `Cookie Controls: Authenticated users can manage analytics and marketing preferences in their account settings. You can also control cookies through your browser settings. Disabling strictly necessary cookies will prevent you from logging in or using core Platform features. Disabling preference cookies will cause your preferences to reset on each visit.`,
+      `We retain personal data for the period reasonably necessary for the purposes described here, subject to account state, provider deletion cycles, security, disputes, legal claims, financial records, and legal obligations. Where a fixed period is not stated, these criteria determine the period.`,
+      `Account and profile data: Generally retained while the account is active. After a deletion request, database records are deleted or de-identified subject to required or permitted exceptions. Provider deletion can remain pending if Firebase, object storage, or another provider is unavailable.`,
+      `Media: Live objects are removed when a supported deletion succeeds. CDN caches, backups, previously copied URLs, and Recipient copies can persist longer. We record provider-purge failures so they can be retried, but deletion is not complete until the relevant providers confirm or no longer retain the object.`,
+      `Submission drafts: An active server-side draft generally expires after 90 days without renewal; a deleted or expired payload can remain recoverable for approximately seven additional days before purge.`,
+      `Submitted applications: The submitted package is generally scheduled for redaction or deletion approximately 24 months after submission. Status, consent, safety, audit, legal, and limited application records may be retained longer where necessary. Recipient copies follow the Recipient's retention obligations.`,
+      `Sessions: The browser session cookie is configured for up to seven days. Server-side session rows may persist until expiration, account deletion, manual revocation, or database cleanup.`,
+      `Portfolio analytics: Visitor cookies have the periods described above. Server analytics and IP-bearing records are retained according to active operational schedules and can be kept longer for security, fraud, disputes, or legal obligations. We do not represent that all such records are automatically purged after 90 days.`,
+      `Billing and legal records: Transaction, tax, assent, consent, complaint, moderation, security, and dispute records may be retained for the period required or reasonably necessary to demonstrate compliance or resolve claims.`,
     ],
   },
   {
-    title: "Children's Privacy",
+    title: "Security and Incident Response",
     content: [
-      `Pholio supports professional talent who may be minors (for example, child models), but accounts for minors must be created and managed by a parent or legal guardian. Where a Talent's date of birth indicates they are under 18, we treat the profile as a minor profile and apply additional safeguards: we require a recorded parent or guardian consent before sensitive measurement data is collected or the portfolio is made publicly visible, and we may record whether a work permit is on file.`,
-      `General-audience accounts are not directed to children below the minimum age required for data processing in their jurisdiction (16 in much of the EEA, or 13 in the United States where COPPA applies). We do not knowingly collect personal data from such children without verifiable parental or guardian consent.`,
-      `If you are a parent or guardian and believe your child has created a Pholio account or provided us with personal data without your consent, please contact us immediately at ${CONTACT_EMAIL}. We will investigate and, if confirmed, delete the account and all associated data promptly.`,
+      `Pholio uses HTTPS, Firebase authentication, server-side sessions, managed database and object-storage providers, provider encryption at rest, application access controls, and security or moderation logging in parts of the Platform. These measures reduce risk but do not guarantee confidentiality, integrity, availability, or that every user-selected visibility control prevents all access.`,
+      `Public portfolios and direct media URLs are not confidential. Do not upload information that is unnecessary for a professional portfolio or submission, including government identifiers, payment credentials, medical records, precise home addresses, or intimate material.`,
+      `If you suspect account compromise, unauthorized disclosure, or a security incident, contact ${LEGAL_EMAIL} promptly. We will investigate and provide notices to affected people and authorities when and within the time required by applicable law.`,
+    ],
+  },
+  {
+    title: "Your Rights and Requests",
+    content: [
+      `Depending on location and applicable law, you may have rights to know, access, correct, delete, restrict, object, withdraw consent, receive portable data, obtain information about profiling, request human review, limit qualifying sensitive-data use, appeal a refusal, and receive equal service. Rights are subject to verification and legal exceptions.`,
+      `Some settings can change profile data, visibility, notifications, analytics preferences, AI image settings, sessions, export, deactivation, or deletion. A setting is not proof that every downstream copy, provider record, prior submission, or legal record has been changed. Use ${PRIVACY_EMAIL} when you need a verified rights request or confirmation of completion.`,
+      `We may verify your identity and authority, especially for deletion, export, guardian, representative, or safety-sensitive requests. We respond within the period required by the law that applies to the request. If no statutory deadline applies, we aim to respond within a reasonable time.`,
+      `A request concerning a Recipient's independent copy must also be sent to that Recipient. Pholio can restrict in-product access but cannot guarantee deletion from an independent system it does not control.`,
+    ],
+  },
+  {
+    title: "International Processing",
+    content: [
+      `Pholio and its providers primarily process information in the United States and in other locations where a provider operates. Data-protection and government-access rules can differ from those in your country.`,
+      `Before intentionally offering the full Platform to EEA or UK residents, Pholio must determine and document applicable transfer mechanisms, Article 27 representation, special-category conditions, age-appropriate design, profiling safeguards, and provider terms. No EU or UK representative is currently identified in this Policy.`,
+      `If you are in the EEA or UK and believe the law applies to your use, contact ${PRIVACY_EMAIL}. You may also have the right to complain to a competent supervisory authority.`,
     ],
   },
   {
     title: "Changes to This Policy",
     content: [
-      `We may update this Privacy Policy from time to time to reflect changes in our practices, legal requirements, or Platform features. When we make material changes, we will:`,
-      `(a) Update the "Last Updated" date at the top of this Policy;`,
-      `(b) Notify registered users via email at least 14 days before the changes take effect; and`,
-      `(c) Display a prominent notice on the Platform for at least 30 days.`,
-      `For non-material changes (such as grammatical corrections or clarifications that do not alter the substance of the Policy), we will update the date and publish the revised Policy without separate notification. Your continued use of the Platform after the effective date of a revised Policy constitutes your acceptance of the updated terms.`,
-      `We maintain a version history of this Policy, which is available upon request at ${CONTACT_EMAIL}.`,
-    ],
-  },
-  {
-    title: "California Privacy Rights (CCPA / CPRA)",
-    content: [
-      `If you are a California resident, the California Consumer Privacy Act (CCPA), as amended by the California Privacy Rights Act (CPRA), grants you the following rights in addition to those described in Section 8:`,
-      `Right to Know: You have the right to request that we disclose the categories and specific pieces of personal information we have collected about you, the categories of sources from which it was collected, the business purpose for collection, and the categories of third parties with whom it was shared.`,
-      `Right to Delete: You have the right to request deletion of personal information we have collected from you, subject to certain exceptions (e.g., completing a transaction, security purposes, legal compliance).`,
-      `Right to Correct: You have the right to request correction of inaccurate personal information we maintain about you.`,
-      `Right to Opt-Out of Sale or Sharing: We do not sell personal information or share it for cross-context behavioral advertising as defined under the CCPA/CPRA.`,
-      `Right to Limit Use of Sensitive Personal Information: We process sensitive personal information (such as physical measurements, ethnicity/heritage, and appearance attributes derived from photo analysis) to provide and operate the casting, portfolio, and discovery services you request. We do not use sensitive personal information to infer characteristics for purposes unrelated to delivering these services, and we do not sell or share it.`,
-      `Shine the Light: California Civil Code Section 1798.83 permits California residents to request information about our disclosure of personal data to third parties for direct marketing purposes. We do not disclose personal data to third parties for their own direct marketing purposes.`,
-      `To submit a verifiable California consumer request, email ${CONTACT_EMAIL} with "California Privacy Rights Request" in the subject line. We will acknowledge receipt within 10 business days and respond substantively within 45 days (extendable by an additional 45 days with notice).`,
-    ],
-  },
-  {
-    title: "EEA and UK Residents — Additional Information",
-    content: [
-      `If you are located in the European Economic Area or the United Kingdom, the following additional information applies:`,
-      `Data Controller: ${COMPANY_NAME} is the data controller for personal data processed through the Platform.`,
-      `EU/UK Representative: [If applicable — If you do not have an EU/UK establishment, you should appoint an Art. 27 representative. Placeholder: Our EU/UK representative can be contacted at ${CONTACT_EMAIL} pending formal appointment.]`,
-      `Supervisory Authority Complaints: You have the right to lodge a complaint with the supervisory authority in your EU member state or the UK Information Commissioner's Office (ICO) if you believe we have processed your data unlawfully. However, we would appreciate the opportunity to address your concern directly first.`,
-      `Automated Processing: We use automated photo and profile analysis to generate casting assessments and to rank and surface talent in agency search. This processing supports human decision-making by agencies and Pholio; we do not make solely automated decisions that produce legal or similarly significant effects on you. You may request human review of, or object to, this processing by contacting us.`,
-      `Legitimate Interests Assessment: Where we rely on legitimate interests as a legal basis, we have conducted a balancing test to ensure our interests do not override your fundamental rights and freedoms. Details of these assessments are available upon request.`,
+      `We may update this Policy as practices, providers, features, or law change. We will update the dates above and provide any additional notice or renewed consent required by applicable law. Notice may be delivered by email, through the Platform, or by posting the revised Policy.`,
+      `A material change will not be applied retroactively where prohibited. You may request the version associated with your account or a submission at ${PRIVACY_EMAIL}.`,
     ],
   },
 ];
 
 export function PrivacyContent() {
   return (
-    <article className="bg-[#FAF7F2] text-[#050505] min-h-screen pt-40 pb-32 px-6 texture-grain">
-      <div className="max-w-3xl mx-auto">
-        <motion.header
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="mb-24 border-b border-[#050505]/10 pb-12"
-        >
-          <span className="text-[10px] uppercase tracking-[0.3em] text-[#C9A55A] mb-4 block font-semibold">
-            Legal &amp; Compliance
-          </span>
-          <h1 className="font-editorial text-5xl md:text-7xl mb-6">
-            Privacy Policy
-          </h1>
-          <div className="flex flex-col gap-1 mt-4">
-            <p className="text-sm text-[#050505]/40 font-sans tracking-wide">
-              Last Updated: {LAST_UPDATED}
-            </p>
-            <p className="text-sm text-[#050505]/40 font-sans tracking-wide">
-              Effective Date: {EFFECTIVE_DATE}
-            </p>
-          </div>
-          <p className="mt-6 text-base text-[#050505]/60 font-sans leading-relaxed font-light max-w-2xl">
-            This Privacy Policy describes how {COMPANY_NAME} collects, uses, shares, and protects your personal data when you use the Pholio platform. Please read it carefully. By using Pholio, you acknowledge that you have read and understood this Policy.
-          </p>
-        </motion.header>
-
-        {/* Table of Contents */}
-        <motion.nav
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mb-20 p-8 border border-[#050505]/10 rounded-2xl bg-white/40 backdrop-blur-sm"
-        >
-          <h2 className="font-editorial text-xl mb-5 text-[#050505]/80">Table of Contents</h2>
-          <ol className="space-y-2">
-            {sections.map((section, i) => (
-              <li key={section.title}>
-                <a
-                  href={`#section-${i + 1}`}
-                  className="font-sans text-sm text-[#050505]/60 hover:text-[#C9A55A] transition-colors duration-200 flex items-baseline gap-3"
-                >
-                  <span className="text-[#C9A55A] font-semibold tabular-nums w-5 shrink-0">{i + 1}.</span>
-                  <span>{section.title}</span>
-                </a>
-              </li>
-            ))}
-          </ol>
-        </motion.nav>
-
-        <div className="space-y-20">
-          {sections.map((section, i) => (
-            <motion.section
-              key={section.title}
-              id={`section-${i + 1}`}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.6, delay: 0.05 }}
-              className="group scroll-mt-28"
-            >
-              <h2 className="font-editorial text-2xl md:text-3xl mb-6 text-[#050505]/90 group-hover:text-[#C9A55A] transition-colors duration-300">
-                {i + 1}. {section.title}
-              </h2>
-              <div className="space-y-4">
-                {section.content.map((paragraph, j) => {
-                  const isSubheading =
-                    paragraph.includes("\n") ||
-                    /^\d+[a-z]\./.test(paragraph) ||
-                    /^(Right to|—|Strictly|Preference|Analytics|No Advert|Cookie|Account Data|Portfolio|Payment|Application|Analytics Data|Session|Support|Encryption|Authentication|Access|Session integrity|Third-party|Right of|Right to|Right to Data|Right to Object|Right to Non|Right to Opt|Right to Know|Right to Delete|Right to Correct|Right to Limit|Shine|EU\/UK|Supervisory|Automated|Legitimate|Data Controller)/.test(paragraph);
-
-                  if (paragraph.includes("\n")) {
-                    const [heading, ...rest] = paragraph.split("\n");
-                    return (
-                      <div key={j} className="space-y-1.5">
-                        <p className="font-sans text-base font-semibold text-[#050505]/80">
-                          {heading}
-                        </p>
-                        <p className="font-sans text-base text-[#050505]/65 leading-relaxed font-light">
-                          {rest.join(" ")}
-                        </p>
-                      </div>
-                    );
-                  }
-
-                  if (paragraph.startsWith("—")) {
-                    return (
-                      <div key={j} className="flex gap-3 pl-4">
-                        <span className="text-[#C9A55A] shrink-0 mt-0.5">—</span>
-                        <p className="font-sans text-base text-[#050505]/65 leading-relaxed font-light">
-                          {paragraph.slice(2)}
-                        </p>
-                      </div>
-                    );
-                  }
-
-                  if (paragraph.startsWith("(a)") || paragraph.startsWith("(b)") || paragraph.startsWith("(c)")) {
-                    return (
-                      <div key={j} className="flex gap-3 pl-4">
-                        <p className="font-sans text-base text-[#050505]/65 leading-relaxed font-light">
-                          {paragraph}
-                        </p>
-                      </div>
-                    );
-                  }
-
-                  if (
-                    paragraph.startsWith("Email:") ||
-                    paragraph.startsWith("Mailing address:")
-                  ) {
-                    return (
-                      <p key={j} className="font-sans text-sm text-[#050505]/50 leading-relaxed pl-4 border-l-2 border-[#C9A55A]/30">
-                        {paragraph}
-                      </p>
-                    );
-                  }
-
-                  return (
-                    <p
-                      key={j}
-                      className="font-sans text-base text-[#050505]/65 leading-relaxed font-light"
-                    >
-                      {paragraph}
-                    </p>
-                  );
-                })}
-              </div>
-            </motion.section>
-          ))}
-        </div>
-
-        <motion.footer
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="mt-32 pt-12 border-t border-[#050505]/10"
-        >
-          <h3 className="font-editorial text-2xl mb-4">Questions About This Policy?</h3>
-          <p className="font-sans text-[#050505]/60 mb-2 leading-relaxed">
-            If you have questions, concerns, or requests relating to this Privacy Policy or your personal data, our Privacy Team is here to help.
-          </p>
-          <p className="font-sans text-[#050505]/60 mb-8">
-            We aim to respond to all substantive inquiries within 5 business days.
-          </p>
-          <a
-            href={`mailto:${CONTACT_EMAIL}`}
-            className="font-editorial text-2xl text-[#C9A55A] hover:underline transition-all underline-offset-8"
-          >
-            {CONTACT_EMAIL}
-          </a>
-          <p className="mt-12 text-xs text-[#050505]/30 font-sans">
-            © {new Date().getFullYear()} {COMPANY_NAME}. All rights reserved. This document does not constitute legal advice. Consult qualified legal counsel for advice specific to your circumstances.
-          </p>
-        </motion.footer>
-      </div>
-    </article>
+    <LegalDocumentLayout
+      title="Privacy Policy"
+      subtitle="This Policy describes Pholio's current collection, publication, analytics, AI, submission, minor, retention, deletion, and security practices. Public-profile controls, AI settings, submissions, and guardian authorizations are separate choices."
+      lastUpdated={LAST_UPDATED}
+      effectiveDate={EFFECTIVE_DATE}
+      sections={sections}
+      contactEmail={PRIVACY_EMAIL}
+      footerTitle="Privacy Questions or Requests"
+      footerBody="Contact the Privacy Team for access, correction, deletion, consent, profiling, minor-data, or provider-processing questions."
+      companyName={COMPANY_NAME}
+      companyAddress={COMPANY_ADDRESS}
+    />
   );
 }
