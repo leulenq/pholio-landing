@@ -13,7 +13,6 @@ export default function HeaderWrapper() {
   // Light pill: warm editorial pages (#FAF8F5, #FAF7F2) so the bar matches the paper/cream field.
   const isDarkPage =
     pathname === "/" ||
-    pathname === "/talent" ||
     pathname?.startsWith("/agency") ||
     pathname?.startsWith("/about-us") ||
     pathname?.startsWith("/contact") ||
