@@ -27,9 +27,9 @@ import {
 } from "./kit";
 
 const PORTRAITS = [
-  { src: FACES.e, alt: "Portfolio portrait, crossed arms" },
-  { src: FACES.m1, alt: "Portfolio portrait, profile" },
-  { src: FACES.m2, alt: "Portfolio portrait, hero frame" },
+  { pos: "50% 12%", zoom: 1.15, alt: "Portfolio portrait" },
+  { pos: "50% 4%", zoom: 1.75, alt: "Portfolio portrait, close crop" },
+  { pos: "48% 28%", zoom: 1.45, alt: "Portfolio portrait, mid crop" },
 ] as const;
 
 export default function SceneAddress() {
@@ -155,7 +155,7 @@ function PageName({ progress, prm }: { progress: MotionValue<number>; prm: boole
         willChange: "transform, opacity",
       }}
     >
-      Mara Voss
+      Amara Okafor
     </motion.h3>
   );
 }
@@ -170,7 +170,17 @@ function PagePortraits({ progress, prm }: { progress: MotionValue<number>; prm: 
       style={{ opacity: prm ? 1 : opacity, y: prm ? 0 : y, willChange: "transform, opacity" }}
     >
       {PORTRAITS.map((p) => (
-        <Frame key={p.src} src={p.src} alt={p.alt} style={{ aspectRatio: "3 / 4" }} />
+        <Frame
+          key={p.pos}
+          src={FACES.site}
+          alt={p.alt}
+          style={{ aspectRatio: "3 / 4" }}
+          imgStyle={{
+            objectPosition: p.pos,
+            transform: `scale(${p.zoom})`,
+            transformOrigin: p.pos,
+          }}
+        />
       ))}
     </motion.div>
   );
@@ -186,7 +196,7 @@ function PageStats({ progress, prm }: { progress: MotionValue<number>; prm: bool
       style={{ opacity: prm ? 1 : opacity, y: prm ? 0 : y, willChange: "transform, opacity" }}
     >
       <Mono color={ON_CREAM_FAINT} size={10}>
-        {"180 CM · 5′11″ — NEW YORK"}
+        {"178 CM · 5′10″ — NEW YORK"}
       </Mono>
     </motion.div>
   );

@@ -21,7 +21,6 @@ import {
   Sweep,
   V,
   GoldCta,
-  QuietLink,
   usePrm,
   APP_URL,
   EASE,
@@ -33,11 +32,11 @@ import {
 /* The constellation. x/y in % of stage, depth drives parallax + scale.
    `hand` frames perform the exit handoff toward center. */
 const FIELD = [
-  { src: FACES.a, alt: "Model portrait, studio editorial", x: 66, y: 12, w: 210, depth: 1, hand: true, pos: "50% 14%" },
-  { src: FACES.b, alt: "Model portrait, veiled editorial", x: 84, y: 46, w: 155, depth: 0.7, hand: false, pos: "50% 24%" },
-  { src: FACES.c, alt: "Model portrait, studio movement", x: 74, y: 66, w: 185, depth: 0.85, hand: true, pos: "42% 40%" },
-  { src: FACES.d, alt: "Model portrait, foggy editorial", x: 6, y: 56, w: 165, depth: 0.6, hand: false, pos: "50% 30%" },
-  { src: FACES.e, alt: "Model portrait, crossed arms", x: 13, y: 12, w: 140, depth: 0.5, hand: false, pos: "50% 18%" },
+  { src: FACES.a, alt: "Model portrait, editorial pose", x: 66, y: 12, w: 210, depth: 1, hand: true, pos: "50% 20%" },
+  { src: FACES.b, alt: "Model portrait, natural light", x: 84, y: 46, w: 155, depth: 0.7, hand: false, pos: "50% 25%" },
+  { src: FACES.c, alt: "Model portrait, clean headshot", x: 74, y: 66, w: 185, depth: 0.85, hand: true, pos: "50% 30%" },
+  { src: FACES.d, alt: "Male model portrait, studio", x: 6, y: 56, w: 165, depth: 0.6, hand: false, pos: "50% 25%" },
+  { src: FACES.e, alt: "Male model portrait, daylight", x: 13, y: 12, w: 140, depth: 0.5, hand: false, pos: "50% 20%" },
 ] as const;
 
 function FieldFrame({
@@ -211,16 +210,10 @@ function ArrivalCaption({
           style={{
             marginTop: "2.4rem",
             display: "flex",
-            flexWrap: "wrap",
-            gap: "1.4rem 2.2rem",
-            alignItems: "center",
             justifyContent: "center",
           }}
         >
           <GoldCta href={`${APP_URL}/onboarding`}>Start your book</GoldCta>
-          <QuietLink href={`${APP_URL}/login`} dark>
-            Continue with Instagram
-          </QuietLink>
         </div>
         <div style={{ marginTop: "2.6rem" }}>
           <Sweep centered width={72} />

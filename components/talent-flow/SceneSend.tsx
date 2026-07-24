@@ -248,13 +248,17 @@ export default function SceneSend() {
                           marginTop: 20,
                         }}
                       >
-                        {[FACES.e, FACES.m1, FACES.m2].map((src, idx) => (
+                        {["50% 8%", "50% 30%", "50% 70%"].map((pos, idx) => (
                           <Frame
                             key={idx}
-                            src={src}
+                            src={FACES.book}
                             alt=""
                             style={{ width: 40, aspectRatio: "3 / 4" }}
-                            imgStyle={{ objectPosition: "50% 20%" }}
+                            imgStyle={{
+                              objectPosition: pos,
+                              transform: "scale(1.6)",
+                              transformOrigin: pos,
+                            }}
                           />
                         ))}
                       </motion.div>

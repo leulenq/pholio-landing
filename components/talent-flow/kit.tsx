@@ -77,15 +77,24 @@ export const RENDERS = {
   statement: "/generated/comp-card/elara-keats-statement.png",
 } as const;
 
-/* Local, self-hosted portraits only — no third-party image hosts. */
+/* Unsplash portraits — every ID verified in use across indexed sites.
+   Rendered grayscale with warm grain (the house treatment), so the
+   originals' color grading never reaches the page. */
+const UN = (id: string) =>
+  `https://images.unsplash.com/photo-${id}?auto=format&w=900&q=80`;
+
 export const FACES = {
-  a: "/images/model2.jpg",
-  b: "/images/model_v2.jpg",
-  c: "/images/model_new.jpg",
-  d: "/images/editorial_foggy_portrait.png",
-  e: "/generated/comp-card/source/mara-voss-crossed-arm.jpg",
-  m1: "/generated/comp-card/source/mara-voss-profile.jpg",
-  m2: "/generated/comp-card/source/mara-voss-red-hero.jpg",
+  /* the arrival constellation — five different faces, five divisions */
+  a: UN("1509631179647-0177331693ae"),
+  b: UN("1517841905240-472988babdf9"),
+  c: UN("1544005313-94ddf0286df2"),
+  d: UN("1539571696357-5a69c17a67c6"),
+  e: UN("1488161628813-04466f872be2"),
+  /* one identity for the book scene — a full-length editorial frame
+     that survives eight different croppings */
+  book: UN("1515886657613-9f3515b0c78f"),
+  /* one identity shared by the Studio+ site and the Wallet pass */
+  site: UN("1508214751196-bcfd4ca60f91"),
 } as const;
 
 export const SOURCE_FRAMES = {

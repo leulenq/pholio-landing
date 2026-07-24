@@ -79,7 +79,7 @@ function PholioIdPass() {
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={FACES.a}
+          src={FACES.site}
           alt="Pass portrait"
           draggable={false}
           style={{
@@ -87,7 +87,7 @@ function PholioIdPass() {
             width: "100%",
             height: "100%",
             objectFit: "cover",
-            objectPosition: "50% 12%",
+            objectPosition: "50% 14%",
             filter: "grayscale(1) contrast(1.05)",
           }}
         />

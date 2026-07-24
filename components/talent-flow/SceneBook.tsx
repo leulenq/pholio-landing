@@ -17,7 +17,7 @@ import {
   Mono,
   V,
   usePrm,
-  SOURCE_FRAMES,
+  FACES,
   ON_CREAM_FAINT,
 } from "./kit";
 
@@ -32,18 +32,18 @@ type FrameSpec = {
 };
 
 /* 8 frames, 4×2 grid order (row-major). One identity — a book belongs to
-   one person — built from the three source frames at different croppings,
-   the way a contact sheet re-frames one sitting. Indices 6–7 hide on
-   mobile, leaving a clean 3×2 of the first six. */
+   one person — built from a single full-length editorial frame at eight
+   croppings, the way a contact sheet re-frames one sitting. Indices 6–7
+   hide on mobile, leaving a clean 3×2 of the first six. */
 const FRAMES: FrameSpec[] = [
-  { src: SOURCE_FRAMES.crossedArm, alt: "Book frame, crossed arms", heldBack: false, label: "¾ — BOOK", scatter: { x: -28, y: 18, rot: -2 }, pos: "50% 20%" },
-  { src: SOURCE_FRAMES.redHero, alt: "Book frame, hero close crop", heldBack: true, label: "HELD BACK", scatter: { x: 22, y: -24, rot: 2 }, pos: "50% 16%", zoom: 1.45 },
-  { src: SOURCE_FRAMES.profile, alt: "Book frame, profile", heldBack: false, label: "PROFILE — BOOK", scatter: { x: -18, y: -30, rot: 1 }, pos: "50% 20%" },
-  { src: SOURCE_FRAMES.redHero, alt: "Book frame, hero", heldBack: false, scatter: { x: 30, y: 14, rot: -1 }, pos: "50% 30%" },
-  { src: SOURCE_FRAMES.crossedArm, alt: "Book frame, close crop", heldBack: true, label: "HELD BACK", scatter: { x: -24, y: 26, rot: 2 }, pos: "50% 12%", zoom: 1.5 },
-  { src: SOURCE_FRAMES.profile, alt: "Book frame, headshot crop", heldBack: false, label: "HEADSHOT — BOOK", scatter: { x: 16, y: -20, rot: -2 }, pos: "48% 10%", zoom: 1.55 },
-  { src: SOURCE_FRAMES.redHero, alt: "Book frame, movement crop", heldBack: true, label: "HELD BACK", scatter: { x: -30, y: 12, rot: 1 }, pos: "50% 58%", zoom: 1.3 },
-  { src: SOURCE_FRAMES.crossedArm, alt: "Book frame, mid crop", heldBack: false, scatter: { x: 20, y: 22, rot: -1 }, pos: "50% 42%", zoom: 1.25 },
+  { src: FACES.book, alt: "Book frame, full length", heldBack: false, label: "FULL LENGTH — BOOK", scatter: { x: -28, y: 18, rot: -2 }, pos: "50% 12%" },
+  { src: FACES.book, alt: "Book frame, close crop", heldBack: true, label: "HELD BACK", scatter: { x: 22, y: -24, rot: 2 }, pos: "50% 6%", zoom: 2 },
+  { src: FACES.book, alt: "Book frame, three-quarter crop", heldBack: false, label: "¾ — BOOK", scatter: { x: -18, y: -30, rot: 1 }, pos: "50% 16%", zoom: 1.35 },
+  { src: FACES.book, alt: "Book frame, torso crop", heldBack: false, scatter: { x: 30, y: 14, rot: -1 }, pos: "50% 30%", zoom: 1.6 },
+  { src: FACES.book, alt: "Book frame, tight crop", heldBack: true, label: "HELD BACK", scatter: { x: -24, y: 26, rot: 2 }, pos: "45% 10%", zoom: 2.3 },
+  { src: FACES.book, alt: "Book frame, headshot crop", heldBack: false, label: "HEADSHOT — BOOK", scatter: { x: 16, y: -20, rot: -2 }, pos: "52% 5%", zoom: 2.6 },
+  { src: FACES.book, alt: "Book frame, movement crop", heldBack: true, label: "HELD BACK", scatter: { x: -30, y: 12, rot: 1 }, pos: "50% 70%", zoom: 1.7 },
+  { src: FACES.book, alt: "Book frame, mid crop", heldBack: false, scatter: { x: 20, y: 22, rot: -1 }, pos: "50% 45%", zoom: 1.4 },
 ];
 
 const KEPT_ROTATIONS = [-4, -2, 0, 2, 4];
