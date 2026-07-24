@@ -77,18 +77,15 @@ export const RENDERS = {
   statement: "/generated/comp-card/elara-keats-statement.png",
 } as const;
 
-const U = (id: string, w = 800, h = 1100) =>
-  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&crop=faces&w=${w}&h=${h}&q=80`;
-
+/* Local, self-hosted portraits only — no third-party image hosts. */
 export const FACES = {
-  a: U("1529626455594-4ff0802cfb7e"),
-  b: U("1534528741775-53994a69daeb"),
-  c: U("1531746020798-e6953c6e8e04"),
-  d: U("1524504388940-b1c1722653e1"),
-  e: U("1488426862026-3ee34a7d66df"),
-  m1: U("1500648767791-00dcc994a43e"),
-  m2: U("1506794778202-cad84cf45f1d"),
-  m3: U("1507003211169-0a1dd7228f2d"),
+  a: "/images/model2.jpg",
+  b: "/images/model_v2.jpg",
+  c: "/images/model_new.jpg",
+  d: "/images/editorial_foggy_portrait.png",
+  e: "/generated/comp-card/source/mara-voss-crossed-arm.jpg",
+  m1: "/generated/comp-card/source/mara-voss-profile.jpg",
+  m2: "/generated/comp-card/source/mara-voss-red-hero.jpg",
 } as const;
 
 export const SOURCE_FRAMES = {

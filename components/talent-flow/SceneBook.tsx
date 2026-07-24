@@ -17,7 +17,6 @@ import {
   Mono,
   V,
   usePrm,
-  FACES,
   SOURCE_FRAMES,
   ON_CREAM_FAINT,
 } from "./kit";
@@ -28,19 +27,23 @@ type FrameSpec = {
   heldBack: boolean;
   label?: string;
   scatter: { x: number; y: number; rot: number };
+  pos: string;
+  zoom?: number;
 };
 
-/* 8 frames, 4×2 grid order (row-major). Indices 6–7 hide on mobile,
-   leaving a clean 3×2 of the first six. */
+/* 8 frames, 4×2 grid order (row-major). One identity — a book belongs to
+   one person — built from the three source frames at different croppings,
+   the way a contact sheet re-frames one sitting. Indices 6–7 hide on
+   mobile, leaving a clean 3×2 of the first six. */
 const FRAMES: FrameSpec[] = [
-  { src: FACES.b, alt: "Model portrait, headshot", heldBack: false, label: "HEADSHOT — DIGITAL", scatter: { x: -28, y: 18, rot: -2 } },
-  { src: FACES.e, alt: "Model portrait, editorial light", heldBack: true, label: "HELD BACK", scatter: { x: 22, y: -24, rot: 2 } },
-  { src: FACES.m2, alt: "Model portrait, natural light", heldBack: false, scatter: { x: -18, y: -30, rot: 1 } },
-  { src: FACES.a, alt: "Model portrait, three-quarter", heldBack: false, label: "¾ — BOOK", scatter: { x: 30, y: 14, rot: -1 } },
-  { src: SOURCE_FRAMES.crossedArm, alt: "Talent portrait, crossed arm", heldBack: true, label: "HELD BACK", scatter: { x: -24, y: 26, rot: 2 } },
-  { src: FACES.d, alt: "Model portrait, profile", heldBack: false, label: "FULL LENGTH — DIGITAL", scatter: { x: 16, y: -20, rot: -2 } },
-  { src: SOURCE_FRAMES.profile, alt: "Talent portrait, profile study", heldBack: true, label: "HELD BACK", scatter: { x: -30, y: 12, rot: 1 } },
-  { src: FACES.c, alt: "Model portrait, natural expression", heldBack: false, scatter: { x: 20, y: 22, rot: -1 } },
+  { src: SOURCE_FRAMES.crossedArm, alt: "Book frame, crossed arms", heldBack: false, label: "¾ — BOOK", scatter: { x: -28, y: 18, rot: -2 }, pos: "50% 20%" },
+  { src: SOURCE_FRAMES.redHero, alt: "Book frame, hero close crop", heldBack: true, label: "HELD BACK", scatter: { x: 22, y: -24, rot: 2 }, pos: "50% 16%", zoom: 1.45 },
+  { src: SOURCE_FRAMES.profile, alt: "Book frame, profile", heldBack: false, label: "PROFILE — BOOK", scatter: { x: -18, y: -30, rot: 1 }, pos: "50% 20%" },
+  { src: SOURCE_FRAMES.redHero, alt: "Book frame, hero", heldBack: false, scatter: { x: 30, y: 14, rot: -1 }, pos: "50% 30%" },
+  { src: SOURCE_FRAMES.crossedArm, alt: "Book frame, close crop", heldBack: true, label: "HELD BACK", scatter: { x: -24, y: 26, rot: 2 }, pos: "50% 12%", zoom: 1.5 },
+  { src: SOURCE_FRAMES.profile, alt: "Book frame, headshot crop", heldBack: false, label: "HEADSHOT — BOOK", scatter: { x: 16, y: -20, rot: -2 }, pos: "48% 10%", zoom: 1.55 },
+  { src: SOURCE_FRAMES.redHero, alt: "Book frame, movement crop", heldBack: true, label: "HELD BACK", scatter: { x: -30, y: 12, rot: 1 }, pos: "50% 58%", zoom: 1.3 },
+  { src: SOURCE_FRAMES.crossedArm, alt: "Book frame, mid crop", heldBack: false, scatter: { x: 20, y: 22, rot: -1 }, pos: "50% 42%", zoom: 1.25 },
 ];
 
 const KEPT_ROTATIONS = [-4, -2, 0, 2, 4];
@@ -105,8 +108,8 @@ function BookFrame({
   );
   const labelOpacity = useTransform(
     progress,
-    f.heldBack ? [0.32, 0.55, 0.7, 0.8] : [0.55, 0.78],
-    f.heldBack ? [0, 1, 1, 0] : [0, 1],
+    f.heldBack ? [0.32, 0.55, 0.7, 0.8] : [0.55, 0.72, 0.78, 0.86],
+    f.heldBack ? [0, 1, 1, 0] : [0, 1, 1, 0],
   );
 
   const finalX = f.heldBack ? 0 : toward.x;
@@ -132,6 +135,11 @@ function BookFrame({
             aspectRatio: "3 / 4",
             boxShadow: f.heldBack ? "none" : "0 18px 40px rgba(26,26,26,0.16)",
           }}
+          imgStyle={{
+            objectPosition: f.pos,
+            transform: f.zoom ? `scale(${f.zoom})` : undefined,
+            transformOrigin: f.pos,
+          }}
         />
       </motion.div>
       {f.label ? (
@@ -149,7 +157,7 @@ function BookFrame({
 }
 
 function BookCaption({ progress, prm }: { progress: MotionValue<number>; prm: boolean }) {
-  const opacity = useTransform(progress, [0.1, 0.2], [0, 1]);
+  const opacity = useTransform(progress, [0.1, 0.2, 0.88, 0.98], [0, 1, 1, 0]);
   const y = useTransform(progress, [0.1, 0.2], [20, 0]);
 
   return (
@@ -177,7 +185,7 @@ export default function SceneBook() {
   return (
     <Stage id="book" hvh={260}>
       {(progress) => {
-        const contentOpacity = useTransform(progress, [0, 0.08, 0.9, 0.97], [0, 1, 1, 0]);
+        const contentOpacity = useTransform(progress, [0, 1], [1, 1]);
         let keptCounter = 0;
 
         return (
@@ -201,7 +209,7 @@ export default function SceneBook() {
                     const keptIndex = f.heldBack ? -1 : keptCounter++;
                     return (
                       <BookFrame
-                        key={f.src}
+                        key={i}
                         f={f}
                         i={i}
                         keptIndex={keptIndex}

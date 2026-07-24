@@ -63,6 +63,9 @@ function DossierPanel({
   const x = useTransform(progress, [0.08, 0.32], [p.scatter.x, p.stacked.x]);
   const y = useTransform(progress, [0.08, 0.32], [p.scatter.y, p.stacked.y]);
   const rotate = useTransform(progress, [0.08, 0.32], [p.scatter.rot, 0]);
+  /* edge labels read while the sheaf is fanned; they retire as it squares
+     up so the stacked corner never garbles five labels into one spot */
+  const labelOpacity = useTransform(progress, [0.24, 0.32], [1, 0]);
 
   return (
     <motion.div
@@ -79,11 +82,21 @@ function DossierPanel({
         willChange: "transform",
       }}
     >
-      <span aria-hidden="true" style={{ position: "absolute", top: 10, left: 12 }}>
-        <Mono color={ON_INK_FAINT} size={9}>
-          {p.label}
-        </Mono>
-      </span>
+      {p.key !== "board" ? (
+        <motion.span
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            top: 10,
+            left: 12,
+            opacity: prm ? 0 : labelOpacity,
+          }}
+        >
+          <Mono color={ON_INK_FAINT} size={9}>
+            {p.label}
+          </Mono>
+        </motion.span>
+      ) : null}
       {p.key === "board" ? (
         <div style={{ position: "absolute", inset: 0, padding: "16px" }}>
           <div style={{ marginTop: 22 }}>
@@ -176,7 +189,7 @@ export default function SceneSend() {
   return (
     <Stage id="send" hvh={280}>
       {(progress) => {
-        const entryOpacity = useTransform(progress, [0, 0.06], [0, 1]);
+        const entryOpacity = useTransform(progress, [0, 1], [1, 1]);
         const thumbsOpacity = useTransform(progress, [0.2, 0.32], [0, 1]);
         const checkedOpacity = useTransform(progress, [0.36, 0.5], [0, 1]);
         const glossOpacity = useTransform(progress, [0.76, 0.83, 0.84, 0.92], [0, 1, 1, 0]);
@@ -185,7 +198,7 @@ export default function SceneSend() {
         const collapseX = useTransform(progress, [0.84, 0.95], [0, 30]);
         const collapseY = useTransform(progress, [0.84, 0.95], [0, 210]);
         const collapseOpacity = useTransform(progress, [0.84, 0.9, 0.95], [1, 1, 0]);
-        const tickOpacity = useTransform(progress, [0.88, 0.95, 0.97, 1], [0, 1, 1, 0]);
+        const tickOpacity = useTransform(progress, [0.88, 0.95], [0, 1]);
 
         return (
           <motion.div
@@ -235,12 +248,13 @@ export default function SceneSend() {
                           marginTop: 20,
                         }}
                       >
-                        {[FACES.b, FACES.m1, FACES.c, FACES.e].map((src, idx) => (
+                        {[FACES.e, FACES.m1, FACES.m2].map((src, idx) => (
                           <Frame
                             key={idx}
                             src={src}
                             alt=""
                             style={{ width: 40, aspectRatio: "3 / 4" }}
+                            imgStyle={{ objectPosition: "50% 20%" }}
                           />
                         ))}
                       </motion.div>

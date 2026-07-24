@@ -52,17 +52,13 @@ function ConvergingFrame({
   progress: MotionValue<number>;
   prm: boolean;
 }) {
-  const t0 = 0.05 + i * 0.02;
+  const t0 = 0.04 + i * 0.02;
   const t1 = 0.26 + i * 0.02;
   const x = useTransform(progress, [t0, t1], [s.from.x, 0]);
   const y = useTransform(progress, [t0, t1], [s.from.y, 0]);
   const rotate = useTransform(progress, [t0, t1], [s.from.r, 0]);
   const scale = useTransform(progress, [t0, t1], [0.55, 1]);
-  const opacity = useTransform(
-    progress,
-    [t0, t0 + 0.04, 0.28, 0.34],
-    [0, 1, 1, 0],
-  );
+  const opacity = useTransform(progress, [0.28, 0.34], [1, 0]);
 
   if (prm) return null; // reduced motion shows the finished card only
 
@@ -70,28 +66,32 @@ function ConvergingFrame({
     <motion.div
       style={{
         position: "absolute",
-        inset: 0,
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
         x,
         y,
         rotate,
         scale,
-        opacity,
-        willChange: "transform, opacity",
+        willChange: "transform",
       }}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={s.src}
-        alt={s.alt}
-        draggable={false}
-        style={{
-          display: "block",
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          filter: "grayscale(1)",
-        }}
-      />
+      <motion.div style={{ opacity, height: "100%" }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={s.src}
+          alt={s.alt}
+          draggable={false}
+          style={{
+            display: "block",
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            filter: "grayscale(1)",
+          }}
+        />
+      </motion.div>
     </motion.div>
   );
 }
@@ -115,8 +115,9 @@ function SceneCardStage({
   progress: MotionValue<number>;
   prm: boolean;
 }) {
-  /* scene-level content window (field morph happens over quiet frames) */
-  const sceneFade = useTransform(progress, [0, 0.05, 0.93, 1], [0, 1, 1, 0]);
+  /* content stays visible through entry and exit travel — the field
+     morphs behind persistent objects, never over an empty stage */
+  const sceneFade = useTransform(progress, [0, 1], [1, 1]);
 
   /* the card body: settles with a breath of overshoot, tilts slightly at
      each edition change, tips back for the NFC beat, then drifts right
@@ -132,7 +133,7 @@ function SceneCardStage({
     [0, -7, 0, 0, 7, 0, 0, -16, -16, 0],
   );
   const cardX = useTransform(progress, [0.86, 0.96], ["0%", "26%"]);
-  const cardOpacity = useTransform(progress, [0.08, 0.14, 0.93, 0.985], [0, 1, 1, 0]);
+  const cardOpacity = useTransform(progress, [0.08, 0.14], [0, 1]);
   const shadow = useTransform(
     progress,
     [0.1, 0.3],
@@ -202,6 +203,14 @@ function SceneCardStage({
           className="order-2 w-[min(62vw,240px)] md:w-[min(30vw,340px)]"
           style={{ perspective: 1400, position: "relative" }}
         >
+          {/* converging source frames — siblings of the card body so they
+              are visible while the card itself is still gathering */}
+          <div aria-hidden="true" style={{ position: "absolute", inset: 0 }}>
+            {SOURCES.map((s, i) => (
+              <ConvergingFrame key={s.src} s={s} i={i} progress={progress} prm={prm} />
+            ))}
+          </div>
+
           <motion.div
             style={{
               position: "relative",
@@ -216,11 +225,6 @@ function SceneCardStage({
               background: "#fff",
             }}
           >
-            {/* converging source frames (motion only) */}
-            {SOURCES.map((s, i) => (
-              <ConvergingFrame key={s.src} s={s} i={i} progress={progress} prm={prm} />
-            ))}
-
             {/* edition renders, stacked */}
             {EDITIONS.map((src, i) => (
               <motion.div

@@ -33,11 +33,11 @@ import {
 /* The constellation. x/y in % of stage, depth drives parallax + scale.
    `hand` frames perform the exit handoff toward center. */
 const FIELD = [
-  { src: FACES.a, alt: "Model portrait, editorial headshot", x: 66, y: 12, w: 200, depth: 1, hand: true },
-  { src: FACES.m1, alt: "Model portrait, three-quarter", x: 84, y: 46, w: 150, depth: 0.7, hand: false },
-  { src: FACES.c, alt: "Model portrait, natural light", x: 74, y: 66, w: 175, depth: 0.85, hand: true },
-  { src: FACES.d, alt: "Model portrait, profile", x: 6, y: 56, w: 160, depth: 0.6, hand: false },
-  { src: FACES.m3, alt: "Model portrait, headshot", x: 13, y: 12, w: 135, depth: 0.5, hand: false },
+  { src: FACES.a, alt: "Model portrait, studio editorial", x: 66, y: 12, w: 210, depth: 1, hand: true, pos: "50% 14%" },
+  { src: FACES.b, alt: "Model portrait, veiled editorial", x: 84, y: 46, w: 155, depth: 0.7, hand: false, pos: "50% 24%" },
+  { src: FACES.c, alt: "Model portrait, studio movement", x: 74, y: 66, w: 185, depth: 0.85, hand: true, pos: "42% 40%" },
+  { src: FACES.d, alt: "Model portrait, foggy editorial", x: 6, y: 56, w: 165, depth: 0.6, hand: false, pos: "50% 30%" },
+  { src: FACES.e, alt: "Model portrait, crossed arms", x: 13, y: 12, w: 140, depth: 0.5, hand: false, pos: "50% 18%" },
 ] as const;
 
 function FieldFrame({
@@ -52,26 +52,25 @@ function FieldFrame({
   prm: boolean;
 }) {
   /* Parallax drift by depth; hand frames pull toward center and shrink,
-     the rest sink and fade — the field going quiet as the card begins. */
+     the rest sink and quiet down as the card begins. Scroll MotionValues
+     live on this outer div; the load entrance lives on the inner div —
+     mixing them on one element lets the style MV suppress the entrance. */
   const drift = useTransform(progress, [0, 1], [0, -46 * f.depth]);
   const handX = useTransform(progress, [0.35, 1], ["0%", f.x > 50 ? "-34%" : "34%"]);
   const handScale = useTransform(progress, [0.35, 1], [1, 0.78]);
   const fade = useTransform(
     progress,
-    f.hand ? [0.55, 0.98] : [0.3, 0.75],
-    [1, 0],
+    f.hand ? [0.55, 0.98] : [0.3, 0.9],
+    f.hand ? [1, 0] : [1, 0.22],
   );
 
   return (
     <motion.div
-      initial={prm ? false : { opacity: 0, y: 34, scale: 0.96 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 1.1, ease: EASE, delay: 0.35 + i * 0.12 }}
       style={{
         position: "absolute",
         left: `${f.x}%`,
         top: `${f.y}%`,
-        width: f.w,
+        width: `min(${f.w}px, 44vw)`,
         zIndex: Math.round(f.depth * 10),
         y: prm ? 0 : drift,
         x: prm ? 0 : f.hand ? handX : 0,
@@ -80,11 +79,18 @@ function FieldFrame({
         willChange: "transform, opacity",
       }}
     >
-      <Frame
-        src={f.src}
-        alt={f.alt}
-        style={{ aspectRatio: "3 / 4", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}
-      />
+      <motion.div
+        initial={prm ? false : { opacity: 0, y: 34, scale: 0.96 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 1.1, ease: EASE, delay: 0.35 + i * 0.12 }}
+      >
+        <Frame
+          src={f.src}
+          alt={f.alt}
+          style={{ aspectRatio: "3 / 4", boxShadow: "0 24px 60px rgba(0,0,0,0.5)" }}
+          imgStyle={{ objectPosition: f.pos }}
+        />
+      </motion.div>
     </motion.div>
   );
 }
@@ -119,6 +125,8 @@ export default function SceneArrival() {
                 right: 0,
                 display: "flex",
                 justifyContent: "center",
+                textAlign: "center",
+                padding: "0 1.5rem",
                 opacity: prm ? 1 : undefined,
               }}
             >

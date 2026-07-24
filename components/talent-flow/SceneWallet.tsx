@@ -87,7 +87,7 @@ function PholioIdPass() {
             width: "100%",
             height: "100%",
             objectFit: "cover",
-            objectPosition: "50% 22%",
+            objectPosition: "50% 12%",
             filter: "grayscale(1) contrast(1.05)",
           }}
         />
@@ -229,11 +229,12 @@ function WalletStage({
   progress: MotionValue<number>;
   prm: boolean;
 }) {
-  const sceneFade = useTransform(progress, [0, 0.06, 0.93, 1], [0, 1, 1, 0]);
+  const sceneFade = useTransform(progress, [0, 1], [1, 1]);
 
-  /* the device rises and settles with a breath of overshoot */
-  const phoneY = useTransform(progress, [0.08, 0.3, 0.36], [340, -14, 0]);
-  const phoneOpacity = useTransform(progress, [0.08, 0.18, 0.9, 0.97], [0, 1, 1, 0]);
+  /* the device rises and settles with a breath of overshoot; it is
+     already peeking as the stage scrolls into view */
+  const phoneY = useTransform(progress, [0, 0.28, 0.35], [250, -14, 0]);
+  const phoneOpacity = useTransform(progress, [0, 0.16], [0.55, 1]);
 
   /* the pass presents — slides up inside the screen and settles */
   const passY = useTransform(progress, [0.34, 0.54, 0.6], ["112%", "-3%", "0%"]);

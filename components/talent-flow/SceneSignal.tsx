@@ -87,7 +87,7 @@ export default function SceneSignal() {
 }
 
 function SignalCaption({ progress, prm }: { progress: MotionValue<number>; prm: boolean }) {
-  const opacity = useTransform(progress, [0.1, 0.2, 0.82, 0.95], [0, 1, 1, 0]);
+  const opacity = useTransform(progress, [0.1, 0.2, 0.9, 1], [0, 1, 1, 0]);
   const y = useTransform(progress, [0.1, 0.2], [16, 0]);
 
   return (
@@ -109,13 +109,13 @@ function SignalCaption({ progress, prm }: { progress: MotionValue<number>; prm: 
 
 function SignalChart({ progress, prm }: { progress: MotionValue<number>; prm: boolean }) {
   const baselineScaleX = useTransform(progress, [0.06, 0.18], [0, 1]);
-  const baselineY = useTransform(progress, [0.82, 0.95], ["0vh", "-38vh"]);
+  const baselineY = useTransform(progress, [0.86, 1], ["0vh", "-38vh"]);
   const baselineColor = useTransform(
     progress,
-    [0.82, 0.9],
+    [0.86, 0.94],
     [HAIR_INK, "rgba(245,240,232,0.35)"],
   );
-  const baselineOpacity = useTransform(progress, [0.95, 0.97], [1, 0]);
+  const baselineOpacity = useTransform(progress, [0.985, 1], [1, 0.4]);
 
   const strikeY = useTransform(progress, [0.12, 0.16], [-18, 0]);
   const strikeOpacity = useTransform(progress, [0.12, 0.16], [0, 1]);
@@ -123,7 +123,7 @@ function SignalChart({ progress, prm }: { progress: MotionValue<number>; prm: bo
   const drawOffset = useTransform(progress, [0.16, 0.42], [1, 0]);
   const areaClipWidth = useTransform(progress, [0.16, 0.42], [0, CHART_W]);
 
-  const chartOpacity = useTransform(progress, [0.16, 0.22, 0.82, 0.95], [0, 1, 1, 0]);
+  const chartOpacity = useTransform(progress, [0.16, 0.22, 0.9, 1], [0, 1, 1, 0.15]);
 
   const diamondBottomPct = BASELINE_FROM_BOTTOM_PCT + ((TALLEST_H + 16) / CHART_H) * 100;
   const diamondOpacity = useTransform(progress, [0.42, 0.5], [0, 1]);
@@ -307,7 +307,7 @@ function SignalRow({
   prm: boolean;
 }) {
   const end = threshold + 0.08;
-  const opacity = useTransform(progress, [threshold, end, 0.82, 0.95], [0, 1, 1, 0]);
+  const opacity = useTransform(progress, [threshold, end, 0.9, 1], [0, 1, 1, 0]);
   const y = useTransform(progress, [threshold, end], [12, 0]);
 
   return (
@@ -343,7 +343,7 @@ function SignalRow({
 }
 
 function SignalBodyLine({ progress, prm }: { progress: MotionValue<number>; prm: boolean }) {
-  const opacity = useTransform(progress, [0.66, 0.78, 0.82, 0.95], [0, 1, 1, 0]);
+  const opacity = useTransform(progress, [0.66, 0.78, 0.9, 1], [0, 1, 1, 0]);
   const y = useTransform(progress, [0.66, 0.78], [10, 0]);
 
   return (

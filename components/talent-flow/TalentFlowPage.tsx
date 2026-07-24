@@ -21,16 +21,16 @@ import SceneWallet from "./SceneWallet";
 import SceneClose from "./SceneClose";
 import MarketingFooter from "@/components/MarketingFooter";
 
-/* Color stops: each scene contributes two stops (25% and 75% through its
-   own span) at its field color, so interpolation to the neighbor happens
-   across the shared boundary — one continuous field, no section seams. */
+/* Color stops: each scene holds its field color for most of its span
+   (10%→90%), so the morph to the neighbor happens in a tight window
+   around the shared boundary — one continuous field, no section seams. */
 function buildColorTrack() {
   const total = SCENES.reduce((sum, s) => sum + s.h, 0);
   const stops: number[] = [];
   const colors: string[] = [];
   let cursor = 0;
   for (const s of SCENES) {
-    stops.push((cursor + s.h * 0.25) / total, (cursor + s.h * 0.75) / total);
+    stops.push((cursor + s.h * 0.1) / total, (cursor + s.h * 0.9) / total);
     colors.push(s.bg, s.bg);
     cursor += s.h;
   }

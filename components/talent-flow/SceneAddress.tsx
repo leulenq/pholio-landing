@@ -27,9 +27,9 @@ import {
 } from "./kit";
 
 const PORTRAITS = [
-  { src: FACES.b, alt: "Portfolio portrait, editorial" },
-  { src: FACES.e, alt: "Portfolio portrait, natural light" },
-  { src: FACES.m2, alt: "Portfolio portrait, three-quarter" },
+  { src: FACES.e, alt: "Portfolio portrait, crossed arms" },
+  { src: FACES.m1, alt: "Portfolio portrait, profile" },
+  { src: FACES.m2, alt: "Portfolio portrait, hero frame" },
 ] as const;
 
 export default function SceneAddress() {
@@ -38,7 +38,7 @@ export default function SceneAddress() {
   return (
     <Stage id="address" hvh={230}>
       {(progress) => (
-        <div className="relative flex h-full w-full flex-col items-center justify-center gap-10 px-6 py-16 md:gap-14 md:px-16">
+        <div className="relative flex h-full w-full flex-col items-center justify-center gap-10 px-6 pb-14 pt-24 md:gap-12 md:px-16">
           <BrowserFrame progress={progress} prm={prm} />
           <div className="w-full max-w-[760px]">
             <AddressCaption progress={progress} prm={prm} />
@@ -54,7 +54,7 @@ function BrowserFrame({ progress, prm }: { progress: MotionValue<number>; prm: b
      (0.78–0.96): compress, drift, radius eases up, border brightens,
      then the whole frame fades just before the next scene's object. */
   const scale = useTransform(progress, [0.06, 0.2, 0.78, 0.95], [0.97, 1, 1, 0.42]);
-  const opacity = useTransform(progress, [0.06, 0.2, 0.94, 0.96], [0, 1, 1, 0]);
+  const opacity = useTransform(progress, [0.94, 0.97], [1, 0]);
   const y = useTransform(progress, [0.78, 0.95], [0, -32]);
   const radius = useTransform(progress, [0.78, 0.95], ["8px", "12px"]);
   const borderColor = useTransform(
@@ -140,8 +140,8 @@ function BrowserFrame({ progress, prm }: { progress: MotionValue<number>; prm: b
 }
 
 function PageName({ progress, prm }: { progress: MotionValue<number>; prm: boolean }) {
-  const opacity = useTransform(progress, [0.22, 0.3], [0, 1]);
-  const y = useTransform(progress, [0.22, 0.3], [16, 0]);
+  const opacity = useTransform(progress, [0.12, 0.2], [0, 1]);
+  const y = useTransform(progress, [0.12, 0.2], [16, 0]);
 
   return (
     <motion.h3
@@ -155,14 +155,14 @@ function PageName({ progress, prm }: { progress: MotionValue<number>; prm: boole
         willChange: "transform, opacity",
       }}
     >
-      Amara Okafor
+      Mara Voss
     </motion.h3>
   );
 }
 
 function PagePortraits({ progress, prm }: { progress: MotionValue<number>; prm: boolean }) {
-  const opacity = useTransform(progress, [0.3, 0.4], [0, 1]);
-  const y = useTransform(progress, [0.3, 0.4], [16, 0]);
+  const opacity = useTransform(progress, [0.2, 0.3], [0, 1]);
+  const y = useTransform(progress, [0.2, 0.3], [16, 0]);
 
   return (
     <motion.div
@@ -177,8 +177,8 @@ function PagePortraits({ progress, prm }: { progress: MotionValue<number>; prm: 
 }
 
 function PageStats({ progress, prm }: { progress: MotionValue<number>; prm: boolean }) {
-  const opacity = useTransform(progress, [0.42, 0.5], [0, 1]);
-  const y = useTransform(progress, [0.42, 0.5], [12, 0]);
+  const opacity = useTransform(progress, [0.3, 0.38], [0, 1]);
+  const y = useTransform(progress, [0.3, 0.38], [12, 0]);
 
   return (
     <motion.div
@@ -186,15 +186,15 @@ function PageStats({ progress, prm }: { progress: MotionValue<number>; prm: bool
       style={{ opacity: prm ? 1 : opacity, y: prm ? 0 : y, willChange: "transform, opacity" }}
     >
       <Mono color={ON_CREAM_FAINT} size={10}>
-        {"178 CM · 5′10″ — NEW YORK"}
+        {"180 CM · 5′11″ — NEW YORK"}
       </Mono>
     </motion.div>
   );
 }
 
 function PageLine({ progress, prm }: { progress: MotionValue<number>; prm: boolean }) {
-  const opacity = useTransform(progress, [0.5, 0.6], [0, 1]);
-  const y = useTransform(progress, [0.5, 0.6], [12, 0]);
+  const opacity = useTransform(progress, [0.38, 0.46], [0, 1]);
+  const y = useTransform(progress, [0.38, 0.46], [12, 0]);
 
   return (
     <motion.div
@@ -218,8 +218,8 @@ function PageLine({ progress, prm }: { progress: MotionValue<number>; prm: boole
 }
 
 function AddressCaption({ progress, prm }: { progress: MotionValue<number>; prm: boolean }) {
-  const opacity = useTransform(progress, [0.55, 0.68, 0.82, 0.95], [0, 1, 1, 0]);
-  const y = useTransform(progress, [0.55, 0.68], [16, 0]);
+  const opacity = useTransform(progress, [0.48, 0.6, 0.85, 0.97], [0, 1, 1, 0]);
+  const y = useTransform(progress, [0.48, 0.6], [16, 0]);
 
   return (
     <motion.div
