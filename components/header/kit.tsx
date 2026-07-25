@@ -1104,7 +1104,7 @@ export function IndexPanel({
                 className="flex flex-row items-start justify-between gap-8 md:flex-col md:justify-center md:gap-10"
                 {...entry(NAV.length)}
               >
-                <div>
+                <div className="flex flex-col">
                   <Kicker color="rgba(250,247,242,0.3)">More</Kicker>
                   <div className="mt-5 flex flex-col gap-3.5">
                     {SECONDARY_LINKS.map((link) => (
@@ -1121,7 +1121,7 @@ export function IndexPanel({
                 </div>
                 <div className="flex flex-col items-end text-right md:items-start md:text-left">
                   <Kicker color="rgba(250,247,242,0.3)">Account</Kicker>
-                  <div className="mt-4 flex flex-col items-end gap-3 md:items-start">
+                  <div className="mt-5 flex flex-col items-end gap-3.5 md:items-start">
                     {isAuthenticated ? (
                       <ActionLink
                         href={dashboardHref}
