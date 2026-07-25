@@ -2,25 +2,21 @@
 
 /* ═══════════════════════════════════════════════════════════════════
    Scene 2 — The card (cream). The scene the page is remembered by.
-   The model's real source frames and her stats line converge and SET
-   into the finished comp card — a real render from the composition
-   engine — then the same card re-composes into two further art
-   directions. One quiet NFC beat closes it. Exit handoff: the card
-   tilts back and drifts right, taking its place in the book grid.
+   GESTURE: convergence → material wipes → recede.
+   Her real source frames gather and set into the composed card. The
+   art directions do NOT crossfade — each new edition is WIPED over the
+   last from a different edge, so the card reads as printed matter
+   being re-laid rather than layers dissolving. The exit tips the card
+   back into depth instead of sliding it away.
    ═══════════════════════════════════════════════════════════════════ */
 
-import {
-  motion,
-  useTransform,
-  type MotionValue,
-} from "framer-motion";
+import { motion, useTransform, type MotionValue } from "framer-motion";
 import {
   Stage,
   Caption,
   Mono,
   V,
   usePrm,
-  EASE,
   RENDERS,
   SOURCE_FRAMES,
   GOLD,
@@ -28,16 +24,14 @@ import {
   ON_CREAM_SOFT,
   HAIR_CREAM,
 } from "./kit";
+import { useMass, useScrub, useWipe } from "./motion";
 
 /* the converging raw material — her actual source frames */
 const SOURCES = [
-  { src: SOURCE_FRAMES.crossedArm, alt: "Source frame, three-quarter", from: { x: -320, y: -140, r: -9 } },
-  { src: SOURCE_FRAMES.profile, alt: "Source frame, profile", from: { x: 300, y: -190, r: 7 } },
-  { src: SOURCE_FRAMES.redHero, alt: "Source frame, hero", from: { x: -260, y: 210, r: 5 } },
+  { src: SOURCE_FRAMES.crossedArm, alt: "Source frame, three-quarter", from: { x: -340, y: -150, r: -11 } },
+  { src: SOURCE_FRAMES.profile, alt: "Source frame, profile", from: { x: 320, y: -200, r: 9 } },
+  { src: SOURCE_FRAMES.redHero, alt: "Source frame, hero", from: { x: -280, y: 225, r: 6 } },
 ] as const;
-
-/* the same card, three art directions — real engine renders */
-const EDITIONS = [RENDERS.front, RENDERS.galleryMat, RENDERS.splitField];
 
 const CARD_AR = "1056 / 1632";
 
@@ -52,13 +46,14 @@ function ConvergingFrame({
   progress: MotionValue<number>;
   prm: boolean;
 }) {
-  const t0 = 0.04 + i * 0.02;
-  const t1 = 0.26 + i * 0.02;
-  const x = useTransform(progress, [t0, t1], [s.from.x, 0]);
-  const y = useTransform(progress, [t0, t1], [s.from.y, 0]);
-  const rotate = useTransform(progress, [t0, t1], [s.from.r, 0]);
-  const scale = useTransform(progress, [t0, t1], [0.55, 1]);
-  const opacity = useTransform(progress, [0.28, 0.34], [1, 0]);
+  /* each frame closes on the card at its own rate, arriving in order */
+  const t0 = 0.03 + i * 0.025;
+  const t1 = 0.25 + i * 0.025;
+  const x = useScrub(progress, [t0, t1], [s.from.x, 0], "arrival");
+  const y = useScrub(progress, [t0, t1], [s.from.y, 0], "arrival");
+  const rotate = useScrub(progress, [t0, t1], [s.from.r, 0], "arrival");
+  const scale = useScrub(progress, [t0, t1], [0.52, 1], "arrival");
+  const opacity = useTransform(progress, [0.27, 0.33], [1, 0]);
 
   if (prm) return null; // reduced motion shows the finished card only
 
@@ -96,14 +91,54 @@ function ConvergingFrame({
   );
 }
 
-export default function SceneCard() {
-  const prm = usePrm();
+/** An art direction wiped over the one beneath it. */
+function EditionLayer({
+  src,
+  alt,
+  range,
+  direction,
+  progress,
+  prm,
+  visibleWhenPrm,
+}: {
+  src: string;
+  alt: string;
+  range: [number, number];
+  direction: "left" | "right" | "up" | "down";
+  progress: MotionValue<number>;
+  prm: boolean;
+  visibleWhenPrm: boolean;
+}) {
+  const clipPath = useWipe(progress, range, direction);
 
   return (
-    <Stage id="card" hvh={330}>
-      {(progress) => (
-        <SceneCardStage progress={progress} prm={prm} />
-      )}
+    <motion.div
+      style={{
+        position: "absolute",
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        clipPath: prm ? (visibleWhenPrm ? "inset(0%)" : "inset(0% 100% 0% 0%)") : clipPath,
+        willChange: "clip-path",
+      }}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt={alt}
+        draggable={false}
+        style={{ display: "block", width: "100%", height: "100%" }}
+      />
+    </motion.div>
+  );
+}
+
+export default function SceneCard() {
+  const prm = usePrm();
+  return (
+    <Stage id="card" hvh={330} z={7} overlap={106}>
+      {(progress) => <SceneCardStage progress={progress} prm={prm} />}
     </Stage>
   );
 }
@@ -115,73 +150,65 @@ function SceneCardStage({
   progress: MotionValue<number>;
   prm: boolean;
 }) {
-  /* content stays visible through entry and exit travel — the field
-     morphs behind persistent objects, never over an empty stage */
-  const sceneFade = useTransform(progress, [0, 1], [1, 1]);
+  /* the card has weight — it trails the wheel slightly and settles */
+  const weighted = useMass(progress, "medium");
 
-  /* the card body: settles with a breath of overshoot, tilts slightly at
-     each edition change, tips back for the NFC beat, then drifts right
-     into the book grid as its exit handoff */
-  const cardScale = useTransform(
-    progress,
-    [0.08, 0.28, 0.33, 0.86, 0.95],
-    [0.9, 1.025, 1, 1, 0.82],
+  /* set, hold, then tip back into depth */
+  const cardScale = useScrub(
+    weighted,
+    [0.06, 0.27, 0.33, 0.84, 1],
+    [0.88, 1.03, 1, 1, 0.72],
+    "arrival",
   );
-  const cardRotY = useTransform(
-    progress,
-    [0.36, 0.4, 0.44, 0.5, 0.54, 0.58, 0.66, 0.72, 0.86, 0.95],
-    [0, -7, 0, 0, 7, 0, 0, -16, -16, 0],
+  const cardRotX = useScrub(weighted, [0.84, 1], [0, 26], "depart");
+  const cardRotZ = useScrub(weighted, [0.84, 1], [0, -5], "depart");
+  const cardY = useScrub(weighted, [0.84, 1], ["0%", "26%"], "depart");
+  const cardOpacity = useTransform(progress, [0.06, 0.14, 0.9, 1], [0, 1, 1, 0]);
+
+  /* a slow presentation turn while the editions change — the card is
+     being shown, not spun */
+  const cardRotY = useScrub(
+    weighted,
+    [0.36, 0.46, 0.56, 0.66, 0.78],
+    [0, -9, 0, 9, 0],
+    "arrival",
   );
-  const cardX = useTransform(progress, [0.86, 0.96], ["0%", "26%"]);
-  const cardOpacity = useTransform(progress, [0.08, 0.14], [0, 1]);
+
   const shadow = useTransform(
     progress,
     [0.1, 0.3],
-    [
-      "0 12px 30px rgba(26,26,26,0.08)",
-      "0 34px 90px rgba(26,26,26,0.2)",
-    ],
+    ["0 12px 30px rgba(26,26,26,0.08)", "0 34px 90px rgba(26,26,26,0.2)"],
   );
 
-  /* edition crossfades — front → gallery mat → split field */
-  const ed0 = useTransform(progress, [0.36, 0.42], [1, 0]);
-  const ed1 = useTransform(progress, [0.36, 0.42, 0.5, 0.56], [0, 1, 1, 0]);
-  const ed2 = useTransform(progress, [0.5, 0.56], [0, 1]);
-  const editionOpacities = [ed0, ed1, ed2];
+  /* the stats line rides up with the last converging frame */
+  const statsY = useScrub(progress, [0.06, 0.26], [180, 0], "arrival");
+  const statsOpacity = useTransform(progress, [0.06, 0.12, 0.26, 0.32], [0, 1, 1, 0]);
 
-  /* the stats line converges with the frames, then hands to the card */
-  const statsY = useTransform(progress, [0.07, 0.27], [170, 0]);
-  const statsOpacity = useTransform(progress, [0.07, 0.12, 0.27, 0.33], [0, 1, 1, 0]);
+  /* NFC beat, after the editions have settled */
+  const nfcOpacity = useTransform(progress, [0.78, 0.83, 0.88, 0.93], [0, 1, 1, 0]);
+  const nfcScale = useScrub(progress, [0.78, 0.86], [0.9, 1], "arrival");
 
-  /* NFC beat */
-  const nfcOpacity = useTransform(progress, [0.68, 0.73, 0.82, 0.86], [0, 1, 1, 0]);
+  /* caption enters on a left wipe, leaves by sliding — not a fade */
+  const capClip = useWipe(progress, [0.1, 0.26], "left");
+  const capX = useScrub(progress, [0.86, 1], [0, -46], "depart");
+  const capOpacity = useTransform(progress, [0.88, 0.99], [1, 0]);
 
-  /* caption */
-  const capOpacity = useTransform(progress, [0.12, 0.2, 0.88, 0.94], [0, 1, 1, 0]);
-  const capY = useTransform(progress, [0.12, 0.2], [24, 0]);
-
-  /* spec hairline under the card */
-  const ruleScaleX = useTransform(progress, [0.3, 0.42], [0, 1]);
-  const ruleOpacity = useTransform(progress, [0.3, 0.36, 0.88, 0.93], [0, 1, 1, 0]);
+  const ruleScaleX = useScrub(progress, [0.3, 0.44], [0, 1], "wipe");
+  const ruleOpacity = useTransform(progress, [0.3, 0.36, 0.86, 0.94], [0, 1, 1, 0]);
 
   return (
-    <motion.div
-      style={{
-        position: "relative",
-        height: "100%",
-        opacity: prm ? 1 : sceneFade,
-      }}
-    >
+    <div style={{ position: "relative", height: "100%" }}>
       <div
         className="mx-auto flex h-full max-w-6xl flex-col items-center justify-center gap-10 px-6 md:flex-row md:justify-between md:gap-16 lg:px-10"
         style={{ paddingTop: 64, paddingBottom: 40 }}
       >
-        {/* caption — left on md+, above on mobile */}
         <motion.div
           style={{
+            clipPath: prm ? "inset(0%)" : capClip,
+            x: prm ? 0 : capX,
             opacity: prm ? 1 : capOpacity,
-            y: prm ? 0 : capY,
             flexShrink: 0,
+            willChange: "clip-path, transform, opacity",
           }}
           className="order-1 md:order-none md:max-w-[400px]"
         >
@@ -198,13 +225,11 @@ function SceneCardStage({
           </Caption>
         </motion.div>
 
-        {/* the card */}
         <div
           className="order-2 w-[min(62vw,240px)] md:w-[min(30vw,340px)]"
-          style={{ perspective: 1400, position: "relative" }}
+          style={{ perspective: 1500, position: "relative" }}
         >
-          {/* converging source frames — siblings of the card body so they
-              are visible while the card itself is still gathering */}
+          {/* converging source frames, siblings of the card body */}
           <div aria-hidden="true" style={{ position: "absolute", inset: 0 }}>
             {SOURCES.map((s, i) => (
               <ConvergingFrame key={s.src} s={s} i={i} progress={progress} prm={prm} />
@@ -216,40 +241,50 @@ function SceneCardStage({
               position: "relative",
               aspectRatio: CARD_AR,
               scale: prm ? 1 : cardScale,
+              rotateX: prm ? 0 : cardRotX,
               rotateY: prm ? 0 : cardRotY,
-              x: prm ? "0%" : cardX,
+              rotateZ: prm ? 0 : cardRotZ,
+              y: prm ? "0%" : cardY,
               opacity: prm ? 1 : cardOpacity,
               boxShadow: prm ? "0 34px 90px rgba(26,26,26,0.2)" : shadow,
               transformStyle: "preserve-3d",
+              transformOrigin: "50% 85%",
               willChange: "transform, opacity",
               background: "#fff",
             }}
           >
-            {/* edition renders, stacked */}
-            {EDITIONS.map((src, i) => (
-              <motion.div
-                key={src}
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  opacity: prm ? (i === 0 ? 1 : 0) : editionOpacities[i],
-                }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={src}
-                  alt={
-                    i === 0
-                      ? "Comp card, composed front"
-                      : "The same comp card in another art direction"
-                  }
-                  draggable={false}
-                  style={{ display: "block", width: "100%", height: "100%" }}
-                />
-              </motion.div>
-            ))}
+            {/* base edition, then two wiped over it from different edges */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={RENDERS.front}
+              alt="Comp card, composed front"
+              draggable={false}
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+              }}
+            />
+            <EditionLayer
+              src={RENDERS.galleryMat}
+              alt="The same comp card in a second art direction"
+              range={[0.44, 0.56]}
+              direction="left"
+              progress={progress}
+              prm={prm}
+              visibleWhenPrm={false}
+            />
+            <EditionLayer
+              src={RENDERS.splitField}
+              alt="The same comp card in a third art direction"
+              range={[0.62, 0.74]}
+              direction="up"
+              progress={progress}
+              prm={prm}
+              visibleWhenPrm={false}
+            />
 
-            {/* NFC arcs off the card's right edge */}
             <motion.svg
               aria-hidden="true"
               viewBox="0 0 48 96"
@@ -261,6 +296,7 @@ function SceneCardStage({
                 height: 88,
                 marginTop: -44,
                 opacity: prm ? 0 : nfcOpacity,
+                scale: prm ? 1 : nfcScale,
               }}
             >
               {[14, 26, 38].map((r, i) => (
@@ -276,7 +312,6 @@ function SceneCardStage({
             </motion.svg>
           </motion.div>
 
-          {/* converging stats line */}
           <motion.div
             aria-hidden="true"
             style={{
@@ -294,7 +329,6 @@ function SceneCardStage({
             </Mono>
           </motion.div>
 
-          {/* NFC caption under the card */}
           <motion.div
             style={{
               position: "absolute",
@@ -306,11 +340,11 @@ function SceneCardStage({
             }}
           >
             <Mono color={ON_CREAM_FAINT} size={9}>
-              NFC — in design · <span style={{ color: ON_CREAM_SOFT }}>hold near reader</span>
+              NFC — in design ·{" "}
+              <span style={{ color: ON_CREAM_SOFT }}>hold near reader</span>
             </Mono>
           </motion.div>
 
-          {/* spec hairline */}
           <motion.div
             aria-hidden="true"
             style={{
@@ -327,6 +361,6 @@ function SceneCardStage({
           />
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

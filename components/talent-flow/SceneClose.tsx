@@ -2,13 +2,15 @@
 
 /* ═══════════════════════════════════════════════════════════════════
    Scene 8 — Close (ink).
-   The last frame of the take: a quiet gold field rises behind the
-   final statement, three checkable facts set as a three-column ledger
-   under hairlines, and one entrance. No exit — the camera comes to
-   rest here.
+   GESTURE: bloom / resolution.
+   The last frame of the take: the page coming to rest. Where every
+   other scene travels (wipes, folds, dollies), this one only grows —
+   an ambient field expands, the headline blooms into focus, hairlines
+   draw into a three-column ledger. No exit. The camera comes to rest
+   here.
    ═══════════════════════════════════════════════════════════════════ */
 
-import { motion, useTransform, type MotionValue } from "framer-motion";
+import { motion, type MotionValue } from "framer-motion";
 import {
   Stage,
   Sweep,
@@ -24,6 +26,7 @@ import {
   SERIF,
   SANS,
 } from "./kit";
+import { useScrub, useDraw, useWipe, useBloom } from "./motion";
 
 const FACTS = [
   {
@@ -45,7 +48,7 @@ export default function SceneClose() {
   const prm = usePrm();
 
   return (
-    <Stage id="close" hvh={130}>
+    <Stage id="close" hvh={150} z={1} overlap={92}>
       {(progress) => <CloseStage progress={progress} prm={prm} />}
     </Stage>
   );
@@ -58,12 +61,19 @@ function CloseStage({
   progress: MotionValue<number>;
   prm: boolean;
 }) {
-  const orbOpacity = useTransform(progress, [0.1, 0.5], [0, 0.5]);
-  const sweepOpacity = useTransform(progress, [0.06, 0.14], [0, 1]);
-  const headOpacity = useTransform(progress, [0.12, 0.24], [0, 1]);
-  const headY = useTransform(progress, [0.12, 0.24], [18, 0]);
-  const ctaOpacity = useTransform(progress, [0.52, 0.62], [0, 1]);
-  const ctaY = useTransform(progress, [0.52, 0.62], [14, 0]);
+  /* the ambient field expands into place alongside its own opacity */
+  const orbOpacity = useScrub(progress, [0.06, 0.5], [0, 0.5], "arrival");
+  const orbScale = useScrub(progress, [0.06, 0.5], [0.6, 1], "arrival");
+
+  /* the sweep draws from centre rather than fading */
+  const sweepDraw = useDraw(progress, [0.04, 0.14], "wipe");
+
+  /* the headline blooms — scale, opacity and a letter-spacing settle */
+  const bloom = useBloom(progress, [0.1, 0.3]);
+
+  /* the CTA grows into place — no travel */
+  const ctaScale = useScrub(progress, [0.52, 0.64], [0.94, 1], "arrival");
+  const ctaOpacity = useScrub(progress, [0.52, 0.64], [0, 1], "arrival");
 
   return (
     <div
@@ -91,12 +101,19 @@ function CloseStage({
             "radial-gradient(circle, rgba(201,165,90,0.13) 0%, transparent 62%)",
           filter: "blur(70px)",
           opacity: prm ? 0.5 : orbOpacity,
+          scale: prm ? 1 : orbScale,
           pointerEvents: "none",
         }}
       />
 
       <div className="mx-auto w-full max-w-4xl px-6 text-center md:px-10">
-        <motion.div style={{ opacity: prm ? 1 : sweepOpacity }}>
+        <motion.div
+          style={{
+            scaleX: prm ? 1 : sweepDraw,
+            transformOrigin: "center",
+            willChange: "transform",
+          }}
+        >
           <Sweep centered width={72} />
         </motion.div>
 
@@ -105,13 +122,13 @@ function CloseStage({
           style={{
             fontSize: "clamp(2.6rem, 5.4vw, 4.4rem)",
             lineHeight: 1.05,
-            letterSpacing: "-0.02em",
+            letterSpacing: prm ? "-0.02em" : bloom.letterSpacing,
             color: ON_INK,
             textWrap: "balance",
             margin: "1.75rem 0 0",
-            opacity: prm ? 1 : headOpacity,
-            y: prm ? 0 : headY,
-            willChange: "transform, opacity",
+            scale: prm ? 1 : bloom.scale,
+            opacity: prm ? 1 : bloom.opacity,
+            willChange: "transform, opacity, letter-spacing",
           }}
         >
           On your <V>terms.</V>
@@ -133,8 +150,8 @@ function CloseStage({
         <motion.div
           className="mt-14 flex flex-col items-center gap-6 md:mt-16"
           style={{
+            scale: prm ? 1 : ctaScale,
             opacity: prm ? 1 : ctaOpacity,
-            y: prm ? 0 : ctaY,
             willChange: "transform, opacity",
           }}
         >
@@ -160,49 +177,47 @@ function Fact({
   progress: MotionValue<number>;
   prm: boolean;
 }) {
-  const ruleScaleX = useTransform(progress, [threshold, threshold + 0.1], [0, 1]);
-  const opacity = useTransform(progress, [threshold, threshold + 0.09], [0, 1]);
-  const y = useTransform(progress, [threshold, threshold + 0.09], [12, 0]);
+  /* the hairline draws left→right, then the text block wipes in — no y */
+  const ruleDraw = useDraw(progress, [threshold, threshold + 0.05], "wipe");
+  const textClip = useWipe(progress, [threshold + 0.05, threshold + 0.1], "left");
 
   return (
-    <motion.div
-      style={{
-        opacity: prm ? 1 : opacity,
-        y: prm ? 0 : y,
-        willChange: "transform, opacity",
-      }}
-    >
+    <div>
       <motion.div
         aria-hidden="true"
         style={{
           height: 1,
           background: HAIR_INK,
           transformOrigin: "left",
-          scaleX: prm ? 1 : ruleScaleX,
+          scaleX: prm ? 1 : ruleDraw,
         }}
       />
-      <p
-        style={{
-          margin: "1.1rem 0 0",
-          fontFamily: SERIF,
-          fontSize: 18,
-          lineHeight: 1.35,
-          color: ON_INK,
-        }}
+      <motion.div
+        style={{ clipPath: prm ? undefined : textClip, willChange: "clip-path" }}
       >
-        {fact.lead}
-      </p>
-      <p
-        style={{
-          margin: "0.55rem 0 0",
-          fontFamily: SANS,
-          fontSize: 13,
-          lineHeight: 1.65,
-          color: ON_INK_SOFT,
-        }}
-      >
-        {fact.gloss}
-      </p>
-    </motion.div>
+        <p
+          style={{
+            margin: "1.1rem 0 0",
+            fontFamily: SERIF,
+            fontSize: 18,
+            lineHeight: 1.35,
+            color: ON_INK,
+          }}
+        >
+          {fact.lead}
+        </p>
+        <p
+          style={{
+            margin: "0.55rem 0 0",
+            fontFamily: SANS,
+            fontSize: 13,
+            lineHeight: 1.65,
+            color: ON_INK_SOFT,
+          }}
+        >
+          {fact.gloss}
+        </p>
+      </motion.div>
+    </div>
   );
 }

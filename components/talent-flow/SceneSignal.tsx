@@ -2,12 +2,16 @@
 
 /* ═══════════════════════════════════════════════════════════════════
    Scene 5 — Signal (ink).
+   GESTURE: instrument wipe-reveal → collapse-to-line.
    Honest attention analytics: a seismograph of qualified visits and
    card pulls, ranked into a descending-emphasis column the way the
-   industry actually reads attention. The baseline hairline that opens
-   the chart is the same gold tick the Arrival field collapsed into —
-   here it strikes down once, then rises again at the exit to hand off
-   to the browser frame's top rule in Address.
+   industry actually reads attention. The instrument powers up via a
+   left→right wipe rather than a fade; its needle-and-trace internals
+   carry a light spring so they stay tight to the wheel (contrast
+   against Arrival's heavy trailing). On exit the trace folds down
+   onto its own baseline — the same gold tick the Arrival field
+   collapsed into — which then rises again to hand off to the browser
+   frame's top rule in Address.
    ═══════════════════════════════════════════════════════════════════ */
 
 import { motion, useTransform, type MotionValue } from "framer-motion";
@@ -25,6 +29,7 @@ import {
   SERIF,
   SANS,
 } from "./kit";
+import { useMass, useScrub, useWipe, useCollapseToLine } from "./motion";
 
 /* Hand-authored seismograph — quiet stretches, five sharp spikes. `x` is
    a 0–1 fraction of chart width; height is px above the baseline. */
@@ -74,7 +79,7 @@ export default function SceneSignal() {
   const prm = usePrm();
 
   return (
-    <Stage id="signal" hvh={260}>
+    <Stage id="signal" hvh={255} z={4} overlap={100}>
       {(progress) => (
         <div className="relative flex h-full w-full flex-col justify-center gap-10 px-6 py-24 md:block md:px-16 md:py-0">
           <SignalCaption progress={progress} prm={prm} />
@@ -87,16 +92,19 @@ export default function SceneSignal() {
 }
 
 function SignalCaption({ progress, prm }: { progress: MotionValue<number>; prm: boolean }) {
-  const opacity = useTransform(progress, [0.1, 0.2, 0.9, 1], [0, 1, 1, 0]);
-  const y = useTransform(progress, [0.1, 0.2], [16, 0]);
+  /* entrance: the caption is revealed by the same wipe-open language as
+     the instrument. exit: this is the one element in the scene allowed
+     to fade — it hands nothing forward, unlike the chart or the column. */
+  const clip = useWipe(progress, [0.08, 0.18], "left");
+  const exitOpacity = useTransform(progress, [0.9, 1], [1, 0]);
 
   return (
     <motion.div
       className="md:absolute md:left-16 md:top-[14%] md:max-w-[420px]"
       style={{
-        opacity: prm ? 1 : opacity,
-        y: prm ? 0 : y,
-        willChange: "transform, opacity",
+        clipPath: prm ? undefined : clip,
+        opacity: prm ? 1 : exitOpacity,
+        willChange: "clip-path, opacity",
       }}
     >
       <Caption dark headline={<>Know who leaned <V>in.</V></>}>
@@ -108,31 +116,51 @@ function SignalCaption({ progress, prm }: { progress: MotionValue<number>; prm: 
 }
 
 function SignalChart({ progress, prm }: { progress: MotionValue<number>; prm: boolean }) {
-  const baselineScaleX = useTransform(progress, [0.06, 0.18], [0, 1]);
-  const baselineY = useTransform(progress, [0.86, 1], ["0vh", "-38vh"]);
+  /* the instrument's internals — locked tight to the wheel, in contrast
+     to Arrival's heavy trailing portraits */
+  const light = useMass(progress, "light");
+
+  /* the whole plotted trace: wipes open left→right on entrance, folds
+     down onto its own baseline on exit */
+  const wipeClip = useWipe(progress, [0.1, 0.34], "left");
+  const collapse = useCollapseToLine(progress, [0.84, 0.98]);
+
+  /* baseline draw — retimed to precede the wipe */
+  const baselineScaleX = useScrub(light, [0.06, 0.16], [0, 1], "wipe");
+  /* the baseline survives the collapse and keeps rising to hand off */
+  const baselineY = useScrub(light, [0.86, 1], ["0vh", "-38vh"], "arrival");
   const baselineColor = useTransform(
-    progress,
+    light,
     [0.86, 0.94],
     [HAIR_INK, "rgba(245,240,232,0.35)"],
   );
-  const baselineOpacity = useTransform(progress, [0.985, 1], [1, 0.4]);
+  const baselineOpacity = useTransform(light, [0.985, 1], [1, 0.4]);
 
-  const strikeY = useTransform(progress, [0.12, 0.16], [-18, 0]);
-  const strikeOpacity = useTransform(progress, [0.12, 0.16], [0, 1]);
+  const strikeY = useScrub(light, [0.12, 0.16], [-18, 0], "wipe");
+  const strikeOpacity = useTransform(light, [0.12, 0.16], [0, 1]);
 
-  const drawOffset = useTransform(progress, [0.16, 0.42], [1, 0]);
-  const areaClipWidth = useTransform(progress, [0.16, 0.42], [0, CHART_W]);
-
-  const chartOpacity = useTransform(progress, [0.16, 0.22, 0.9, 1], [0, 1, 1, 0.15]);
+  const drawOffset = useScrub(light, [0.16, 0.46], [1, 0], "drive");
+  const areaClipWidth = useScrub(light, [0.16, 0.46], [0, CHART_W], "drive");
 
   const diamondBottomPct = BASELINE_FROM_BOTTOM_PCT + ((TALLEST_H + 16) / CHART_H) * 100;
-  const diamondOpacity = useTransform(progress, [0.42, 0.5], [0, 1]);
-  const diamondScale = useTransform(progress, [0.42, 0.5], [0.6, 1]);
+  const diamondOpacity = useTransform(light, [0.42, 0.5], [0, 1]);
+  const diamondScale = useScrub(light, [0.42, 0.5], [0.6, 1], "arrival");
 
   return (
     <div className="w-full md:absolute md:bottom-[10%] md:left-16 md:w-[62%]">
-      <motion.div style={{ opacity: prm ? 1 : chartOpacity, willChange: "opacity" }}>
-        <div className="relative w-full" style={{ aspectRatio: `${CHART_W} / ${CHART_H}` }}>
+      <div className="relative w-full" style={{ aspectRatio: `${CHART_W} / ${CHART_H}` }}>
+        {/* the plotted trace — wipes open, collapses onto the baseline on exit */}
+        <motion.div
+          style={{
+            position: "absolute",
+            inset: 0,
+            clipPath: prm ? undefined : wipeClip,
+            scaleY: prm ? 1 : collapse.scaleY,
+            opacity: prm ? 1 : collapse.opacity,
+            transformOrigin: "bottom",
+            willChange: "clip-path, transform, opacity",
+          }}
+        >
           <svg
             aria-hidden="true"
             viewBox={`0 0 ${CHART_W} ${CHART_H}`}
@@ -159,47 +187,13 @@ function SignalChart({ progress, prm }: { progress: MotionValue<number>; prm: bo
             />
           </svg>
 
-          {/* baseline hairline — travels up to hand off to the next scene */}
-          <motion.div
-            aria-hidden="true"
-            style={{
-              position: "absolute",
-              left: 0,
-              right: 0,
-              bottom: `${BASELINE_FROM_BOTTOM_PCT}%`,
-              height: 1,
-              transformOrigin: "left",
-              scaleX: prm ? 1 : baselineScaleX,
-              y: prm ? 0 : baselineY,
-              backgroundColor: prm ? HAIR_INK : baselineColor,
-              opacity: prm ? 1 : baselineOpacity,
-              willChange: "transform, opacity, background-color",
-            }}
-          />
-
-          {/* the echoed gold strike from Arrival */}
-          <motion.div
-            aria-hidden="true"
-            style={{
-              position: "absolute",
-              left: 0,
-              bottom: `${BASELINE_FROM_BOTTOM_PCT}%`,
-              width: 2,
-              height: 10,
-              background: GOLD,
-              y: prm ? 0 : strikeY,
-              opacity: prm ? 1 : strikeOpacity,
-              willChange: "transform, opacity",
-            }}
-          />
-
           {SPIKE_X.map((x, i) => (
             <SpikeTick
               key={x}
               x={x}
               h={SPIKE_TICK_H[i]}
               index={i}
-              progress={progress}
+              progress={light}
               prm={prm}
             />
           ))}
@@ -225,8 +219,43 @@ function SignalChart({ progress, prm }: { progress: MotionValue<number>; prm: bo
               }}
             />
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+
+        {/* baseline hairline — survives the trace's collapse, travels up
+            to hand off to the next scene */}
+        <motion.div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            bottom: `${BASELINE_FROM_BOTTOM_PCT}%`,
+            height: 1,
+            transformOrigin: "left",
+            scaleX: prm ? 1 : baselineScaleX,
+            y: prm ? 0 : baselineY,
+            backgroundColor: prm ? HAIR_INK : baselineColor,
+            opacity: prm ? 1 : baselineOpacity,
+            willChange: "transform, opacity, background-color",
+          }}
+        />
+
+        {/* the echoed gold strike from Arrival */}
+        <motion.div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            left: 0,
+            bottom: `${BASELINE_FROM_BOTTOM_PCT}%`,
+            width: 2,
+            height: 10,
+            background: GOLD,
+            y: prm ? 0 : strikeY,
+            opacity: prm ? 1 : strikeOpacity,
+            willChange: "transform, opacity",
+          }}
+        />
+      </div>
       <span className="sr-only">
         Attention over time: qualified visits as a soft field, card pulls as
         gold strikes, an agency review marked above them.
@@ -248,9 +277,10 @@ function SpikeTick({
   progress: MotionValue<number>;
   prm: boolean;
 }) {
+  /* shortened to a 0.04 window each — discrete strikes, not a swell */
   const start = 0.3 + index * 0.0375;
-  const end = start + 0.06;
-  const scaleY = useTransform(progress, [start, end], [0, 1]);
+  const end = start + 0.04;
+  const scaleY = useScrub(progress, [start, end], [0, 1], "drive");
   const opacity = useTransform(progress, [start, end], [0, 1]);
 
   return (
@@ -273,8 +303,19 @@ function SpikeTick({
 }
 
 function SignalColumn({ progress, prm }: { progress: MotionValue<number>; prm: boolean }) {
+  /* the whole hierarchy column wipes out downward as one unit at exit */
+  const exitClip = useScrub(
+    progress,
+    [0.86, 0.98],
+    ["inset(0% 0% 0% 0%)", "inset(100% 0% 0% 0%)"],
+    "wipe",
+  );
+
   return (
-    <div className="w-full max-w-xs md:absolute md:right-16 md:top-[14%] md:w-[300px]">
+    <motion.div
+      className="w-full max-w-xs md:absolute md:right-16 md:top-[14%] md:w-[300px]"
+      style={{ clipPath: prm ? undefined : exitClip, willChange: "clip-path" }}
+    >
       {ROWS.map((row, i) => (
         <SignalRow
           key={row.text}
@@ -287,7 +328,7 @@ function SignalColumn({ progress, prm }: { progress: MotionValue<number>; prm: b
         />
       ))}
       <SignalBodyLine progress={progress} prm={prm} />
-    </div>
+    </motion.div>
   );
 }
 
@@ -306,19 +347,19 @@ function SignalRow({
   progress: MotionValue<number>;
   prm: boolean;
 }) {
-  const end = threshold + 0.08;
-  const opacity = useTransform(progress, [threshold, end, 0.9, 1], [0, 1, 1, 0]);
-  const y = useTransform(progress, [threshold, end], [12, 0]);
+  const end = threshold + 0.06;
+  const clip = useWipe(progress, [threshold, end], "left");
+  const x = useScrub(progress, [threshold, end], [-14, 0], "arrival");
 
   return (
     <motion.div
       style={{
-        opacity: prm ? 1 : opacity,
-        y: prm ? 0 : y,
+        clipPath: prm ? undefined : clip,
+        x: prm ? 0 : x,
         marginTop: gap,
         paddingTop: hairlineBefore ? 14 : 0,
         borderTop: hairlineBefore ? `1px solid ${HAIR_INK}` : undefined,
-        willChange: "transform, opacity",
+        willChange: "clip-path, transform",
       }}
     >
       {row.mono ? (
@@ -343,8 +384,8 @@ function SignalRow({
 }
 
 function SignalBodyLine({ progress, prm }: { progress: MotionValue<number>; prm: boolean }) {
-  const opacity = useTransform(progress, [0.66, 0.78, 0.9, 1], [0, 1, 1, 0]);
-  const y = useTransform(progress, [0.66, 0.78], [10, 0]);
+  const clip = useWipe(progress, [0.66, 0.78], "left");
+  const x = useScrub(progress, [0.66, 0.78], [-14, 0], "arrival");
 
   return (
     <motion.p
@@ -355,9 +396,9 @@ function SignalBodyLine({ progress, prm }: { progress: MotionValue<number>; prm:
         fontSize: 14,
         lineHeight: 1.7,
         color: ON_INK_SOFT,
-        opacity: prm ? 1 : opacity,
-        y: prm ? 0 : y,
-        willChange: "transform, opacity",
+        clipPath: prm ? undefined : clip,
+        x: prm ? 0 : x,
+        willChange: "clip-path, transform",
       }}
     >
       A private link for every send. A re-open days later is filing behavior

@@ -50,17 +50,30 @@ export const SERIF = "var(--font-serif), Georgia, serif";
 export const SANS = "var(--font-sans), Inter, sans-serif";
 
 /* ── Scene score. Heights in vh; bg is the field color at the scene's
-      center. TalentFlowPage interpolates between neighbors across each
-      boundary so the page reads as one continuous take. ────────────── */
+      centre; overlap is how far the stage is pulled up over its
+      predecessor so the two share frames at the seam. `hold` shapes the
+      colour field: a tight hold means the field commits late and turns
+      fast (a cut), a loose one means it bleeds early (a dissolve) —
+      boundaries should not all behave alike.
+      TalentFlowPage reads all of this to build one continuous field. ── */
+/* A sticky stage is pinned for exactly (h − 100vh) of scroll, then
+   unpins and scrolls away over one viewport. So `overlap` must be ~100
+   for a scene to take the frame at the precise moment its predecessor
+   releases it — anything less leaves a dead window with nothing staged
+   in it. Above 100 the two are pinned together for a beat and the
+   outgoing gesture plays over the incoming scene, which is where the
+   real cross-fades live. Below 100 buys a deliberate breath.
+   Earlier scenes sit on higher z, so an exit clears the frame to
+   reveal the next scene already standing behind it. */
 export const SCENES = [
-  { id: "arrival", h: 150, bg: INK },
-  { id: "card", h: 330, bg: CREAM },
-  { id: "book", h: 260, bg: CREAM },
-  { id: "send", h: 280, bg: INK },
-  { id: "signal", h: 260, bg: INK },
-  { id: "address", h: 230, bg: CREAM },
-  { id: "wallet", h: 280, bg: BLACK },
-  { id: "close", h: 130, bg: INK },
+  { id: "arrival", h: 165, bg: INK, overlap: 0, hold: 0.12 },
+  { id: "card", h: 330, bg: CREAM, overlap: 106, hold: 0.16 },
+  { id: "book", h: 250, bg: CREAM, overlap: 100, hold: 0.22 },
+  { id: "send", h: 285, bg: INK, overlap: 116, hold: 0.06 },
+  { id: "signal", h: 255, bg: INK, overlap: 100, hold: 0.2 },
+  { id: "address", h: 235, bg: CREAM, overlap: 110, hold: 0.12 },
+  { id: "wallet", h: 280, bg: BLACK, overlap: 100, hold: 0.08 },
+  { id: "close", h: 150, bg: INK, overlap: 92, hold: 0.18 },
 ] as const;
 
 export type SceneId = (typeof SCENES)[number]["id"];
@@ -223,17 +236,28 @@ export function Sweep({
  * Stage — the house sticky-scene pattern. A tall section whose sticky,
  * viewport-height stage receives the scene's scroll progress (0→1 over
  * the section). All scroll-scrubbed motion derives from this value.
+ *
+ * `overlap` pulls the stage up over its predecessor (in vh), so the
+ * outgoing and incoming scenes share frames at the seam instead of
+ * meeting edge to edge — the difference between a cut and a dissolve.
+ * `z` orders who is on top through that shared window.
+ * `clip` can be disabled where a gesture is meant to leave the frame
+ * (a dolly-through, a launch) rather than be cropped by it.
  */
 export function Stage({
   id,
   hvh,
   children,
   z = 1,
+  overlap = 0,
+  clip = true,
 }: {
   id: SceneId;
   hvh: number;
   children: (progress: MotionValue<number>) => React.ReactNode;
   z?: number;
+  overlap?: number;
+  clip?: boolean;
 }) {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
@@ -244,14 +268,19 @@ export function Stage({
     <section
       id={id}
       ref={ref}
-      style={{ height: `${hvh}vh`, position: "relative", zIndex: z }}
+      style={{
+        height: `${hvh}vh`,
+        position: "relative",
+        zIndex: z,
+        marginTop: overlap ? `-${overlap}vh` : undefined,
+      }}
     >
       <div
         style={{
           position: "sticky",
           top: 0,
           height: "100vh",
-          overflow: "hidden",
+          overflow: clip ? "hidden" : "visible",
         }}
       >
         {children(scrollYProgress)}
