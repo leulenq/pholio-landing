@@ -54,7 +54,7 @@ export default function VariantIndex({
     <FieldProvider tokens={tokens}>
       <header
         data-site-header
-        className={`${preview ? "absolute" : "fixed"} inset-x-0 top-0 z-50`}
+        className={`${preview ? "absolute" : "fixed"} inset-x-0 top-0 z-[103]`}
         style={{
           opacity: revealed ? 1 : 0,
           pointerEvents: revealed ? "auto" : "none",

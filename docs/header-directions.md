@@ -41,8 +41,14 @@ Two behavioural bugs found while reading it, fixed in all four directions:
 - On `/` the header **never appeared at all**: it gates on
   `[data-header-switch='comp-card']`, an attribute no longer present anywhere in
   the DOM, so `getHomeHeaderActive()` always returned false. The new headers
-  reveal on hero exit (`2.35 × viewport`, the 300vh hero) and don't depend on a
-  marker.
+  measure the hero section itself (`[data-hero-chrome]`'s section) and reveal
+  once it has largely left the viewport, falling back to one viewport of scroll
+  when a page has no hero.
+
+  Note `/` currently serves `TemporaryLanding` ("Launching soon"), which has no
+  hero and does not scroll — so the header stays hidden there, which is right.
+  The directions were verified on `/talent`, `/agency` and the cream legal pages;
+  re-check `/` when `ClientPage` goes back on the route.
 - Polarity was frozen per route, so the header stayed ink-dark while scrolling
   across the home page's cream sections. The new headers **sample the paper
   underneath the bar** and flip (`useFieldPolarity` in `components/header/kit.tsx`).

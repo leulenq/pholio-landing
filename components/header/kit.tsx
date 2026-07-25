@@ -145,10 +145,24 @@ export const SIGNUP_HREF = `${APP_URL}/onboarding`;
  * The home page carries its own chrome inside the 300vh hero composition, so
  * the sitewide header stays out of the way until the hero has left. (The old
  * header looked for a `[data-header-switch]` marker that no longer exists in
- * the DOM, which is why it never appeared on `/` at all.)
+ * the DOM, which is why it never appeared on `/` at all — so this measures the
+ * hero itself, and falls back to one viewport of scroll if there isn't one.)
+ *
+ * Note `/` currently serves the "Launching soon" holding page, which has no hero
+ * and does not scroll — so the header stays hidden there, which is correct.
  */
-const HOME_REVEAL_RATIO = 2.35; // viewport heights of the 300vh hero
 const CONDENSE_AT = 96; // px of scroll before the header settles
+
+function homeHeaderRevealed(): boolean {
+  const hero = document
+    .querySelector("[data-hero-chrome]")
+    ?.closest("section");
+  if (hero) {
+    // Revealed once the hero's last frame has largely left the viewport.
+    return hero.getBoundingClientRect().bottom <= window.innerHeight * 0.5;
+  }
+  return window.scrollY > window.innerHeight;
+}
 
 export interface HeaderState {
   field: Field;
@@ -188,7 +202,7 @@ export function useHeaderState({
   useMotionValueEvent(scrollY, "change", (latest) => {
     if (preview) return;
     if (isHome) {
-      setRevealed(latest > window.innerHeight * HOME_REVEAL_RATIO);
+      setRevealed(homeHeaderRevealed());
     }
     setCondensed(latest > CONDENSE_AT);
   });
@@ -279,6 +293,32 @@ function useFieldPolarity({
   }, [enabled, fallback]);
 
   return field;
+}
+
+/**
+ * Whether a full-screen index is currently open. Module-level because the state
+ * lives inside a variant, but chrome rendered outside the header (the preview
+ * badge) needs to get out of its way. Contained demo panels don't report.
+ */
+let indexOpenState = false;
+const indexOpenListeners = new Set<(open: boolean) => void>();
+
+function reportIndexOpen(open: boolean) {
+  if (indexOpenState === open) return;
+  indexOpenState = open;
+  indexOpenListeners.forEach((listen) => listen(open));
+}
+
+export function useIndexOpen(): boolean {
+  const [open, setOpen] = useState(indexOpenState);
+  useEffect(() => {
+    indexOpenListeners.add(setOpen);
+    setOpen(indexOpenState);
+    return () => {
+      indexOpenListeners.delete(setOpen);
+    };
+  }, []);
+  return open;
 }
 
 /** Locks page scroll while a full-screen index is open. */
@@ -990,6 +1030,12 @@ export function IndexPanel({
   const { isAuthenticated, dashboardHref } = usePholioAuth();
   useScrollLock(open && !contained);
 
+  useEffect(() => {
+    if (contained) return;
+    reportIndexOpen(open);
+    return () => reportIndexOpen(false);
+  }, [open, contained]);
+
   const entry = (i: number) => ({
     initial: false as const,
     animate: {
@@ -1005,7 +1051,7 @@ export function IndexPanel({
 
   return (
     <motion.div
-      className={`${contained ? "absolute" : "fixed"} inset-x-0 bottom-0 z-40 flex flex-col`}
+      className={`${contained ? "absolute" : "fixed"} inset-x-0 bottom-0 z-[102] flex flex-col`}
       initial={false}
       animate={{ opacity: open ? 1 : 0, pointerEvents: open ? "auto" : "none" }}
       transition={{ duration: 0.36, ease: EASE }}

@@ -50,9 +50,12 @@ Rules the directions share, and any future header must keep:
   kept in every direction (`IndexTrigger` + `IndexPanel`) with its chrome stripped.
 - Headers **sample the paper under the bar** (`useFieldPolarity`) and flip
   ink/cream mid-scroll. Route theme is only the starting value.
-- Home reveal is hero-exit based (`2.35 × viewport`). Don't reintroduce the
+- Home reveal measures the hero section (`[data-hero-chrome]`'s `<section>`) and
+  falls back to one viewport of scroll. Don't reintroduce the
   `[data-header-switch='comp-card']` marker gate — the attribute no longer exists
-  in the DOM, which is why the old header never appeared on `/` at all.
+  in the DOM, which is why the old header never appeared on `/` at all. (`/`
+  currently serves `TemporaryLanding`, which has no hero and doesn't scroll, so
+  the header stays hidden there by design.)
 
 ## Comp-card showcase (`components/SceneCompCard.tsx`)
 

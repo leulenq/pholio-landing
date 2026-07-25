@@ -59,7 +59,7 @@ export default function VariantLedger({
     <FieldProvider tokens={tokens}>
       <header
         data-site-header
-        className={`${preview ? "absolute" : "fixed"} inset-x-0 top-0 z-50`}
+        className={`${preview ? "absolute" : "fixed"} inset-x-0 top-0 z-[103]`}
         style={{
           background: tokens.surface,
           opacity: revealed ? 1 : 0,

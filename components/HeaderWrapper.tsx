@@ -11,6 +11,7 @@ import {
   type HeaderVariantId,
 } from "@/lib/header-variants";
 import { HEADER_COMPONENTS } from "@/components/header";
+import { useIndexOpen } from "@/components/header/kit";
 
 const STORAGE_KEY = "pholio:header-variant";
 
@@ -88,13 +89,15 @@ export default function HeaderWrapper() {
 
 /** Only ever visible while a direction is being previewed. */
 function VariantBadge({ variant }: { variant: HeaderVariantId }) {
+  const indexOpen = useIndexOpen();
   const meta = HEADER_VARIANTS.find((v) => v.id === variant);
   if (!meta) return null;
 
   return (
     <Link
       href="/lab/header"
-      className="fixed bottom-5 left-5 z-[80] flex items-center gap-2.5 focus:outline-none"
+      /* Above the cookie banner (z-100), which otherwise buries it. */
+      className="fixed bottom-5 left-5 z-[110] flex items-center gap-2.5 focus:outline-none"
       style={{
         background: "#050505",
         border: "1px solid rgba(201,165,90,0.32)",
@@ -105,6 +108,10 @@ function VariantBadge({ variant }: { variant: HeaderVariantId }) {
         letterSpacing: "0.22em",
         textTransform: "uppercase",
         color: "rgba(250,247,242,0.62)",
+        // An open index owns the whole viewport; the badge steps aside.
+        opacity: indexOpen ? 0 : 1,
+        pointerEvents: indexOpen ? "none" : "auto",
+        transition: "opacity 0.3s cubic-bezier(0.22,1,0.36,1)",
       }}
     >
       <span style={{ color: "#C9A55A" }}>{meta.index}</span>
