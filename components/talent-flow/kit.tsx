@@ -288,10 +288,10 @@ export function Frame({
   );
 }
 
-/** Primary CTA — the site's gold button idiom. */
+/** Primary CTA — solid white (talent-flow scenes sit on dark fields). */
 export function GoldCta({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <a href={href} className="btn-gold">
+    <a href={href} className="btn-solid-white">
       <span>{children}</span>
     </a>
   );

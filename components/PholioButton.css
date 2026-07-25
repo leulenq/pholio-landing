@@ -1,9 +1,8 @@
-/* Editorial Ledger primary — ported from pholio-app PholioButton.css */
+/* Editorial Ledger primary — solid black / solid white only */
 
 .pholio-btn {
-  --ph-btn-ink: #1a1815;
-  --ph-btn-canvas: #faf7f2;
-  --ph-btn-gold: #c9a55a;
+  --ph-btn-ink: #050505;
+  --ph-btn-canvas: #ffffff;
   --ph-btn-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --ph-btn-radius: 3px;
   --ph-btn-sans: var(--font-sans);
@@ -40,7 +39,7 @@
 }
 
 .pholio-btn:focus-visible {
-  outline: 2px solid rgba(201, 165, 90, 0.72);
+  outline: 2px solid rgba(5, 5, 5, 0.45);
   outline-offset: 3px;
 }
 
@@ -57,34 +56,24 @@
   letter-spacing: 0.02em;
 }
 
-.pholio-btn--primary::after {
-  content: "";
-  position: absolute;
-  z-index: 0;
-  left: 50%;
-  bottom: 0;
-  width: 46px;
-  height: 1.5px;
-  border-radius: 999px;
-  background: linear-gradient(to right, transparent, var(--ph-btn-gold), transparent);
-  opacity: 0.6;
-  pointer-events: none;
-  transform: translateX(-50%);
-  transition:
-    width 0.45s var(--ph-btn-ease),
-    opacity 0.3s var(--ph-btn-ease);
-}
-
-.pholio-btn--primary:hover::after,
-.pholio-btn--primary:focus-visible::after {
-  width: 100%;
-  opacity: 1;
+.pholio-btn--primary:hover {
+  background: #1a1815;
+  border-color: #1a1815;
 }
 
 .pholio-btn--primary.pholio-btn--tone-dark {
-  border-color: #faf7f2;
-  background: #faf7f2;
-  color: #1a1815;
+  border-color: #ffffff;
+  background: #ffffff;
+  color: #050505;
+}
+
+.pholio-btn--primary.pholio-btn--tone-dark:hover {
+  background: #f5f0e8;
+  border-color: #f5f0e8;
+}
+
+.pholio-btn--primary.pholio-btn--tone-dark:focus-visible {
+  outline-color: rgba(255, 255, 255, 0.55);
 }
 
 .pholio-btn--compact {
@@ -100,8 +89,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pholio-btn,
-  .pholio-btn::after {
+  .pholio-btn {
     transition-duration: 0.01ms;
   }
 }

@@ -27,7 +27,8 @@ export default function Header({ theme = "dark" }: HeaderProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { session: authData, isLoading: isLoadingAuth, isAuthenticated, logout, dashboardHref } =
     usePholioAuth();
-  const goldButtonBackground = "var(--color-gold)";
+  const ctaButtonBackground = isDark ? "#FFFFFF" : "#050505";
+  const ctaButtonColor = isDark ? "#050505" : "#FFFFFF";
   const headerBorderSurface = isDark
     ? "linear-gradient(135deg, rgba(255,255,255,0.105) 0%, rgba(201,165,90,0.08) 42%, rgba(255,255,255,0.075) 100%)"
     : "linear-gradient(135deg, rgba(15,23,42,0.08) 0%, rgba(201,165,90,0.12) 52%, rgba(15,23,42,0.06) 100%)";
@@ -415,24 +416,16 @@ export default function Header({ theme = "dark" }: HeaderProps) {
 
                 <motion.a
                   href={`${APP_URL}/onboarding`}
-                  className="relative inline-flex items-center justify-center overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A55A]/30 focus-visible:ring-offset-2 focus-visible:ring-offset-[#050505]"
-                  initial="rest"
-                  animate="rest"
-                  whileHover="hover"
-                  variants={{
-                    rest: {
-                      boxShadow:
-                        "0 6px 16px -14px rgba(201,165,90,0.42), inset 0 1px 0 rgba(255,255,255,0.12), inset 0 0 0 rgba(5,5,5,0)",
-                    },
-                    hover: {
-                      boxShadow:
-                        "0 0 0 1px rgba(201,165,90,0.2), 0 12px 30px -22px rgba(201,165,90,0.82), inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -12px 20px rgba(5,5,5,0.1)",
-                    },
-                  }}
-                  transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
+                  className={`relative inline-flex items-center justify-center overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
+                    isDark
+                      ? "focus-visible:ring-white/30 focus-visible:ring-offset-[#050505]"
+                      : "focus-visible:ring-black/20 focus-visible:ring-offset-[#FAF7F2]"
+                  }`}
+                  whileHover={{ backgroundColor: isDark ? "#F5F0E8" : "#1A1815" }}
+                  transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
                   style={{
-                    backgroundColor: goldButtonBackground,
-                    color: "#050505",
+                    backgroundColor: ctaButtonBackground,
+                    color: ctaButtonColor,
                     fontFamily: "var(--font-sans)",
                     fontWeight: 700,
                     fontSize: "10px",
@@ -441,24 +434,9 @@ export default function Header({ theme = "dark" }: HeaderProps) {
                     padding: "12px 28px",
                     borderRadius: "100px",
                     textDecoration: "none",
-                    boxShadow:
-                      "0 6px 16px -14px rgba(201,165,90,0.42), inset 0 1px 0 rgba(255,255,255,0.12), inset 0 0 0 rgba(5,5,5,0)",
                     border: "0",
                   }}
                 >
-                  <motion.span
-                    aria-hidden="true"
-                    className="pointer-events-none absolute inset-0"
-                    variants={{
-                      rest: { opacity: 0 },
-                      hover: { opacity: 1 },
-                    }}
-                    transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
-                    style={{
-                      background:
-                        "linear-gradient(180deg, rgba(255,255,255,0.1) 0%, transparent 48%, rgba(5,5,5,0.08) 100%)",
-                    }}
-                  />
                   <span className="relative z-10 flex items-center gap-2">
                     GET SCOUTED
                   </span>
@@ -573,11 +551,10 @@ export default function Header({ theme = "dark" }: HeaderProps) {
               <a
                 href={dashboardHref}
                 className="rounded-2xl py-4 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-[#050505]"
-	                style={{
-		                  fontFamily: "var(--font-sans)",
-			                  backgroundColor: goldButtonBackground,
-			                  boxShadow: "0 6px 16px -14px rgba(201,165,90,0.42), inset 0 1px 0 rgba(255,255,255,0.12)",
-			                }}
+                style={{
+                  fontFamily: "var(--font-sans)",
+                  backgroundColor: "#FFFFFF",
+                }}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Open dashboard
@@ -587,11 +564,10 @@ export default function Header({ theme = "dark" }: HeaderProps) {
                 <a
                   href={`${APP_URL}/onboarding`}
                   className="rounded-2xl py-4 text-center text-[11px] font-bold uppercase tracking-[0.14em] text-[#050505]"
-	                  style={{
-		                    fontFamily: "var(--font-sans)",
-			                    backgroundColor: goldButtonBackground,
-			                    boxShadow: "0 6px 16px -14px rgba(201,165,90,0.42), inset 0 1px 0 rgba(255,255,255,0.12)",
-			                  }}
+                  style={{
+                    fontFamily: "var(--font-sans)",
+                    backgroundColor: "#FFFFFF",
+                  }}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Get scouted

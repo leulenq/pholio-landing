@@ -68,17 +68,17 @@ export default function CookieConsentBanner() {
               <button
                 type="button"
                 onClick={handleAcceptAll}
-                className="inline-flex items-center justify-center rounded-full px-6 py-3 text-[10px] font-bold uppercase tracking-[0.15em] transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A55A]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAF7F2]"
+                className="inline-flex items-center justify-center rounded-full px-6 py-3 text-[10px] font-bold uppercase tracking-[0.15em] transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#050505]/25 focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAF7F2]"
                 style={{
                   fontFamily: "var(--font-sans)",
-                  backgroundColor: "var(--color-gold)",
-                  color: "#050505",
+                  backgroundColor: "#050505",
+                  color: "#FFFFFF",
                 }}
                 onMouseEnter={(event) => {
-                  event.currentTarget.style.backgroundColor = "var(--color-gold-hover)";
+                  event.currentTarget.style.backgroundColor = "#1A1815";
                 }}
                 onMouseLeave={(event) => {
-                  event.currentTarget.style.backgroundColor = "var(--color-gold)";
+                  event.currentTarget.style.backgroundColor = "#050505";
                 }}
               >
                 Accept all
@@ -87,20 +87,18 @@ export default function CookieConsentBanner() {
               <button
                 type="button"
                 onClick={handleNecessaryOnly}
-                className="inline-flex items-center justify-center rounded-full border px-6 py-3 text-[10px] font-bold uppercase tracking-[0.15em] transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A55A]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAF7F2]"
+                className="inline-flex items-center justify-center rounded-full border px-6 py-3 text-[10px] font-bold uppercase tracking-[0.15em] transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#050505]/25 focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAF7F2]"
                 style={{
                   fontFamily: "var(--font-sans)",
-                  borderColor: "rgba(201, 165, 90, 0.45)",
-                  color: "#1A1A1A",
+                  borderColor: "#050505",
+                  color: "#050505",
                   backgroundColor: "#FFFFFF",
                 }}
                 onMouseEnter={(event) => {
-                  event.currentTarget.style.borderColor = "var(--color-gold)";
-                  event.currentTarget.style.color = "var(--color-gold-dark)";
+                  event.currentTarget.style.backgroundColor = "#F5F0E8";
                 }}
                 onMouseLeave={(event) => {
-                  event.currentTarget.style.borderColor = "rgba(201, 165, 90, 0.45)";
-                  event.currentTarget.style.color = "#1A1A1A";
+                  event.currentTarget.style.backgroundColor = "#FFFFFF";
                 }}
               >
                 Necessary only
@@ -108,14 +106,14 @@ export default function CookieConsentBanner() {
 
               <Link
                 href="/cookies"
-                className="inline-flex items-center justify-center rounded-full px-2 py-3 text-[10px] font-semibold uppercase tracking-[0.12em] transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A55A]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAF7F2]"
+                className="inline-flex items-center justify-center rounded-full px-2 py-3 text-[10px] font-semibold uppercase tracking-[0.12em] transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#050505]/25 focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAF7F2]"
                 style={{
                   fontFamily: "var(--font-sans)",
                   color: "#64748B",
                   textDecoration: "none",
                 }}
                 onMouseEnter={(event) => {
-                  event.currentTarget.style.color = "var(--color-gold-dark)";
+                  event.currentTarget.style.color = "#050505";
                 }}
                 onMouseLeave={(event) => {
                   event.currentTarget.style.color = "#64748B";

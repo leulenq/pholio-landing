@@ -321,9 +321,9 @@ export default function SceneNetwork() {
       <div className="relative z-20 flex justify-center mt-14 md:mt-16">
         <a
           href={`${APP_URL}/signup`}
-          className="group relative inline-flex items-center justify-center gap-2 rounded-full px-8 py-3.5 overflow-hidden transition-all duration-300 hover:scale-105"
+          className="group relative inline-flex items-center justify-center gap-2 rounded-full px-8 py-3.5 overflow-hidden transition-colors duration-300 hover:bg-[#F5F0E8]"
           style={{
-            background: "linear-gradient(135deg, #C9A55A 0%, #D4BC8A 100%)",
+            background: "#FFFFFF",
             color: "#050505",
             fontSize: "0.75rem",
             fontFamily: "var(--font-sans)",
@@ -331,7 +331,6 @@ export default function SceneNetwork() {
             letterSpacing: "0.08em",
             textTransform: "uppercase",
             textDecoration: "none",
-            boxShadow: "0 8px 24px -8px rgba(201, 165, 90, 0.4)",
           }}
         >
           <span className="relative z-10">Join the Network</span>
@@ -341,12 +340,6 @@ export default function SceneNetwork() {
           >
             →
           </span>
-          <div
-            className="absolute inset-0 z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-            style={{
-              background: "linear-gradient(135deg, #D4BC8A 0%, #E6D2A3 100%)",
-            }}
-          />
         </a>
       </div>
     </section>

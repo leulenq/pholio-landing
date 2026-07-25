@@ -182,9 +182,9 @@ export default function HeroSection() {
             <a
               href={`${APP_URL}/onboarding`}
               className="group relative inline-flex items-center gap-2 overflow-hidden"
-              style={{ background: "linear-gradient(135deg, #C9A55A 0%, #A88C44 100%)", color: "#050505", fontFamily: "var(--font-sans)", fontWeight: 600, fontSize: "0.75rem", letterSpacing: "0.1em", textTransform: "uppercase", padding: "16px 36px", borderRadius: 100, textDecoration: "none", transition: "transform 0.4s ease, box-shadow 0.4s ease" }}
-              onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 30px rgba(201,165,90,0.3)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}
+              style={{ background: "#050505", color: "#FFFFFF", fontFamily: "var(--font-sans)", fontWeight: 600, fontSize: "0.75rem", letterSpacing: "0.1em", textTransform: "uppercase", padding: "16px 36px", borderRadius: 100, textDecoration: "none", transition: "background-color 0.3s ease" }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#1A1815"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "#050505"; }}
             >
               Start your book
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="group-hover:translate-x-1" style={{ transition: "transform 0.3s ease" }}>
@@ -193,9 +193,9 @@ export default function HeroSection() {
             </a>
             <a
               href="#features"
-              style={{ fontFamily: "var(--font-sans)", fontWeight: 500, fontSize: "0.75rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(26,24,21,0.35)", padding: "16px 24px", textDecoration: "none", transition: "color 0.3s ease, border-color 0.3s ease", borderRadius: 100, border: "1px solid rgba(26,24,21,0.1)" }}
-              onMouseEnter={(e) => { e.currentTarget.style.color = "#C9A55A"; e.currentTarget.style.borderColor = "rgba(201,165,90,0.3)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(26,24,21,0.35)"; e.currentTarget.style.borderColor = "rgba(26,24,21,0.1)"; }}
+              style={{ fontFamily: "var(--font-sans)", fontWeight: 500, fontSize: "0.75rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "#050505", padding: "16px 24px", textDecoration: "none", transition: "background-color 0.3s ease", borderRadius: 100, border: "1px solid #050505", background: "#FFFFFF" }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#F5F0E8"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "#FFFFFF"; }}
             >
               See comp &amp; book
             </a>

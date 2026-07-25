@@ -130,11 +130,11 @@ export default function StudioPlusClose() {
             >
               <motion.a
                 href={STUDIO_PLUS_SIGNUP_URL}
-                whileHover={{ y: -2 }}
+                whileHover={{ backgroundColor: "#F5F0E8" }}
                 whileTap={{ scale: 0.98 }}
                 className="inline-flex items-center gap-2"
                 style={{
-                  background: "linear-gradient(135deg, #DFBE76 0%, #A88C44 100%)",
+                  background: "#FFFFFF",
                   color: "#050505",
                   fontFamily: "var(--font-sans)",
                   fontWeight: 700,
@@ -144,7 +144,6 @@ export default function StudioPlusClose() {
                   padding: "16px 36px",
                   borderRadius: 100,
                   textDecoration: "none",
-                  boxShadow: "0 12px 40px -8px rgba(201,165,90,0.35)",
                 }}
               >
                 Start {STUDIO_PLUS_TRIAL_DAYS}-day trial
@@ -181,10 +180,9 @@ export default function StudioPlusClose() {
               <button
                 type="button"
                 onClick={() => setYearly(!yearly)}
-                className="relative h-6 w-11 rounded-full transition-all duration-500"
+                className="relative h-6 w-11 rounded-full transition-colors duration-300"
                 style={{
-                  backgroundColor: yearly ? "var(--color-gold)" : "rgba(255,255,255,0.1)",
-                  boxShadow: yearly ? "0 0 16px rgba(201,165,90,0.2)" : "none",
+                  backgroundColor: yearly ? "#FFFFFF" : "rgba(255,255,255,0.1)",
                 }}
                 aria-label="Toggle yearly billing"
               >

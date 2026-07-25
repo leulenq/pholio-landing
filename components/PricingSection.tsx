@@ -126,11 +126,9 @@ export default function PricingSection() {
                 : "Monthly billing on. Switch to yearly billing and save."
             }
             onClick={() => setYearly((v) => !v)}
-            className="relative h-7 w-12 shrink-0 rounded-full transition-colors duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-cream)]"
+            className="relative h-7 w-12 shrink-0 rounded-full transition-colors duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#050505]/30 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-cream)]"
             style={{
-              backgroundColor: yearly
-                ? "var(--color-gold)"
-                : "var(--color-cream-dark)",
+              backgroundColor: yearly ? "#050505" : "var(--color-cream-dark)",
             }}
           >
             <span
@@ -216,7 +214,12 @@ export default function PricingSection() {
               </div>
               <a
                 href={FREE_SIGNUP_URL}
-                className="mb-6 block w-full rounded-lg border border-[var(--color-cream-dark)] px-6 py-3 text-center text-sm font-semibold text-[var(--color-ink)] transition-all duration-300 hover:bg-black/[0.02] hover:shadow-sm"
+                className="mb-6 block w-full rounded-lg px-6 py-3 text-center text-sm font-semibold transition-colors duration-300"
+                style={{
+                  background: "#FFFFFF",
+                  color: "#050505",
+                  border: "1px solid #050505",
+                }}
               >
                 Get started free
               </a>
@@ -407,11 +410,11 @@ export default function PricingSection() {
                 </div>
                 <a
                   href="mailto:hello@pholio.studio?subject=Enterprise%20Enquiry"
-                  className="inline-block rounded-lg px-8 py-3 text-sm font-semibold transition-all duration-300 hover:opacity-90"
+                  className="inline-block rounded-lg px-8 py-3 text-sm font-semibold transition-colors duration-300 hover:bg-[#F5F0E8]"
                   style={{
-                    backgroundColor: "rgba(200,169,110,0.15)",
-                    border: "1px solid rgba(200,169,110,0.35)",
-                    color: "var(--color-gold, #c8a96e)",
+                    backgroundColor: "#FFFFFF",
+                    border: "1px solid #FFFFFF",
+                    color: "#050505",
                   }}
                 >
                   Contact us

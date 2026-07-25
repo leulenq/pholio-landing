@@ -161,7 +161,7 @@ export function ContactForm() {
                 <button 
                   type="submit" 
                   disabled={isSubmitting}
-                  className="btn-gold w-full mt-4 flex justify-center items-center py-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="btn-solid-white w-full mt-4 flex justify-center items-center py-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? (
                     <motion.div 
