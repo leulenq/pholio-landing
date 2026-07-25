@@ -24,6 +24,7 @@ import {
   GOLD,
   ON_INK_FAINT,
 } from "./kit";
+import { useMass, useRiseSettle, useScrub, useWipe } from "./motion";
 
 /* deterministic QR-ish code block (aria-hidden, decorative) */
 const QR_CELLS: number[] = (() => {
@@ -79,7 +80,7 @@ function PholioIdPass() {
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={FACES.a}
+          src={FACES.site}
           alt="Pass portrait"
           draggable={false}
           style={{
@@ -87,7 +88,7 @@ function PholioIdPass() {
             width: "100%",
             height: "100%",
             objectFit: "cover",
-            objectPosition: "50% 12%",
+            objectPosition: "50% 14%",
             filter: "grayscale(1) contrast(1.05)",
           }}
         />
@@ -216,7 +217,7 @@ function AddToWalletBadge() {
 export default function SceneWallet() {
   const prm = usePrm();
   return (
-    <Stage id="wallet" hvh={280}>
+    <Stage id="wallet" hvh={280} z={2} overlap={100}>
       {(progress) => <WalletStage progress={progress} prm={prm} />}
     </Stage>
   );
@@ -231,21 +232,40 @@ function WalletStage({
 }) {
   const sceneFade = useTransform(progress, [0, 1], [1, 1]);
 
-  /* the device rises and settles with a breath of overshoot; it is
-     already peeking as the stage scrolls into view */
-  const phoneY = useTransform(progress, [0, 0.28, 0.35], [250, -14, 0]);
-  const phoneOpacity = useTransform(progress, [0, 0.16], [0.55, 1]);
+  /* GESTURE: rise-settle. The device is heavy — it lifts into frame,
+     overshoots, and rocks back onto its base. The tilt is what makes it
+     an object rather than a layer. */
+  const heavy = useMass(progress, "heavy");
+  const { y: phoneY, rotateX: phoneRotX, scale: phoneScale } = useRiseSettle(
+    heavy,
+    [0, 0.42],
+    260,
+  );
+  const phoneOpacity = useTransform(progress, [0, 0.14, 0.9, 1], [0.5, 1, 1, 0]);
+  /* the device sinks back down as the closing scene takes the frame
+     beneath it — without this the wallet stage scrolls away still
+     holding an opaque phone over the resolution */
+  const phoneExitY = useScrub(progress, [0.88, 1], [0, 220], "depart");
 
-  /* the pass presents — slides up inside the screen and settles */
-  const passY = useTransform(progress, [0.34, 0.54, 0.6], ["112%", "-3%", "0%"]);
+  /* the pass presents itself — rides up inside the screen, overshoots
+     the resting line, and settles under the glass */
+  const passY = useScrub(
+    progress,
+    [0.34, 0.56, 0.62],
+    ["115%", "-4%", "0%"],
+    "arrival",
+  );
 
   /* ambient gold breath behind the device */
-  const orbOpacity = useTransform(progress, [0.15, 0.45, 0.9, 0.97], [0, 0.55, 0.55, 0]);
+  const orbOpacity = useTransform(progress, [0.15, 0.45, 0.86, 0.96], [0, 0.55, 0.55, 0]);
+  const orbScale = useScrub(progress, [0.15, 0.5], [0.7, 1], "arrival");
 
-  /* caption + badge */
-  const capOpacity = useTransform(progress, [0.42, 0.55, 0.9, 0.96], [0, 1, 1, 0]);
-  const capY = useTransform(progress, [0.42, 0.55], [26, 0]);
-  const badgeOpacity = useTransform(progress, [0.58, 0.68, 0.9, 0.96], [0, 1, 1, 0]);
+  /* the caption is the one still thing in a moving scene: it wipes in
+     and holds, no travel */
+  const capClip = useWipe(progress, [0.44, 0.6], "left");
+  const capOpacity = useTransform(progress, [0.44, 0.52, 0.86, 0.96], [0, 1, 1, 0]);
+  const badgeOpacity = useTransform(progress, [0.6, 0.7, 0.86, 0.96], [0, 1, 1, 0]);
+  const badgeScale = useScrub(progress, [0.6, 0.72], [0.94, 1], "arrival");
 
   return (
     <motion.div
@@ -267,6 +287,7 @@ function WalletStage({
             "radial-gradient(circle, rgba(201,165,90,0.14) 0%, transparent 65%)",
           filter: "blur(60px)",
           opacity: prm ? 0.55 : orbOpacity,
+          scale: prm ? 1 : orbScale,
           pointerEvents: "none",
         }}
       />
@@ -277,7 +298,11 @@ function WalletStage({
       >
         {/* caption */}
         <motion.div
-          style={{ opacity: prm ? 1 : capOpacity, y: prm ? 0 : capY }}
+          style={{
+            opacity: prm ? 1 : capOpacity,
+            clipPath: prm ? "inset(0%)" : capClip,
+            willChange: "clip-path, opacity",
+          }}
           className="order-1 text-center md:order-none md:max-w-[380px] md:text-left"
         >
           <Caption
@@ -298,7 +323,11 @@ function WalletStage({
           <motion.div
             style={{
               y: prm ? 0 : phoneY,
+              translateY: prm ? 0 : phoneExitY,
+              rotateX: prm ? 0 : phoneRotX,
+              scale: prm ? 1 : phoneScale,
               opacity: prm ? 1 : phoneOpacity,
+              transformPerspective: 1400,
               willChange: "transform, opacity",
             }}
           >
@@ -412,7 +441,9 @@ function WalletStage({
             </div>
           </motion.div>
 
-          <motion.div style={{ opacity: prm ? 1 : badgeOpacity }}>
+          <motion.div
+            style={{ opacity: prm ? 1 : badgeOpacity, scale: prm ? 1 : badgeScale }}
+          >
             <AddToWalletBadge />
           </motion.div>
 

@@ -21,19 +21,50 @@ import SceneWallet from "./SceneWallet";
 import SceneClose from "./SceneClose";
 import MarketingFooter from "@/components/MarketingFooter";
 
-/* Color stops: each scene holds its field color for most of its span
-   (10%→90%), so the morph to the neighbor happens in a tight window
-   around the shared boundary — one continuous field, no section seams. */
+/* Colour stops, derived from when each scene actually OWNS THE FRAME.
+   A sticky stage is pinned from its own top until one viewport before
+   its bottom, and overlapping stages shift those windows earlier — so
+   the field has to follow the pin windows, not the document flow, or
+   it arrives late and a cream scene plays over an ink field.
+   Within its window a scene holds its colour; the morph happens in
+   what's left at each seam, so a tight `hold` reads as a cut and a
+   loose one as a dissolve. */
 function buildColorTrack() {
-  const total = SCENES.reduce((sum, s) => sum + s.h, 0);
+  const VIEWPORT = 100; // vh
+
+  /* section tops, accounting for each stage's negative pull-up */
+  const tops: number[] = [];
+  let flow = 0;
+  SCENES.forEach((s, i) => {
+    const top = i === 0 ? 0 : flow - s.overlap;
+    tops.push(top);
+    flow = top + s.h;
+  });
+
+  const totalHeight = flow;
+  /* the flow's scrollYProgress spans (height − one viewport) */
+  const denom = Math.max(totalHeight - VIEWPORT, 1);
+
   const stops: number[] = [];
   const colors: string[] = [];
-  let cursor = 0;
-  for (const s of SCENES) {
-    stops.push((cursor + s.h * 0.1) / total, (cursor + s.h * 0.9) / total);
-    colors.push(s.bg, s.bg);
-    cursor += s.h;
-  }
+  let previous = -1;
+
+  SCENES.forEach((s, i) => {
+    const pinStart = tops[i];
+    const pinEnd = tops[i] + s.h - VIEWPORT;
+    const duration = Math.max(pinEnd - pinStart, 1);
+    const enter = (pinStart + duration * s.hold) / denom;
+    const leave = (pinEnd - duration * s.hold) / denom;
+
+    /* stops must stay strictly increasing for interpolation */
+    for (const stop of [enter, leave]) {
+      const value = Math.min(Math.max(stop, previous + 0.001), 1);
+      stops.push(value);
+      colors.push(s.bg);
+      previous = value;
+    }
+  });
+
   return { stops, colors };
 }
 
