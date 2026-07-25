@@ -593,19 +593,17 @@
   align-items: center;
   gap: 6px;
   padding: 10px 20px;
-  background: #C9A55A;
-  color: white;
+  background: #050505;
+  color: #ffffff;
   border-radius: 10px;
   font-size: 0.8125rem;
   font-weight: 600;
   text-decoration: none;
-  transition: all 0.25s ease;
+  transition: background-color 0.25s ease;
 }
 
 .ov-promo-cta:hover {
-  background: #b08d45;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(201, 165, 90, 0.3);
+  background: #1a1815;
 }
 
 /* ============================================================
@@ -921,24 +919,22 @@
 }
 
 .ov-modal-btn--primary {
-  background: #C9A55A;
-  color: white;
-  box-shadow: 0 2px 8px rgba(201, 165, 90, 0.25);
+  background: #050505;
+  color: #ffffff;
 }
 
 .ov-modal-btn--primary:hover {
-  background: #b08d45;
-  transform: translateY(-1px);
+  background: #1a1815;
 }
 
 .ov-modal-btn--secondary {
-  background: white;
-  color: #0f172a;
-  border: 1px solid #e8e5e1;
+  background: #ffffff;
+  color: #050505;
+  border: 1px solid #050505;
 }
 
 .ov-modal-btn--secondary:hover {
-  border-color: #C9A55A;
+  background: #f5f0e8;
 }
 
 .ov-modal-btn--ghost {

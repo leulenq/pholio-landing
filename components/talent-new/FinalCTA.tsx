@@ -229,7 +229,7 @@ export default function FinalCTA() {
           href={`${APP_URL}/onboarding`}
           className="group relative inline-flex items-center gap-2 overflow-hidden"
           style={{
-            background: "linear-gradient(135deg, #C9A55A 0%, #A88C44 100%)",
+            background: "#FFFFFF",
             color: "#050505",
             fontFamily: "var(--font-sans)",
             fontWeight: 600,
@@ -239,16 +239,13 @@ export default function FinalCTA() {
             padding: "17px 44px",
             borderRadius: 100,
             textDecoration: "none",
-            transition: "transform 0.4s ease, box-shadow 0.4s ease",
+            transition: "background-color 0.3s ease",
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "translateY(-2px)";
-            e.currentTarget.style.boxShadow =
-              "0 12px 40px rgba(201,165,90,0.35)";
+            e.currentTarget.style.backgroundColor = "#F5F0E8";
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "translateY(0)";
-            e.currentTarget.style.boxShadow = "none";
+            e.currentTarget.style.backgroundColor = "#FFFFFF";
           }}
         >
           Ship my book

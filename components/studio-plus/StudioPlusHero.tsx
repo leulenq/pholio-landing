@@ -189,10 +189,10 @@ export default function StudioPlusHero() {
               <motion.a
                 href={STUDIO_PLUS_SIGNUP_URL}
                 className="inline-flex items-center gap-2"
-                whileHover={{ y: -2 }}
+                whileHover={{ backgroundColor: "#F5F0E8" }}
                 whileTap={{ scale: 0.98 }}
                 style={{
-                  background: "linear-gradient(135deg, #DFBE76 0%, #A88C44 100%)",
+                  background: "#FFFFFF",
                   color: "#050505",
                   fontFamily: "var(--font-sans)",
                   fontWeight: 700,
@@ -202,8 +202,7 @@ export default function StudioPlusHero() {
                   padding: "16px 32px",
                   borderRadius: 100,
                   textDecoration: "none",
-                  boxShadow: "0 12px 40px -8px rgba(201,165,90,0.35)",
-                  border: "1px solid rgba(255,255,255,0.12)",
+                  border: "1px solid #FFFFFF",
                 }}
               >
                 Begin Studio+
@@ -217,20 +216,19 @@ export default function StudioPlusHero() {
                   fontSize: "0.625rem",
                   letterSpacing: "0.18em",
                   textTransform: "uppercase",
-                  color: "rgba(245,243,240,0.35)",
+                  color: "#FFFFFF",
                   padding: "14px 24px",
                   textDecoration: "none",
                   borderRadius: 100,
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  transition: "color 0.3s ease, border-color 0.3s ease",
+                  background: "#050505",
+                  border: "1px solid #050505",
+                  transition: "background-color 0.3s ease",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.color = "rgba(245,243,240,0.75)";
-                  e.currentTarget.style.borderColor = "rgba(201,165,90,0.25)";
+                  e.currentTarget.style.backgroundColor = "#1A1815";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.color = "rgba(245,243,240,0.35)";
-                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
+                  e.currentTarget.style.backgroundColor = "#050505";
                 }}
               >
                 Start free

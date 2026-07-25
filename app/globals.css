@@ -151,13 +151,14 @@ body {
    BUTTONS
    ══════════════════════════════════════════════════════════ */
 
+/* Primary CTA — solid black (light surfaces). Legacy class name kept for call sites. */
 .btn-gold {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0.9375rem 2.75rem;
-  background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-light) 100%);
-  color: var(--color-velvet);
+  background: #050505;
+  color: #ffffff;
   font-family: var(--font-sans);
   font-size: 0.8125rem;
   font-weight: 600;
@@ -169,34 +170,59 @@ body {
   position: relative;
   overflow: hidden;
   transition:
-    transform 0.5s var(--ease-out-expo),
-    box-shadow 0.5s var(--ease-out-expo);
-}
-
-.btn-gold::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, var(--color-gold-light) 0%, var(--color-gold) 100%);
-  opacity: 0;
-  transition: opacity 0.5s var(--ease-out-expo);
+    background-color 0.3s var(--ease-out-expo),
+    color 0.3s var(--ease-out-expo),
+    opacity 0.3s var(--ease-out-expo);
 }
 
 .btn-gold:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(201, 165, 90, 0.2);
+  background: #1a1815;
 }
 
 .btn-gold:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 4px rgba(201, 165, 90, 0.1);
-}
-
-.btn-gold:hover::before {
-  opacity: 1;
+  box-shadow: 0 0 0 3px rgba(5, 5, 5, 0.2);
 }
 
 .btn-gold > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Primary CTA — solid white (dark surfaces). */
+.btn-solid-white {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.9375rem 2.75rem;
+  background: #ffffff;
+  color: #050505;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition:
+    background-color 0.3s var(--ease-out-expo),
+    color 0.3s var(--ease-out-expo),
+    opacity 0.3s var(--ease-out-expo);
+}
+
+.btn-solid-white:hover {
+  background: #f5f0e8;
+}
+
+.btn-solid-white:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.28);
+}
+
+.btn-solid-white > * {
   position: relative;
   z-index: 1;
 }
@@ -223,9 +249,9 @@ body {
 }
 
 .btn-outline:hover {
-  border-color: var(--color-gold);
-  color: var(--color-gold);
-  background-color: rgba(201, 165, 90, 0.05);
+  border-color: rgba(255, 255, 255, 0.55);
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.06);
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -279,8 +305,8 @@ body {
   align-items: center;
   justify-content: center;
   padding: 0.55rem 1.25rem;
-  background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-dark) 100%);
-  color: var(--color-velvet);
+  background: #050505;
+  color: #ffffff;
   font-family: var(--font-sans);
   font-size: 10px;
   font-weight: 700;
@@ -290,15 +316,12 @@ body {
   border-radius: 999px;
   cursor: pointer;
   transition:
-    transform 0.3s var(--ease-out-expo),
-    box-shadow 0.3s var(--ease-out-expo),
-    background 0.3s ease;
+    background-color 0.3s var(--ease-out-expo),
+    color 0.3s var(--ease-out-expo);
 }
 
 .header-cta:hover {
-  transform: translateY(-1px) scale(1.02);
-  background: linear-gradient(135deg, var(--color-gold-light) 0%, var(--color-gold) 100%);
-  box-shadow: 0 4px 16px rgba(201, 165, 90, 0.3);
+  background: #1a1815;
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -623,17 +646,16 @@ body {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   text-decoration: none;
-  color: #fff;
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #050505;
+  background: #ffffff;
+  border: 1px solid #ffffff;
   transition:
-    transform 0.35s var(--ease-out-expo),
-    box-shadow 0.35s var(--ease-out-expo);
+    background-color 0.3s var(--ease-out-expo),
+    color 0.3s var(--ease-out-expo);
 }
 
 .agency-marketing .agency-btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 36px rgba(37, 99, 235, 0.35);
+  background: #f5f0e8;
 }
 
 .agency-marketing .agency-btn-secondary {
@@ -647,17 +669,15 @@ body {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   text-decoration: none;
-  color: var(--agency-muted);
-  border: 1px solid var(--agency-line);
-  background: transparent;
+  color: #ffffff;
+  border: 1px solid #050505;
+  background: #050505;
   transition:
-    color 0.25s ease,
-    border-color 0.25s ease,
-    background 0.25s ease;
+    background-color 0.3s var(--ease-out-expo),
+    color 0.3s var(--ease-out-expo);
 }
 
 .agency-marketing .agency-btn-secondary:hover {
-  color: var(--agency-text);
-  border-color: rgba(59, 130, 246, 0.35);
-  background: rgba(59, 130, 246, 0.06);
+  background: #1a1815;
+  color: #ffffff;
 }

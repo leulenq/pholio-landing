@@ -61,7 +61,7 @@ export default function TalentSignupStrip() {
             href={`${APP_URL}/onboarding`}
             className="group inline-flex shrink-0 items-center gap-2 rounded-full px-9 py-4 transition-transform duration-300 hover:-translate-y-0.5"
             style={{
-              background: "linear-gradient(135deg, #C9A55A 0%, #A88C44 100%)",
+              background: "#FFFFFF",
               color: "#050505",
               fontFamily: "var(--font-sans)",
               fontWeight: 700,
@@ -69,7 +69,6 @@ export default function TalentSignupStrip() {
               letterSpacing: "0.14em",
               textTransform: "uppercase",
               textDecoration: "none",
-              boxShadow: "0 8px 32px rgba(201,165,90,0.35)",
             }}
           >
             Start your book

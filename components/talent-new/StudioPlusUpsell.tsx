@@ -281,9 +281,7 @@ export default function StudioPlusUpsell() {
               onClick={() => setYearly(!yearly)}
               className="relative h-6 w-11 rounded-full transition-colors duration-300"
               style={{
-                backgroundColor: yearly
-                  ? "var(--color-gold)"
-                  : "rgba(26,24,21,0.12)",
+                backgroundColor: yearly ? "#050505" : "rgba(26,24,21,0.12)",
               }}
               aria-label="Toggle yearly Studio+ pricing"
             >
@@ -330,15 +328,16 @@ export default function StudioPlusUpsell() {
           <div className="flex flex-wrap items-center justify-center gap-4">
             <a
               href={FREE_ONBOARDING_URL}
-              className="inline-flex items-center gap-2 rounded-full border border-[rgba(26,24,21,0.12)] px-7 py-3.5"
+              className="inline-flex items-center gap-2 rounded-full px-7 py-3.5"
               style={{
                 fontFamily: "var(--font-sans)",
                 fontSize: "0.6875rem",
                 fontWeight: 600,
                 letterSpacing: "0.12em",
                 textTransform: "uppercase",
-                color: "rgba(26,24,21,0.55)",
+                color: "#FFFFFF",
                 textDecoration: "none",
+                background: "#050505",
               }}
             >
               Start with Pholio
@@ -347,7 +346,7 @@ export default function StudioPlusUpsell() {
               href={STUDIO_PLUS_SIGNUP_URL}
               className="inline-flex items-center gap-2 rounded-full px-8 py-3.5"
               style={{
-                background: "linear-gradient(135deg, #C9A55A 0%, #A88C44 100%)",
+                background: "#FFFFFF",
                 color: "#050505",
                 fontFamily: "var(--font-sans)",
                 fontSize: "0.6875rem",
@@ -355,7 +354,7 @@ export default function StudioPlusUpsell() {
                 letterSpacing: "0.12em",
                 textTransform: "uppercase",
                 textDecoration: "none",
-                boxShadow: "0 4px 24px rgba(201,165,90,0.25)",
+                border: "1px solid #050505",
               }}
             >
               Add Studio+

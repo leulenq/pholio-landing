@@ -131,11 +131,10 @@ export function Hero({ ready = false }: HeroProps) {
             </a>
             <a
               href={`${APP_URL}/onboarding`}
-              className="rounded-full px-4 py-2 text-[10px] font-bold uppercase tracking-[0.14em] text-[#050505] transition-transform active:scale-[0.98]"
+              className="rounded-full px-4 py-2 text-[10px] font-bold uppercase tracking-[0.14em] text-[#050505] transition-colors"
               style={{
                 fontFamily: "var(--font-sans)",
-                background: "linear-gradient(135deg, #C9A55A 0%, #A68644 100%)",
-                boxShadow: "0 4px 15px rgba(201,165,90,0.2)",
+                background: "#FFFFFF",
               }}
             >
               Get Scouted
@@ -188,23 +187,14 @@ export function Hero({ ready = false }: HeroProps) {
             </a>
             <a
               href={`${APP_URL}/onboarding`}
-              className="relative text-[10px] font-bold tracking-[0.15em] uppercase px-5 py-2.5 rounded-full focus:outline-none overflow-hidden group transition-transform duration-300 hover:scale-[1.02]"
+              className="relative text-[10px] font-bold tracking-[0.15em] uppercase px-5 py-2.5 rounded-full focus:outline-none overflow-hidden transition-colors duration-300 hover:bg-[#F5F0E8]"
               style={{
-                background:
-                  "linear-gradient(135deg, #C9A55A 0%, #A68644 100%)",
+                background: "#FFFFFF",
                 color: "#050505",
-                boxShadow: "0 4px 15px rgba(201, 165, 90, 0.2)",
                 fontFamily: "var(--font-sans)"
               }}
             >
               <span className="relative z-10">Get Scouted</span>
-              <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #DFBE76 0%, #C9A55A 100%)",
-                }}
-              />
             </a>
           </motion.div>
 
