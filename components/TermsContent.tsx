@@ -220,7 +220,7 @@ const sections = [
 
 export function TermsContent() {
   return (
-    <article className="bg-[#FAF7F2] text-[#050505] min-h-screen pt-40 pb-32 px-6 texture-grain">
+    <article className="bg-[#FAF7F2] text-[#050505] min-h-mobile-screen pt-40 pb-32 px-6 texture-grain">
       <div className="max-w-3xl mx-auto">
         <motion.header
           initial={{ opacity: 0, y: 20 }}

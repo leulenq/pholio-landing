@@ -100,14 +100,14 @@ export default function SceneRead() {
   return (
     <section
       ref={ref}
-      className="relative min-h-screen overflow-hidden texture-grain"
+      className="relative min-h-mobile-screen overflow-hidden texture-grain"
       style={{ backgroundColor: INK }}
     >
       <Orb size={700} style={{ top: "-16%", right: "-12%" }} />
       <Orb size={520} gold={false} style={{ bottom: "-14%", left: "-10%" }} />
 
       {/* ── the stage ──────────────────────────────────────────────── */}
-      <div className="relative mx-auto h-screen w-full max-w-[1600px]">
+      <div className="relative mx-auto h-mobile-screen w-full max-w-[1600px]">
         {/* line one — passes BEHIND the photograph */}
         <motion.h1
           aria-label="Know what they see."

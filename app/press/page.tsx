@@ -1,4 +1,5 @@
 import MarketingFooter from "@/components/MarketingFooter";
+import ThemeColor from "@/components/ThemeColor";
 
 export const metadata = {
   title: "Press | Pholio",
@@ -43,7 +44,8 @@ const mediaResources = [
 
 export default function PressPage() {
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
+    <main className="min-h-mobile-screen bg-[#050505] text-white">
+      <ThemeColor color="#050505" />
       <section className="relative overflow-hidden border-b border-white/10 px-6 pb-20 pt-36 md:pb-28 md:pt-44">
         <div
           className="pointer-events-none absolute inset-0"

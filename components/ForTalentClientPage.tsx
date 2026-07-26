@@ -10,6 +10,7 @@ import TalentSceneWallet from "@/components/talent/TalentSceneWallet";
 import TalentSceneAnalytics from "@/components/talent/TalentSceneAnalytics";
 import TalentCTA from "@/components/talent/TalentCTA";
 import MarketingFooter from "@/components/MarketingFooter";
+import ThemeColor from "@/components/ThemeColor";
 
 export default function ForTalentClientPage() {
   return (
@@ -19,7 +20,8 @@ export default function ForTalentClientPage() {
         the light hero/wallet/CTA sections and the dark scroll-scenes.
         Each section owns its own background colour.
       */}
-      <main style={{ backgroundColor: "#FAF8F5" }}>
+      <main className="min-h-mobile-screen" style={{ backgroundColor: "#FAF8F5" }}>
+        <ThemeColor color="#FAF8F5" />
         {/* Ch.1 — Cream kinetic typography */}
         <TalentHero />
 

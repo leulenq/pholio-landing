@@ -38,7 +38,7 @@ export default function TalentHero() {
   return (
     <section
       style={{
-        height: "100vh",
+        height: "100dvh",
         backgroundColor: "#FAF8F5",
         display: "flex",
         flexDirection: "column",

@@ -27,7 +27,7 @@ export default function AgencyHero() {
   return (
     <section
       ref={ref}
-      className="relative flex min-h-[92vh] flex-col overflow-hidden bg-[var(--agency-bg-0)] pb-16 pt-28 md:pt-32"
+      className="relative flex min-h-mobile-screen flex-col overflow-hidden bg-[var(--agency-bg-0)] pb-16 pt-28 md:pt-32"
     >
       <div
         aria-hidden

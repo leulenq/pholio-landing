@@ -23,7 +23,7 @@ export function AboutHero() {
   return (
     <section 
       ref={containerRef}
-      className="relative min-h-screen w-full overflow-hidden flex items-center justify-center bg-[#050505] px-6"
+      className="relative min-h-mobile-screen w-full overflow-hidden flex items-center justify-center bg-[#050505] px-6"
     >
       {/* ── BACKGROUND LAYER ─────────────────────────────────── */}
       

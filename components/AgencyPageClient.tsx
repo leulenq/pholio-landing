@@ -10,10 +10,12 @@ import FeatureAnalytics from "@/components/agency/FeatureAnalytics";
 import SocialProof from "@/components/agency/SocialProof";
 import AgencyCTA from "@/components/agency/FinalCTA";
 import MarketingFooter from "@/components/MarketingFooter";
+import ThemeColor from "@/components/ThemeColor";
 
 export default function AgencyPageClient() {
   return (
-    <main className="agency-marketing min-h-screen">
+    <main className="agency-marketing min-h-mobile-screen">
+      <ThemeColor color="#08080c" />
       <AgencyHero />
       <AgencyValueBand />
       <DashboardPreview />

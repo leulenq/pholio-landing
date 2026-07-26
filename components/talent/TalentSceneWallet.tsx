@@ -89,7 +89,7 @@ export default function TalentSceneWallet() {
       {/* Two-column layout: text left, phone right */}
       <div
         className="relative mx-auto flex flex-col lg:flex-row items-center lg:items-stretch"
-        style={{ maxWidth: 1100, minHeight: "100vh" }}
+        style={{ maxWidth: 1100, minHeight: "100dvh" }}
       >
         {/* ── Left column: text ── */}
         <div

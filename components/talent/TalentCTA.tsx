@@ -33,7 +33,7 @@ export default function TalentCTA() {
     <section
       ref={ref}
       style={{
-        height: "100vh",
+        height: "100dvh",
         backgroundColor: "#FAF8F5",
         display: "flex",
         flexDirection: "column",
