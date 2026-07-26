@@ -26,9 +26,10 @@
  * - Once the page is scrolled, the marks are no longer sitting in a designed top
  *   margin — they are over running body copy, and a mark with nothing behind it
  *   collides with the text (headings ran straight through the wordmark on the
- *   legal pages). So the band takes the page's own paper, opaque, closed by a
- *   hairline. Opaque paper rather than blur is the whole point: a header that
- *   needs a backing takes the colour of what it is covering.
+ *   legal pages). So the band takes the page's own paper, opaque, closed by the
+ *   gold sweep rather than a flat rule. Opaque paper rather than blur is the
+ *   whole point: a header that needs a backing takes the colour of what it is
+ *   covering.
  *
  * The band's geometry never changes — only the paper under it fades in — so
  * nothing shifts as you scroll.
@@ -40,6 +41,7 @@ import Link from "next/link";
 import {
   EASE,
   FieldProvider,
+  GoldSweep,
   IndexPanel,
   IndexTrigger,
   Wordmark,
@@ -84,14 +86,16 @@ export default function VariantIndex({
             transition: `opacity ${T}, background ${T}`,
           }}
         />
-        <div
-          aria-hidden
-          className="absolute inset-x-0 bottom-0"
+        {/* The band's bottom edge is the gold sweep, not a flat rule — the same
+            gradient the app's workspace header closes with. */}
+        <GoldSweep
+          opacity={onPaper ? 1 : 0}
           style={{
-            height: 1,
-            background: tokens.rule,
-            opacity: onPaper ? 1 : 0,
-            transition: `opacity ${T}, background ${T}`,
+            position: "absolute",
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: "auto",
           }}
         />
 

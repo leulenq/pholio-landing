@@ -369,14 +369,24 @@ export function Rule({
   );
 }
 
-/** The gold sweep — existing brand furniture, reused as a header edge. */
+/**
+ * The gold sweep — brand furniture, reused as the header's bottom edge instead
+ * of a flat hairline: transparent at both margins, gold through the middle.
+ *
+ * The gold tracks the paper by default, the same way the wordmark does, so the
+ * sweep does not go pale against cream.
+ */
 export function GoldSweep({
   opacity = 1,
+  color,
   style,
 }: {
   opacity?: number;
+  color?: string;
   style?: CSSProperties;
 }) {
+  const tokens = useTokens();
+  const gold = color ?? tokens.gold;
   return (
     <span
       aria-hidden
@@ -385,8 +395,8 @@ export function GoldSweep({
         height: 1,
         width: "100%",
         opacity,
-        background: `linear-gradient(to right, transparent, ${GOLD}00 12%, ${GOLD}66 50%, ${GOLD}00 88%, transparent)`,
-        transition: `opacity 0.5s cubic-bezier(0.22,1,0.36,1)`,
+        background: `linear-gradient(to right, transparent, ${gold}00 12%, ${gold}66 50%, ${gold}00 88%, transparent)`,
+        transition: `opacity 0.5s cubic-bezier(0.22,1,0.36,1), background 0.5s cubic-bezier(0.22,1,0.36,1)`,
         ...style,
       }}
     />
