@@ -1,10 +1,18 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Noto_Serif_Display, Inter, Playfair_Display, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import HeaderWrapper from "@/components/HeaderWrapper";
 import CustomCursor from "@/components/CustomCursor";
 import SmoothScroll from "@/components/SmoothScroll";
 import Providers from "@/components/Providers";
+
+/** Edge-to-edge on notched iPhones; theme-color is overridden per-route. */
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#050505",
+};
 
 const notoSerif = Noto_Serif_Display({
   subsets: ["latin"],

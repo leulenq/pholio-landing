@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import MarketingFooter from "@/components/MarketingFooter";
+import ThemeColor from "@/components/ThemeColor";
 import { SubmissionProgramNoticeContent } from "@/components/SubmissionProgramNoticeContent";
 
 export const metadata: Metadata = {
@@ -11,7 +12,8 @@ export const metadata: Metadata = {
 
 export default function SubmissionProgramNoticePage() {
   return (
-    <main className="bg-[#FAF7F2]">
+    <main className="min-h-mobile-screen bg-[#FAF7F2]">
+      <ThemeColor color="#FAF7F2" />
       <SubmissionProgramNoticeContent />
       <MarketingFooter />
     </main>

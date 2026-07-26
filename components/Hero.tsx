@@ -89,7 +89,7 @@ export function Hero({ ready = false }: HeroProps) {
   return (
     <section ref={containerRef} className="relative h-[300vh] z-10">
       {/* ── UI Chrome: embedded in the hero composition, scrolls with the section ── */}
-      <motion.div data-hero-chrome className="absolute inset-x-0 top-0 z-30 h-screen pointer-events-none">
+      <motion.div data-hero-chrome className="absolute inset-x-0 top-0 z-30 h-mobile-screen pointer-events-none">
         <motion.div
           initial="hidden"
           animate={controls}
@@ -202,7 +202,7 @@ export function Hero({ ready = false }: HeroProps) {
       </motion.div>
 
       <motion.div
-        className="sticky top-0 h-[100dvh] w-full overflow-hidden flex items-center justify-center"
+        className="sticky top-0 h-mobile-screen w-full overflow-hidden flex items-center justify-center"
         style={{ opacity: heroOpacity }}
       >
 
@@ -272,7 +272,7 @@ export function Hero({ ready = false }: HeroProps) {
             <img
               src="/images/model2-nobg.png"
               alt="Editorial fashion model cutout"
-              className="h-[100dvh] w-auto max-w-[134vw] translate-y-[6vh] object-contain object-bottom md:translate-y-0 md:max-w-none"
+              className="h-mobile-screen w-auto max-w-[134vw] translate-y-[6vh] object-contain object-bottom md:translate-y-0 md:max-w-none"
             />
           </motion.div>
         </motion.div>

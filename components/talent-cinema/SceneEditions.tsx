@@ -268,7 +268,7 @@ function EditionsScroll() {
 
   return (
     <div ref={wrapRef} className="relative h-[300vh]">
-      <div className="sticky top-0 h-screen overflow-hidden">
+      <div className="sticky top-0 h-mobile-screen overflow-hidden">
         <GhostType progress={scrollYProgress} />
 
         <div className="mx-auto flex h-full max-w-[1600px] flex-col items-center px-6 pb-24 pt-16 lg:px-10">

@@ -5,7 +5,7 @@ import { EditorialVerticalDivider } from "@/components/EditorialVerticalDivider"
 
 export function CareersHero() {
   return (
-    <section className="relative min-h-[90vh] w-full overflow-hidden flex items-center justify-center bg-[#050505] px-6">
+    <section className="relative min-h-mobile-screen w-full overflow-hidden flex items-center justify-center bg-[#050505] px-6">
       {/* Background radial glow */}
       <div 
         className="absolute inset-0 pointer-events-none opacity-20"
