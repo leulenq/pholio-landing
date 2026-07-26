@@ -55,10 +55,11 @@ Rules the header keeps, and any future changes must respect:
   backing takes the page's own paper colour, opaque. Blur only ever existed to
   rescue a boxed header floating over imagery — don't reintroduce the box.
 - **Gold is a state, not a surface** — live route, action, sweep. No filled gold
-  shape larger than a word, no conic borders, no shimmer sweeps. Prominence
-  (e.g. the "Get scouted" CTA) comes from a permanent gold rule/color, never
-  from making the text bigger than its siblings — scale is not how this system
-  signals importance.
+  shape larger than a word, no conic borders, no shimmer sweeps, no permanent
+  rule under a CTA. Prominence (e.g. the "Get scouted" CTA, `ActionLink` in
+  `components/header/kit.tsx`) comes from full-strength color against its
+  muted siblings, never from making the text bigger — scale is not how this
+  system signals importance.
 - **Nav is not flat.** `TALENT` / `AGENCIES` are audience *doors*; `STUDIO+` is a
   tier. `NAV` in `components/header/kit.tsx` carries `kind` and an index number.
 - The mobile hamburger → full-screen serif index is the pattern that worked; it is

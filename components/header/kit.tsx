@@ -850,9 +850,9 @@ export function AccountCluster({
 }
 
 /**
- * The action. Not a pill: a word carrying a gold rule that thickens on hover.
- * Prominence over sibling links comes from full-strength color + the
- * permanent rule, never from a larger font size.
+ * The action. Not a pill: a word at full-strength color against its muted
+ * siblings. Prominence comes from that color contrast alone — no rule, no
+ * larger font size.
  */
 export function ActionLink({
   href,
@@ -877,7 +877,7 @@ export function ActionLink({
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       className="relative inline-block focus:outline-none focus-visible:underline"
-      style={{ textDecoration: "none", paddingBottom: 6 }}
+      style={{ textDecoration: "none" }}
     >
       <span
         style={{
@@ -893,18 +893,6 @@ export function ActionLink({
       >
         {label}
       </span>
-      <span
-        aria-hidden
-        style={{
-          position: "absolute",
-          left: 0,
-          bottom: 0,
-          width: "100%",
-          height: hover ? 2 : 1,
-          background: GOLD,
-          transition: "height 0.3s cubic-bezier(0.22,1,0.36,1)",
-        }}
-      />
     </a>
   );
 }
