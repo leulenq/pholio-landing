@@ -1050,35 +1050,20 @@ export function IndexPanel({
           <div
             className={
               full
-                ? "grid flex-1 grid-cols-1 gap-12 md:grid-cols-[1.5fr_1fr]"
+                ? "grid flex-1 grid-cols-1 gap-10 overflow-y-auto md:grid-cols-[1.5fr_1fr] md:gap-12 md:overflow-visible"
                 : "flex flex-1 flex-col"
             }
           >
             {/* Primary index */}
-            <nav className="flex flex-col justify-center">
+            <nav className="flex flex-col md:justify-center">
               {NAV.map((link, i) => (
                 <motion.div key={link.href} {...entry(i)}>
                   <Link
                     href={link.href}
                     onClick={onClose}
-                    className="group flex items-baseline gap-6 focus:outline-none"
+                    className="group flex items-baseline focus:outline-none"
                     style={{ textDecoration: "none", padding: "18px 0" }}
                   >
-                    <span
-                      style={{
-                        fontFamily: MONO,
-                        fontSize: 10,
-                        letterSpacing: "0.24em",
-                        color:
-                          pathname === link.href
-                            ? GOLD
-                            : "rgba(250,247,242,0.28)",
-                        width: 34,
-                        flexShrink: 0,
-                      }}
-                    >
-                      {link.index}
-                    </span>
                     <IndexEntryLabel
                       label={link.label}
                       active={pathname === link.href}
@@ -1090,10 +1075,12 @@ export function IndexPanel({
               ))}
             </nav>
 
-            {/* Clerical column — only in the full desktop composition */}
+            {/* Clerical column. Sits beside the entries on desktop and stacks
+                under them on a phone — it carries the only sign-up route in this
+                composition, so it can never be a desktop-only luxury. */}
             {full && (
               <motion.div
-                className="hidden flex-col justify-center gap-10 md:flex"
+                className="flex flex-col gap-9 md:justify-center md:gap-10"
                 {...entry(NAV.length)}
               >
                 <div>
@@ -1113,16 +1100,16 @@ export function IndexPanel({
                 </div>
                 <div>
                   <Kicker color="rgba(250,247,242,0.3)">Account</Kicker>
-                  <div className="mt-5 flex flex-col items-start gap-4">
+                  <div className="mt-4 flex flex-col items-start gap-3">
                     {isAuthenticated ? (
-                      <ActionLink
+                      <IndexAction
                         href={dashboardHref}
                         label="Open dashboard"
                         onClick={onClose}
                       />
                     ) : (
                       <>
-                        <ActionLink
+                        <IndexAction
                           href={SIGNUP_HREF}
                           label="Get scouted"
                           onClick={onClose}
@@ -1143,20 +1130,12 @@ export function IndexPanel({
             )}
           </div>
 
-          {/* Foot */}
+          {/* Foot — only the single-column sheet needs one; the full
+              composition's clerical column already carries the actions. */}
+          {!full && (
           <motion.div {...entry(NAV.length + 1)} className="shrink-0 pt-8">
             <Rule color="rgba(250,247,242,0.09)" />
-            <div className="flex flex-wrap items-center justify-between gap-5 pt-6">
-              <span
-                style={{
-                  fontFamily: SERIF,
-                  fontStyle: "italic",
-                  fontSize: 14,
-                  color: "rgba(250,247,242,0.5)",
-                }}
-              >
-                Built for talent. Trusted by agencies.
-              </span>
+            <div className="flex flex-wrap items-center justify-end gap-5 pt-6">
               {!full && (
                 <div className="flex items-center gap-7">
                   {isAuthenticated ? (
@@ -1183,24 +1162,52 @@ export function IndexPanel({
                   )}
                 </div>
               )}
-              {full && (
-                <div className="flex items-center gap-6 md:hidden">
-                  {SECONDARY_LINKS.map((link) => (
-                    <NavLink
-                      key={link.href}
-                      href={link.href}
-                      label={link.label}
-                      size={10}
-                      onClick={onClose}
-                    />
-                  ))}
-                </div>
-              )}
             </div>
           </motion.div>
+          )}
         </div>
       </FieldProvider>
     </motion.div>
+  );
+}
+
+/**
+ * The index's primary action. It outranks "Log in" by *scale and value* rather
+ * than by a rule under it: display serif at reading size against the clerical
+ * caps of everything else in the column, at full paper strength while the rest
+ * of the column is held back. Gold stays a hover state, so the one gold thing in
+ * the open composition remains the live route.
+ */
+function IndexAction({
+  href,
+  label,
+  onClick,
+}: {
+  href: string;
+  label: string;
+  onClick?: () => void;
+}) {
+  const [hover, setHover] = useState(false);
+  return (
+    <a
+      href={href}
+      onClick={onClick}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      className="focus:outline-none focus-visible:underline"
+      style={{
+        fontFamily: SERIF,
+        fontWeight: 500,
+        fontSize: 25,
+        letterSpacing: "-0.02em",
+        lineHeight: 1.1,
+        textDecoration: "none",
+        color: hover ? GOLD : "#FAF7F2",
+        transition: "color 0.32s cubic-bezier(0.22,1,0.36,1)",
+      }}
+    >
+      {label}
+    </a>
   );
 }
 
@@ -1221,7 +1228,9 @@ function IndexEntryLabel({
       onMouseLeave={() => setHover(false)}
       style={{
         fontFamily: SERIF,
-        fontStyle: live ? "italic" : "normal",
+        // Upright throughout — the italic is the headline's verdict move, and
+        // it does not also get to mean "hovered".
+        fontStyle: "normal",
         fontWeight: 400,
         fontSize: full
           ? "clamp(2.4rem, 5.4vw, 4.4rem)"
