@@ -354,7 +354,12 @@ export function Rule({
   );
 }
 
-/** The gold sweep — existing brand furniture, reused as a header edge. */
+/**
+ * The furniture rule shared with the app: a 1px hairline that fades in from
+ * transparent, peaks at solid gold in the center, and fades back out — not a
+ * feathered/alpha-stepped glow. Matches `.apply-workspace-top::after` in
+ * pholio-app's talent /apply workspace exactly (`--app-gold` === `GOLD` here).
+ */
 export function GoldSweep({
   opacity = 1,
   style,
@@ -370,7 +375,7 @@ export function GoldSweep({
         height: 1,
         width: "100%",
         opacity,
-        background: `linear-gradient(to right, transparent, ${GOLD}00 12%, ${GOLD}66 50%, ${GOLD}00 88%, transparent)`,
+        background: `linear-gradient(to right, transparent, ${GOLD}, transparent)`,
         transition: `opacity 0.5s cubic-bezier(0.22,1,0.36,1)`,
         ...style,
       }}
@@ -379,7 +384,7 @@ export function GoldSweep({
 }
 
 export function Wordmark({
-  size = 15,
+  size = 24,
   tracking = 0.2,
   color,
   weight = 400,

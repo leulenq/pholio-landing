@@ -38,10 +38,16 @@ pill (`components/Header.tsx`, untouched) as an emergency rollback only;
 
 The wordmark (`Wordmark` in `components/header/kit.tsx`) is the pholio-app
 talent-dashboard mark, not a bespoke marketing invention: Noto Serif Display 400,
-0.2em tracking, gold, uppercase — sourced from
-`client/src/shared/layouts/TalentLayout/TalentLayout.css` in `pholio-app`. Don't
-regress it back to a CLAUDE.md-brand-system guess (600 weight / 0.3+ tracking) —
-it must match the app mark.
+24px, 0.2em tracking, gold, uppercase — sourced from `.tl-logo-word` in
+`client/src/shared/layouts/TalentLayout/TalentLayout.css` and `.apply-workspace-logo
+span` in `client/src/domains/talent/pages/ApplyPage/ApplyExperience.css` (same
+values in both) in `pholio-app`. Don't regress it back to a CLAUDE.md-brand-system
+guess (600 weight / 15px / 0.3+ tracking) — it must match the app mark exactly.
+
+The gold sweep below the header (`GoldSweep` in `components/header/kit.tsx`) is
+also ported from the app: `.apply-workspace-top::after` in that same
+`ApplyExperience.css` — a plain `linear-gradient(to right, transparent, gold,
+transparent)`, not a feathered/alpha-stepped glow.
 
 Rules the header keeps, and any future changes must respect:
 
