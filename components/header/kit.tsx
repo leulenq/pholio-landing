@@ -955,13 +955,7 @@ export function IndexTrigger({
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       className="flex items-center focus:outline-none focus-visible:underline"
-      style={{
-        gap: 10,
-        background: "none",
-        border: "none",
-        padding: 0,
-        height: 24,
-      }}
+      style={{ gap: 12, background: "none", border: "none", padding: "6px 0" }}
     >
       {label && (
         <span
@@ -970,8 +964,6 @@ export function IndexTrigger({
             fontSize: 9.5,
             letterSpacing: "0.28em",
             textTransform: "uppercase",
-            lineHeight: 1,
-            display: "block",
             color,
             transition: "color 0.3s cubic-bezier(0.22,1,0.36,1)",
           }}
@@ -979,16 +971,7 @@ export function IndexTrigger({
           {open ? "Close" : label}
         </span>
       )}
-      <span
-        aria-hidden
-        style={{
-          display: "grid",
-          alignContent: "center",
-          gap: 5,
-          width: 22,
-          height: 12,
-        }}
-      >
+      <span aria-hidden style={{ display: "grid", gap: 5, width: 22 }}>
         <span
           style={{
             height: 1,
@@ -1078,10 +1061,11 @@ export function IndexPanel({
       <FieldProvider tokens={TOKENS.ink}>
         <div
           className="relative mx-auto flex h-full w-full max-w-[1440px] flex-col px-6 md:px-12"
-          /* `full` clears the still-visible corner marks (h-14 / md h-18);
-             keep the breath tight so the first entry doesn't float. */
+          /* `full` clears the corner marks; extra top inset gives Talent room
+             under the bar. Clerical pair follows the index at a fixed gap —
+             not mt-auto — so More / Account sit higher on the sheet. */
           style={{
-            paddingTop: full ? (contained ? 72 : 84) : 44,
+            paddingTop: full ? (contained ? 112 : 160) : 44,
             paddingBottom: contained
               ? "1.5rem"
               : "max(1.75rem, env(safe-area-inset-bottom))",
@@ -1115,25 +1099,80 @@ export function IndexPanel({
               ))}
             </nav>
 
-            {/* Clerical foot. On a phone it grounds the sheet — primary index
-                above, utility pair below — as one deliberate composition.
-                Identical kicker rails lock More / Account on one line; matching
-                link boxes and gaps keep the two lists optically even. */}
+            {/* Clerical pair — fixed gap under the index (not pinned to the
+                bottom). Kickers share one grid row so More / Account lock. */}
             {full && (
               <motion.div
-                className="mt-auto pt-12 md:mt-0 md:flex md:flex-col md:justify-center md:pt-0"
+                className="pt-10 md:flex md:flex-col md:justify-center md:pt-0"
                 {...entry(NAV.length)}
               >
-                <div className="flex items-start justify-between gap-8 md:flex-col md:gap-9">
-                  <div className="flex min-w-0 flex-1 flex-col md:flex-none">
-                    <div className="flex h-2.5 items-center">
-                      <Kicker
-                        color="rgba(250,247,242,0.3)"
-                        style={{ display: "block" }}
-                      >
-                        More
-                      </Kicker>
-                    </div>
+                {/* Mobile: two-column grid, kickers on row 1 */}
+                <div className="grid grid-cols-2 items-start gap-x-8 md:hidden">
+                  <Kicker
+                    color="rgba(250,247,242,0.3)"
+                    style={{ display: "block" }}
+                  >
+                    More
+                  </Kicker>
+                  <Kicker
+                    color="rgba(250,247,242,0.3)"
+                    className="text-right"
+                    style={{ display: "block" }}
+                  >
+                    Account
+                  </Kicker>
+                  <div className="mt-3.5 flex flex-col gap-3">
+                    {SECONDARY_LINKS.map((link) => (
+                      <NavLink
+                        key={link.href}
+                        href={link.href}
+                        label={link.label}
+                        size={11}
+                        tracking={0.12}
+                        onClick={onClose}
+                      />
+                    ))}
+                  </div>
+                  <div className="mt-3.5 flex flex-col items-end gap-3">
+                    {isAuthenticated ? (
+                      <ActionLink
+                        href={dashboardHref}
+                        label="Open dashboard"
+                        size={11}
+                        tracking={0.14}
+                        onClick={onClose}
+                      />
+                    ) : (
+                      <>
+                        <ActionLink
+                          href={SIGNUP_HREF}
+                          label="Get scouted"
+                          size={11}
+                          tracking={0.14}
+                          onClick={onClose}
+                        />
+                        <NavLink
+                          href={LOGIN_HREF}
+                          label="Log in"
+                          external
+                          size={11}
+                          tracking={0.14}
+                          onClick={onClose}
+                        />
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                {/* Desktop: stacked clerical column beside the entries */}
+                <div className="hidden md:flex md:flex-col md:gap-9">
+                  <div>
+                    <Kicker
+                      color="rgba(250,247,242,0.3)"
+                      style={{ display: "block" }}
+                    >
+                      More
+                    </Kicker>
                     <div className="mt-3.5 flex flex-col gap-3">
                       {SECONDARY_LINKS.map((link) => (
                         <NavLink
@@ -1147,16 +1186,14 @@ export function IndexPanel({
                       ))}
                     </div>
                   </div>
-                  <div className="flex min-w-0 flex-1 flex-col items-end md:flex-none md:items-start">
-                    <div className="flex h-2.5 w-full items-center justify-end md:justify-start">
-                      <Kicker
-                        color="rgba(250,247,242,0.3)"
-                        style={{ display: "block" }}
-                      >
-                        Account
-                      </Kicker>
-                    </div>
-                    <div className="mt-3.5 flex flex-col items-end gap-3 md:items-start">
+                  <div>
+                    <Kicker
+                      color="rgba(250,247,242,0.3)"
+                      style={{ display: "block" }}
+                    >
+                      Account
+                    </Kicker>
+                    <div className="mt-3.5 flex flex-col gap-3">
                       {isAuthenticated ? (
                         <ActionLink
                           href={dashboardHref}
