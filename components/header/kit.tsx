@@ -1109,6 +1109,8 @@ export function IndexPanel({
                       <ActionLink
                         href={dashboardHref}
                         label="Open dashboard"
+                        size={11}
+                        tracking={0.14}
                         onClick={onClose}
                       />
                     ) : (
@@ -1116,6 +1118,8 @@ export function IndexPanel({
                         <ActionLink
                           href={SIGNUP_HREF}
                           label="Get scouted"
+                          size={11}
+                          tracking={0.14}
                           onClick={onClose}
                         />
                         <NavLink
