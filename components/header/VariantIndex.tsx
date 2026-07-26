@@ -125,7 +125,7 @@ export default function VariantIndex({
             className="focus:outline-none"
             style={{ textDecoration: "none" }}
           >
-            <Wordmark size={16} style={{ transition: `color ${T}` }} />
+            <Wordmark style={{ transition: `color ${T}` }} />
           </Link>
 
           <IndexTrigger
@@ -135,6 +135,11 @@ export default function VariantIndex({
             tokens={open ? { ...tokens, text: "#FAF7F2" } : tokens}
           />
         </div>
+
+        {/* The sweep below the header — same rule as the app's /apply
+            workspace topbar (.apply-workspace-top::after). Permanent
+            furniture, not conditional on scroll or open state. */}
+        <GoldSweep />
       </header>
 
       <IndexPanel

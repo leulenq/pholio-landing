@@ -370,11 +370,10 @@ export function Rule({
 }
 
 /**
- * The gold sweep — brand furniture, reused as the header's bottom edge instead
- * of a flat hairline: transparent at both margins, gold through the middle.
- *
- * The gold tracks the paper by default, the same way the wordmark does, so the
- * sweep does not go pale against cream.
+ * The furniture rule shared with the app: a 1px hairline that fades in from
+ * transparent, peaks at solid gold in the center, and fades back out — not a
+ * feathered/alpha-stepped glow. Matches `.apply-workspace-top::after` in
+ * pholio-app's talent /apply workspace exactly (`--app-gold` === `GOLD` here).
  */
 export function GoldSweep({
   opacity = 1,
@@ -395,8 +394,8 @@ export function GoldSweep({
         height: 1,
         width: "100%",
         opacity,
-        background: `linear-gradient(to right, transparent, ${gold}00 12%, ${gold}66 50%, ${gold}00 88%, transparent)`,
-        transition: `opacity 0.5s cubic-bezier(0.22,1,0.36,1), background 0.5s cubic-bezier(0.22,1,0.36,1)`,
+        background: `linear-gradient(to right, transparent, ${GOLD}, transparent)`,
+        transition: `opacity 0.5s cubic-bezier(0.22,1,0.36,1)`,
         ...style,
       }}
     />
@@ -404,7 +403,7 @@ export function GoldSweep({
 }
 
 export function Wordmark({
-  size = 15,
+  size = 24,
   tracking = 0.2,
   color,
   weight = 400,
@@ -872,9 +871,9 @@ export function AccountCluster({
 }
 
 /**
- * The action. Not a pill: a word carrying a gold rule that thickens on hover.
- * Prominence over sibling links comes from full-strength color + the
- * permanent rule, never from a larger font size.
+ * The action. Not a pill: a word at full-strength color against its muted
+ * siblings. Prominence comes from that color contrast alone — no rule, no
+ * larger font size.
  */
 export function ActionLink({
   href,
@@ -899,7 +898,7 @@ export function ActionLink({
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       className="relative inline-block focus:outline-none focus-visible:underline"
-      style={{ textDecoration: "none", paddingBottom: 6 }}
+      style={{ textDecoration: "none" }}
     >
       <span
         style={{
@@ -915,18 +914,6 @@ export function ActionLink({
       >
         {label}
       </span>
-      <span
-        aria-hidden
-        style={{
-          position: "absolute",
-          left: 0,
-          bottom: 0,
-          width: "100%",
-          height: hover ? 2 : 1,
-          background: GOLD,
-          transition: "height 0.3s cubic-bezier(0.22,1,0.36,1)",
-        }}
-      />
     </a>
   );
 }

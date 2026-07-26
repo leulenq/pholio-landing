@@ -38,10 +38,16 @@ pill (`components/Header.tsx`, untouched) as an emergency rollback only;
 
 The wordmark (`Wordmark` in `components/header/kit.tsx`) is the pholio-app
 talent-dashboard mark, not a bespoke marketing invention: Noto Serif Display 400,
-0.2em tracking, gold, uppercase — sourced from
-`client/src/shared/layouts/TalentLayout/TalentLayout.css` in `pholio-app`. Don't
-regress it back to a CLAUDE.md-brand-system guess (600 weight / 0.3+ tracking) —
-it must match the app mark.
+24px, 0.2em tracking, gold, uppercase — sourced from `.tl-logo-word` in
+`client/src/shared/layouts/TalentLayout/TalentLayout.css` and `.apply-workspace-logo
+span` in `client/src/domains/talent/pages/ApplyPage/ApplyExperience.css` (same
+values in both) in `pholio-app`. Don't regress it back to a CLAUDE.md-brand-system
+guess (600 weight / 15px / 0.3+ tracking) — it must match the app mark exactly.
+
+The gold sweep below the header (`GoldSweep` in `components/header/kit.tsx`) is
+also ported from the app: `.apply-workspace-top::after` in that same
+`ApplyExperience.css` — a plain `linear-gradient(to right, transparent, gold,
+transparent)`, not a feathered/alpha-stepped glow.
 
 Rules the header keeps, and any future changes must respect:
 
@@ -49,10 +55,11 @@ Rules the header keeps, and any future changes must respect:
   backing takes the page's own paper colour, opaque. Blur only ever existed to
   rescue a boxed header floating over imagery — don't reintroduce the box.
 - **Gold is a state, not a surface** — live route, action, sweep. No filled gold
-  shape larger than a word, no conic borders, no shimmer sweeps. Prominence
-  (e.g. the "Get scouted" CTA) comes from a permanent gold rule/color, never
-  from making the text bigger than its siblings — scale is not how this system
-  signals importance.
+  shape larger than a word, no conic borders, no shimmer sweeps, no permanent
+  rule under a CTA. Prominence (e.g. the "Get scouted" CTA, `ActionLink` in
+  `components/header/kit.tsx`) comes from full-strength color against its
+  muted siblings, never from making the text bigger — scale is not how this
+  system signals importance.
 - **Nav is not flat.** `TALENT` / `AGENCIES` are audience *doors*; `STUDIO+` is a
   tier. `NAV` in `components/header/kit.tsx` carries `kind` and an index number.
 - The mobile hamburger → full-screen serif index is the pattern that worked; it is
