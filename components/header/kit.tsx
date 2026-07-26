@@ -798,7 +798,7 @@ export function AccountCluster({
           <div style={{ padding: "6px 0" }}>
             {session?.role === "TALENT" && profile?.slug && (
               <a
-                href={`${APP_URL}/talent/${profile.slug}`}
+                href={`${APP_URL}/portfolio/${profile.slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={item("public")}

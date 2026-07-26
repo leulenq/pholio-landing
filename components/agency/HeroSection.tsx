@@ -80,7 +80,7 @@ export default function AgencyHero() {
               transition={{ duration: 0.5, delay: 0.25, ease }}
               className="mt-10 flex flex-wrap items-center gap-4"
             >
-              <a href={`${APP_URL}/agency/register`} className="agency-btn-primary">
+              <a href="/agency/request-access" className="agency-btn-primary">
                 Request access
                 <svg
                   width="14"

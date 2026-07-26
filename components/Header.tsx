@@ -347,7 +347,7 @@ export default function Header({ theme = "dark" }: HeaderProps) {
                     <div className="dropdown-actions dropdown-section">
                       {authData?.role === "TALENT" && authData?.profile?.slug && (
                         <a
-                          href={`${APP_URL}/talent/${authData.profile.slug}`}
+                          href={`${APP_URL}/portfolio/${authData.profile.slug}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="dropdown-item"

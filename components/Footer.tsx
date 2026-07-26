@@ -9,9 +9,9 @@ const footerLinks = [
   {
     title: "Platform",
     links: [
-      { label: "For Talent", href: `${APP_URL}/casting` },
+      { label: "For Talent", href: `${APP_URL}/onboarding` },
       { label: "For Agencies", href: `${APP_URL}/login` },
-      { label: "Studio+", href: `${APP_URL}/studio-plus` },
+      { label: "Studio+", href: "/studio-plus" },
     ],
   },
   {
@@ -93,7 +93,7 @@ export default function Footer() {
             </p>
             <div className="mt-8">
               <a
-                href={`${APP_URL}/casting`}
+                href={`${APP_URL}/onboarding`}
                 className="text-xs font-semibold tracking-widest uppercase transition-colors duration-300"
                 style={{ color: "var(--color-gold)" }}
                 onMouseEnter={(e) => {
