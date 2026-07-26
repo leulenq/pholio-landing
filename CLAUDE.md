@@ -66,6 +66,47 @@ Rules the header keeps, and any future changes must respect:
   currently serves `TemporaryLanding`, which has no hero and doesn't scroll, so
   the header stays hidden there by design.)
 
+## Footer (`components/footer/`)
+
+Three directions are live for critique — see `docs/footer-directions.md`.
+Nothing is chosen yet: `DEFAULT_FOOTER_VARIANT` in `lib/footer-variants.ts` is
+`directory` only because rendering requires a default. Compare them at
+**`/lab/footer`**; pin one site-wide with `?footer=<id>`, clear with
+`?footer=reset`, `?footer=current` rolls back to the pre-redesign card
+(`components/MarketingFooterLegacy.tsx`, untouched).
+
+`components/MarketingFooter.tsx` is a **shim** onto `FooterWrapper`. It keeps its
+name and its `theme?: "light" | "dark"` prop so the eighteen pages that already
+mount it need no edit — don't "clean it up" by rewriting call sites.
+
+**A footer is a service counter, not a second header.** The people who scroll
+here are verifying or hunting one specific thing, not browsing. An earlier set
+of four directions (colophon / ledger / open index / comp-card reverse) was
+built and rejected for taking the header's display grammar and stretching it
+downward — display serif, a brand verdict line, a full-bleed ink slab, 200px of
+top air. That reads as a second hero. Don't rebuild it.
+
+Rules the footer keeps, and any future change must respect:
+
+- **Small type only.** Links 13px sans, headings 10px mono caps, baseline 10px.
+  The wordmark is the only non-clerical type in the block. **No display type,
+  no headline, no brand prose** — a tagline down here is filler.
+- **The page's own paper, closed by one hairline.** No new colour field, no
+  gradient, no gold sweep bracket, no card, no blur.
+- **Air goes between the items, not above the block** (~64–80px top padding).
+- **Labelled semantic sections**, kept as a two-up grid on mobile so every group
+  keeps its heading. Undivided link piles are the classic footer failure.
+- **Legal and trust documents are primary content**, not something to minimise.
+  "Trust & safety" (community guidelines, submission programme, AI notice,
+  copyright) is broken out of the legal pile deliberately — that group is what a
+  scam-wary applicant is checking.
+- Gold is a state: the wordmark, and hover. Social links are **words, not glyph
+  buttons**.
+- All content lives in `lib/footer-links.ts` — one source for every direction, so
+  variants differ in organisation only. Every href must be a route that exists.
+- Coherence with the header comes from the shared palette, ease, mono label
+  voice and `Wordmark` — **not** from reusing its composition or its `NavLink`.
+
 ## Comp-card showcase (`components/SceneCompCard.tsx`)
 
 The home page's flagship section (mounted in `ClientPage.tsx`). It is a **cinematic,
