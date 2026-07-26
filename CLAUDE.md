@@ -42,7 +42,10 @@ talent-dashboard mark, not a bespoke marketing invention: Noto Serif Display 400
 `client/src/shared/layouts/TalentLayout/TalentLayout.css` and `.apply-workspace-logo
 span` in `client/src/domains/talent/pages/ApplyPage/ApplyExperience.css` (same
 values in both) in `pholio-app`. Don't regress it back to a CLAUDE.md-brand-system
-guess (600 weight / 15px / 0.3+ tracking) — it must match the app mark exactly.
+guess (600 weight / 0.3+ tracking) — weight/tracking/color must match the app mark
+exactly. Size is the one deliberate exception: the marketing header renders it at
+16px (`VariantIndex.tsx`), smaller than the app's 24px, by explicit product call —
+don't "fix" it back up to 24px.
 
 The gold sweep below the header (`GoldSweep` in `components/header/kit.tsx`) is
 also ported from the app: `.apply-workspace-top::after` in that same

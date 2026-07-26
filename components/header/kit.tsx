@@ -377,15 +377,15 @@ export function Rule({
  */
 export function GoldSweep({
   opacity = 1,
-  color,
+  color = GOLD,
   style,
 }: {
   opacity?: number;
+  /** Defaults to the fixed brand gold — the same `--app-gold` /apply uses,
+      not a paper-tracking token — so the match holds on cream pages too. */
   color?: string;
   style?: CSSProperties;
 }) {
-  const tokens = useTokens();
-  const gold = color ?? tokens.gold;
   return (
     <span
       aria-hidden
@@ -394,7 +394,7 @@ export function GoldSweep({
         height: 1,
         width: "100%",
         opacity,
-        background: `linear-gradient(to right, transparent, ${GOLD}, transparent)`,
+        background: `linear-gradient(to right, transparent, ${color}, transparent)`,
         transition: `opacity 0.5s cubic-bezier(0.22,1,0.36,1)`,
         ...style,
       }}
@@ -403,7 +403,7 @@ export function GoldSweep({
 }
 
 export function Wordmark({
-  size = 24,
+  size = 15,
   tracking = 0.2,
   color,
   weight = 400,
