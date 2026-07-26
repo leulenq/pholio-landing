@@ -955,13 +955,7 @@ export function IndexTrigger({
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       className="flex items-center focus:outline-none focus-visible:underline"
-      style={{
-        gap: 10,
-        background: "none",
-        border: "none",
-        padding: 0,
-        height: 24,
-      }}
+      style={{ gap: 12, background: "none", border: "none", padding: "6px 0" }}
     >
       {label && (
         <span
@@ -970,8 +964,6 @@ export function IndexTrigger({
             fontSize: 9.5,
             letterSpacing: "0.28em",
             textTransform: "uppercase",
-            lineHeight: 1,
-            display: "block",
             color,
             transition: "color 0.3s cubic-bezier(0.22,1,0.36,1)",
           }}
@@ -979,16 +971,7 @@ export function IndexTrigger({
           {open ? "Close" : label}
         </span>
       )}
-      <span
-        aria-hidden
-        style={{
-          display: "grid",
-          alignContent: "center",
-          gap: 5,
-          width: 22,
-          height: 12,
-        }}
-      >
+      <span aria-hidden style={{ display: "grid", gap: 5, width: 22 }}>
         <span
           style={{
             height: 1,
@@ -1078,10 +1061,9 @@ export function IndexPanel({
       <FieldProvider tokens={TOKENS.ink}>
         <div
           className="relative mx-auto flex h-full w-full max-w-[1440px] flex-col px-6 md:px-12"
-          /* `full` clears the still-visible corner marks (h-14 / md h-18);
-             keep the breath tight so the first entry doesn't float. */
+          /* `full` runs beneath the still-visible corner marks, so it clears them. */
           style={{
-            paddingTop: full ? (contained ? 72 : 84) : 44,
+            paddingTop: full ? (contained ? 96 : 128) : 44,
             paddingBottom: contained
               ? "1.5rem"
               : "max(1.75rem, env(safe-area-inset-bottom))",
