@@ -114,8 +114,7 @@ export default function VariantIndex({
         />
 
         <div
-          className="relative mx-auto flex w-full max-w-[1440px] items-center justify-between px-6 md:px-12"
-          style={{ paddingTop: 30, paddingBottom: 26 }}
+          className="relative mx-auto flex h-14 w-full max-w-[1440px] items-center justify-between px-6 md:px-12 md:h-[4.5rem]"
         >
           {/* The resting state is the wordmark and nothing else — no descriptor,
               no clerical line. Whatever Pholio is gets said inside the index. */}

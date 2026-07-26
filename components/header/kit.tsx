@@ -531,6 +531,7 @@ export function NavLink({
           fontWeight: 500,
           letterSpacing: `${tracking}em`,
           textTransform: "uppercase",
+          lineHeight: 1,
           color: live
             ? (activeColor ?? tokens.gold)
             : (color ?? tokens.textMuted),
@@ -898,7 +899,9 @@ export function ActionLink({
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       className="relative inline-block focus:outline-none focus-visible:underline"
-      style={{ textDecoration: "none" }}
+      /* Match NavLink's box (padding for its hover rule) so a CTA and a
+         muted sibling share one baseline when they sit in the same row. */
+      style={{ textDecoration: "none", paddingBottom: 5 }}
     >
       <span
         style={{
@@ -907,6 +910,7 @@ export function ActionLink({
           fontWeight: 600,
           letterSpacing: `${tracking}em`,
           textTransform: "uppercase",
+          lineHeight: 1,
           color: hover ? tokens.gold : tokens.text,
           transition: "color 0.32s cubic-bezier(0.22,1,0.36,1)",
           whiteSpace: "nowrap",
@@ -951,7 +955,13 @@ export function IndexTrigger({
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       className="flex items-center focus:outline-none focus-visible:underline"
-      style={{ gap: 12, background: "none", border: "none", padding: "6px 0" }}
+      style={{
+        gap: 10,
+        background: "none",
+        border: "none",
+        padding: 0,
+        height: 24,
+      }}
     >
       {label && (
         <span
@@ -960,6 +970,8 @@ export function IndexTrigger({
             fontSize: 9.5,
             letterSpacing: "0.28em",
             textTransform: "uppercase",
+            lineHeight: 1,
+            display: "block",
             color,
             transition: "color 0.3s cubic-bezier(0.22,1,0.36,1)",
           }}
@@ -967,7 +979,16 @@ export function IndexTrigger({
           {open ? "Close" : label}
         </span>
       )}
-      <span aria-hidden style={{ display: "grid", gap: 5, width: 22 }}>
+      <span
+        aria-hidden
+        style={{
+          display: "grid",
+          alignContent: "center",
+          gap: 5,
+          width: 22,
+          height: 12,
+        }}
+      >
         <span
           style={{
             height: 1,
@@ -1057,18 +1078,19 @@ export function IndexPanel({
       <FieldProvider tokens={TOKENS.ink}>
         <div
           className="relative mx-auto flex h-full w-full max-w-[1440px] flex-col px-6 md:px-12"
-          /* `full` runs beneath the still-visible corner marks, so it clears them. */
+          /* `full` clears the still-visible corner marks (h-14 / md h-18);
+             keep the breath tight so the first entry doesn't float. */
           style={{
-            paddingTop: full ? (contained ? 96 : 128) : 44,
+            paddingTop: full ? (contained ? 72 : 84) : 44,
             paddingBottom: contained
               ? "1.5rem"
-              : "max(2rem, env(safe-area-inset-bottom))",
+              : "max(1.75rem, env(safe-area-inset-bottom))",
           }}
         >
           <div
             className={
               full
-                ? "grid flex-1 grid-cols-1 gap-10 overflow-y-auto md:grid-cols-[1.5fr_1fr] md:gap-12 md:overflow-visible"
+                ? "flex flex-1 flex-col overflow-y-auto md:grid md:grid-cols-[1.5fr_1fr] md:gap-12 md:overflow-visible"
                 : "flex flex-1 flex-col"
             }
           >
@@ -1080,7 +1102,7 @@ export function IndexPanel({
                     href={link.href}
                     onClick={onClose}
                     className="group flex items-baseline focus:outline-none"
-                    style={{ textDecoration: "none", padding: "18px 0" }}
+                    style={{ textDecoration: "none", padding: "15px 0" }}
                   >
                     <IndexEntryLabel
                       label={link.label}
@@ -1093,62 +1115,76 @@ export function IndexPanel({
               ))}
             </nav>
 
-            {/* Clerical column. Sits beside the entries on desktop and drops
-                under them on a phone — it carries the only sign-up route in this
-                composition, so it can never be a desktop-only luxury. On a phone
-                the two groups sit as one row, More against the left margin and
-                Account against the right, so the block reads as a single
-                clerical footer rather than two stacked lists. */}
+            {/* Clerical foot. On a phone it grounds the sheet — primary index
+                above, utility pair below — as one deliberate composition.
+                Identical kicker rails lock More / Account on one line; matching
+                link boxes and gaps keep the two lists optically even. */}
             {full && (
               <motion.div
-                className="flex flex-row items-start justify-between gap-8 md:flex-col md:justify-center md:gap-10"
+                className="mt-auto pt-12 md:mt-0 md:flex md:flex-col md:justify-center md:pt-0"
                 {...entry(NAV.length)}
               >
-                <div className="flex flex-col">
-                  <Kicker color="rgba(250,247,242,0.3)">More</Kicker>
-                  <div className="mt-5 flex flex-col gap-3.5">
-                    {SECONDARY_LINKS.map((link) => (
-                      <NavLink
-                        key={link.href}
-                        href={link.href}
-                        label={link.label}
-                        size={11}
-                        tracking={0.12}
-                        onClick={onClose}
-                      />
-                    ))}
-                  </div>
-                </div>
-                <div className="flex flex-col items-end text-right md:items-start md:text-left">
-                  <Kicker color="rgba(250,247,242,0.3)">Account</Kicker>
-                  <div className="mt-5 flex flex-col items-end gap-3.5 md:items-start">
-                    {isAuthenticated ? (
-                      <ActionLink
-                        href={dashboardHref}
-                        label="Open dashboard"
-                        size={11}
-                        tracking={0.14}
-                        onClick={onClose}
-                      />
-                    ) : (
-                      <>
-                        <ActionLink
-                          href={SIGNUP_HREF}
-                          label="Get scouted"
-                          size={11}
-                          tracking={0.14}
-                          onClick={onClose}
-                        />
+                <div className="flex items-start justify-between gap-8 md:flex-col md:gap-9">
+                  <div className="flex min-w-0 flex-1 flex-col md:flex-none">
+                    <div className="flex h-2.5 items-center">
+                      <Kicker
+                        color="rgba(250,247,242,0.3)"
+                        style={{ display: "block" }}
+                      >
+                        More
+                      </Kicker>
+                    </div>
+                    <div className="mt-3.5 flex flex-col gap-3">
+                      {SECONDARY_LINKS.map((link) => (
                         <NavLink
-                          href={LOGIN_HREF}
-                          label="Log in"
-                          external
+                          key={link.href}
+                          href={link.href}
+                          label={link.label}
+                          size={11}
+                          tracking={0.12}
+                          onClick={onClose}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex min-w-0 flex-1 flex-col items-end md:flex-none md:items-start">
+                    <div className="flex h-2.5 w-full items-center justify-end md:justify-start">
+                      <Kicker
+                        color="rgba(250,247,242,0.3)"
+                        style={{ display: "block" }}
+                      >
+                        Account
+                      </Kicker>
+                    </div>
+                    <div className="mt-3.5 flex flex-col items-end gap-3 md:items-start">
+                      {isAuthenticated ? (
+                        <ActionLink
+                          href={dashboardHref}
+                          label="Open dashboard"
                           size={11}
                           tracking={0.14}
                           onClick={onClose}
                         />
-                      </>
-                    )}
+                      ) : (
+                        <>
+                          <ActionLink
+                            href={SIGNUP_HREF}
+                            label="Get scouted"
+                            size={11}
+                            tracking={0.14}
+                            onClick={onClose}
+                          />
+                          <NavLink
+                            href={LOGIN_HREF}
+                            label="Log in"
+                            external
+                            size={11}
+                            tracking={0.14}
+                            onClick={onClose}
+                          />
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
               </motion.div>
