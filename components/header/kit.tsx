@@ -408,6 +408,7 @@ export function Wordmark({
   className?: string;
   style?: CSSProperties;
 }) {
+  const tokens = useTokens();
   return (
     <span
       className={className}
@@ -419,11 +420,12 @@ export function Wordmark({
         // letter-spacing adds a trailing gap after the O; pull it back so the
         // mark optically aligns with whatever sits to its right.
         marginRight: `-${tracking}em`,
-        // The mark is gold everywhere it appears — in the app (talent
-        // dashboard topbar) as in the marketing header — not a themed
-        // ink/cream text color. Callers can still override for a specific
-        // surface (e.g. a scrim that needs more contrast).
-        color: color ?? GOLD,
+        // The mark is gold everywhere it appears — in the app (talent dashboard
+        // topbar) as in the marketing header — never a themed ink/cream text
+        // color. But *which* gold tracks the paper under it: #C9A55A on ink,
+        // the dark gold on cream, where #C9A55A only manages ~2:1 and the mark
+        // washes out. Callers can still override for a specific surface.
+        color: color ?? tokens.gold,
         lineHeight: 1,
         display: "inline-block",
         transition:
@@ -1094,12 +1096,15 @@ export function IndexPanel({
               ))}
             </nav>
 
-            {/* Clerical column. Sits beside the entries on desktop and stacks
+            {/* Clerical column. Sits beside the entries on desktop and drops
                 under them on a phone — it carries the only sign-up route in this
-                composition, so it can never be a desktop-only luxury. */}
+                composition, so it can never be a desktop-only luxury. On a phone
+                the two groups sit as one row, More against the left margin and
+                Account against the right, so the block reads as a single
+                clerical footer rather than two stacked lists. */}
             {full && (
               <motion.div
-                className="flex flex-col gap-9 md:justify-center md:gap-10"
+                className="flex flex-row items-start justify-between gap-8 md:flex-col md:justify-center md:gap-10"
                 {...entry(NAV.length)}
               >
                 <div>
@@ -1117,9 +1122,9 @@ export function IndexPanel({
                     ))}
                   </div>
                 </div>
-                <div>
+                <div className="flex flex-col items-end text-right md:items-start md:text-left">
                   <Kicker color="rgba(250,247,242,0.3)">Account</Kicker>
-                  <div className="mt-4 flex flex-col items-start gap-3">
+                  <div className="mt-4 flex flex-col items-end gap-3 md:items-start">
                     {isAuthenticated ? (
                       <ActionLink
                         href={dashboardHref}
