@@ -171,6 +171,13 @@ export interface HeaderState {
   revealed: boolean;
   /** True once the page has scrolled past the settle threshold. */
   condensed: boolean;
+  /**
+   * The exact background colour sampled from under the bar, so a header that
+   * needs a backing can take the page's real paper rather than the polarity's
+   * nearest token (`/agency` is #08080c, not #050505 — the difference reads as
+   * a seam). Null when nothing legible was found.
+   */
+  paper: string | null;
   pathname: string;
   reduceMotion: boolean;
 }
@@ -209,7 +216,10 @@ export function useHeaderState({
 
   /* Field polarity: read the paper directly under the bar so the header belongs
      to whatever section it is crossing, instead of being frozen per route. */
-  const sampledField = useFieldPolarity({ enabled: !preview, fallback: theme });
+  const { field: sampledField, paper } = useFieldPolarity({
+    enabled: !preview,
+    fallback: theme,
+  });
   useEffect(() => {
     if (preview) return;
     setField(sampledField);
@@ -220,6 +230,7 @@ export function useHeaderState({
     tokens: TOKENS[preview ? theme : field],
     revealed,
     condensed: preview ? previewState === "settled" : condensed,
+    paper: preview ? null : paper,
     pathname,
     reduceMotion,
   };
@@ -228,9 +239,10 @@ export function useHeaderState({
 const OPAQUE_SKIP = new Set(["rgba(0, 0, 0, 0)", "transparent"]);
 
 /**
- * Samples the first opaque background beneath the header band and returns the
- * polarity its luminance implies. Progressive enhancement: anything unreadable
- * (canvas, video, pointer-events:none scenery) leaves the route default alone.
+ * Samples the first opaque background beneath the header band: returns both the
+ * polarity its luminance implies and the colour itself. Progressive enhancement:
+ * anything unreadable (canvas, video, pointer-events:none scenery) leaves the
+ * route default alone and reports no paper.
  */
 function useFieldPolarity({
   enabled,
@@ -238,8 +250,9 @@ function useFieldPolarity({
 }: {
   enabled: boolean;
   fallback: Field;
-}): Field {
+}): { field: Field; paper: string | null } {
   const [field, setField] = useState<Field>(fallback);
+  const [paper, setPaper] = useState<string | null>(null);
   const frame = useRef(0);
 
   useEffect(() => setField(fallback), [fallback]);
@@ -271,10 +284,12 @@ function useFieldPolarity({
           ];
           const luminance = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
           setField(luminance > 0.55 ? "cream" : "ink");
+          setPaper(`rgb(${r}, ${g}, ${b})`);
           return;
         }
       }
       setField(fallback);
+      setPaper(null);
     };
 
     const onScroll = () => {
@@ -292,7 +307,7 @@ function useFieldPolarity({
     };
   }, [enabled, fallback]);
 
-  return field;
+  return { field, paper };
 }
 
 /** Locks page scroll while a full-screen index is open. */
@@ -362,11 +377,15 @@ export function Rule({
  */
 export function GoldSweep({
   opacity = 1,
+  color,
   style,
 }: {
   opacity?: number;
+  color?: string;
   style?: CSSProperties;
 }) {
+  const tokens = useTokens();
+  const gold = color ?? tokens.gold;
   return (
     <span
       aria-hidden
@@ -398,6 +417,7 @@ export function Wordmark({
   className?: string;
   style?: CSSProperties;
 }) {
+  const tokens = useTokens();
   return (
     <span
       className={className}
@@ -409,11 +429,12 @@ export function Wordmark({
         // letter-spacing adds a trailing gap after the O; pull it back so the
         // mark optically aligns with whatever sits to its right.
         marginRight: `-${tracking}em`,
-        // The mark is gold everywhere it appears — in the app (talent
-        // dashboard topbar) as in the marketing header — not a themed
-        // ink/cream text color. Callers can still override for a specific
-        // surface (e.g. a scrim that needs more contrast).
-        color: color ?? GOLD,
+        // The mark is gold everywhere it appears — in the app (talent dashboard
+        // topbar) as in the marketing header — never a themed ink/cream text
+        // color. But *which* gold tracks the paper under it: #C9A55A on ink,
+        // the dark gold on cream, where #C9A55A only manages ~2:1 and the mark
+        // washes out. Callers can still override for a specific surface.
+        color: color ?? tokens.gold,
         lineHeight: 1,
         display: "inline-block",
         transition:
@@ -1072,12 +1093,15 @@ export function IndexPanel({
               ))}
             </nav>
 
-            {/* Clerical column. Sits beside the entries on desktop and stacks
+            {/* Clerical column. Sits beside the entries on desktop and drops
                 under them on a phone — it carries the only sign-up route in this
-                composition, so it can never be a desktop-only luxury. */}
+                composition, so it can never be a desktop-only luxury. On a phone
+                the two groups sit as one row, More against the left margin and
+                Account against the right, so the block reads as a single
+                clerical footer rather than two stacked lists. */}
             {full && (
               <motion.div
-                className="flex flex-col gap-9 md:justify-center md:gap-10"
+                className="flex flex-row items-start justify-between gap-8 md:flex-col md:justify-center md:gap-10"
                 {...entry(NAV.length)}
               >
                 <div>
@@ -1095,9 +1119,9 @@ export function IndexPanel({
                     ))}
                   </div>
                 </div>
-                <div>
+                <div className="flex flex-col items-end text-right md:items-start md:text-left">
                   <Kicker color="rgba(250,247,242,0.3)">Account</Kicker>
-                  <div className="mt-4 flex flex-col items-start gap-3">
+                  <div className="mt-4 flex flex-col items-end gap-3 md:items-start">
                     {isAuthenticated ? (
                       <ActionLink
                         href={dashboardHref}
