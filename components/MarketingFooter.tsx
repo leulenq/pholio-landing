@@ -11,6 +11,7 @@ import Link from "next/link";
 import { Twitter, Instagram, Linkedin } from "lucide-react";
 
 import { PHOLIO_APP_ORIGIN as APP_URL } from "@/lib/pholio-app-origin";
+import CookiePreferencesButton from "@/components/CookiePreferencesButton";
 
 const footerLinks = [
   {
@@ -299,6 +300,32 @@ export default function MarketingFooter({ theme = "light" }: MarketingFooterProp
                         {link.label}
                       </a>
                     ))}
+                    {column.title === "LEGAL" ? (
+                      <CookiePreferencesButton
+                        className="transition-colors duration-150"
+                        style={{
+                          fontFamily: "var(--font-sans)",
+                          fontWeight: 400,
+                          fontSize: "13px",
+                          color: isDark ? "#94a3b8" : "#64748b",
+                          lineHeight: 2.4,
+                          display: "block",
+                          textAlign: "left",
+                          background: "none",
+                          border: "none",
+                          padding: 0,
+                          cursor: "pointer",
+                        }}
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.color = "#C9A55A")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.style.color = isDark
+                            ? "#94a3b8"
+                            : "#64748b")
+                        }
+                      />
+                    ) : null}
                   </div>
                 </div>
               ))}
