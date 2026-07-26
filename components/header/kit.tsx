@@ -171,6 +171,13 @@ export interface HeaderState {
   revealed: boolean;
   /** True once the page has scrolled past the settle threshold. */
   condensed: boolean;
+  /**
+   * The exact background colour sampled from under the bar, so a header that
+   * needs a backing can take the page's real paper rather than the polarity's
+   * nearest token (`/agency` is #08080c, not #050505 — the difference reads as
+   * a seam). Null when nothing legible was found.
+   */
+  paper: string | null;
   pathname: string;
   reduceMotion: boolean;
 }
@@ -209,7 +216,10 @@ export function useHeaderState({
 
   /* Field polarity: read the paper directly under the bar so the header belongs
      to whatever section it is crossing, instead of being frozen per route. */
-  const sampledField = useFieldPolarity({ enabled: !preview, fallback: theme });
+  const { field: sampledField, paper } = useFieldPolarity({
+    enabled: !preview,
+    fallback: theme,
+  });
   useEffect(() => {
     if (preview) return;
     setField(sampledField);
@@ -220,6 +230,7 @@ export function useHeaderState({
     tokens: TOKENS[preview ? theme : field],
     revealed,
     condensed: preview ? previewState === "settled" : condensed,
+    paper: preview ? null : paper,
     pathname,
     reduceMotion,
   };
@@ -228,9 +239,10 @@ export function useHeaderState({
 const OPAQUE_SKIP = new Set(["rgba(0, 0, 0, 0)", "transparent"]);
 
 /**
- * Samples the first opaque background beneath the header band and returns the
- * polarity its luminance implies. Progressive enhancement: anything unreadable
- * (canvas, video, pointer-events:none scenery) leaves the route default alone.
+ * Samples the first opaque background beneath the header band: returns both the
+ * polarity its luminance implies and the colour itself. Progressive enhancement:
+ * anything unreadable (canvas, video, pointer-events:none scenery) leaves the
+ * route default alone and reports no paper.
  */
 function useFieldPolarity({
   enabled,
@@ -238,8 +250,9 @@ function useFieldPolarity({
 }: {
   enabled: boolean;
   fallback: Field;
-}): Field {
+}): { field: Field; paper: string | null } {
   const [field, setField] = useState<Field>(fallback);
+  const [paper, setPaper] = useState<string | null>(null);
   const frame = useRef(0);
 
   useEffect(() => setField(fallback), [fallback]);
@@ -271,10 +284,12 @@ function useFieldPolarity({
           ];
           const luminance = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
           setField(luminance > 0.55 ? "cream" : "ink");
+          setPaper(`rgb(${r}, ${g}, ${b})`);
           return;
         }
       }
       setField(fallback);
+      setPaper(null);
     };
 
     const onScroll = () => {
@@ -292,7 +307,7 @@ function useFieldPolarity({
     };
   }, [enabled, fallback]);
 
-  return field;
+  return { field, paper };
 }
 
 /** Locks page scroll while a full-screen index is open. */

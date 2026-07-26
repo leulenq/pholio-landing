@@ -18,9 +18,20 @@
  * the brand weight the bar was trying to carry, spent in one place where it has
  * room to be good.
  *
- * The only surface concession: a shallow top scrim on ink pages so the two
- * corner marks stay legible over moving imagery. No blur, no shape, no border —
- * a film title scrim, not a panel.
+ * Two surface concessions, both earned:
+ *
+ * - At the top of a page, a shallow scrim on ink pages so the corner marks stay
+ *   legible over moving imagery. No blur, no shape, no border — a film title
+ *   scrim, not a panel.
+ * - Once the page is scrolled, the marks are no longer sitting in a designed top
+ *   margin — they are over running body copy, and a mark with nothing behind it
+ *   collides with the text (headings ran straight through the wordmark on the
+ *   legal pages). So the band takes the page's own paper, opaque, closed by a
+ *   hairline. Opaque paper rather than blur is the whole point: a header that
+ *   needs a backing takes the colour of what it is covering.
+ *
+ * The band's geometry never changes — only the paper under it fades in — so
+ * nothing shifts as you scroll.
  */
 
 import { useState } from "react";
@@ -41,13 +52,14 @@ export default function VariantIndex({
   preview = false,
   previewState,
 }: HeaderVariantProps) {
-  const { tokens, field, revealed, pathname, reduceMotion } = useHeaderState({
-    theme,
-    preview,
-    previewState,
-  });
+  const { tokens, field, revealed, condensed, paper, pathname, reduceMotion } =
+    useHeaderState({ theme, preview, previewState });
   const [open, setOpen] = useState(false);
   const T = reduceMotion ? "0s" : `0.5s cubic-bezier(${EASE.join(",")})`;
+
+  /* Paper only once the page has moved under the marks. Open, the index owns
+     the field and supplies its own. */
+  const onPaper = condensed && !open;
 
   return (
     <FieldProvider tokens={tokens}>
@@ -61,13 +73,36 @@ export default function VariantIndex({
         }}
         aria-hidden={!revealed}
       >
-        {/* Legibility scrim — ink pages only, and only ever this shallow. */}
+        {/* Paper — the exact surface sampled from under the bar, opaque, never
+            blurred. The polarity token is only the fallback. */}
+        <div
+          aria-hidden
+          className="absolute inset-0"
+          style={{
+            background: paper ?? tokens.surface,
+            opacity: onPaper ? 1 : 0,
+            transition: `opacity ${T}, background ${T}`,
+          }}
+        />
+        <div
+          aria-hidden
+          className="absolute inset-x-0 bottom-0"
+          style={{
+            height: 1,
+            background: tokens.rule,
+            opacity: onPaper ? 1 : 0,
+            transition: `opacity ${T}, background ${T}`,
+          }}
+        />
+
+        {/* Legibility scrim — ink pages at the top of the page only, where there
+            is no paper yet and the marks sit over imagery. */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-x-0 top-0"
           style={{
             height: 132,
-            opacity: field === "ink" && !open ? 1 : 0,
+            opacity: field === "ink" && !open && !condensed ? 1 : 0,
             background:
               "linear-gradient(to bottom, rgba(5,5,5,0.55), rgba(5,5,5,0))",
             transition: `opacity ${T}`,
@@ -76,7 +111,7 @@ export default function VariantIndex({
 
         <div
           className="relative mx-auto flex w-full max-w-[1440px] items-center justify-between px-6 md:px-12"
-          style={{ paddingTop: 30 }}
+          style={{ paddingTop: 30, paddingBottom: 26 }}
         >
           {/* The resting state is the wordmark and nothing else — no descriptor,
               no clerical line. Whatever Pholio is gets said inside the index. */}
