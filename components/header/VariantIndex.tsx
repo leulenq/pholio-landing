@@ -8,7 +8,7 @@
  * scene. Any persistent bar is a rectangle sitting on someone's photograph.
  *
  * So at rest there is no header at all — two corner marks in the page's top
- * margin: the wordmark, and an INDEX trigger. This is the mobile hamburger you
+ * margin: the wordmark alone, and an INDEX trigger. This is the mobile hamburger you
  * liked, promoted to the whole system, which means one navigation pattern
  * instead of a desktop bar plus a phone sheet.
  *
@@ -31,7 +31,6 @@ import {
   FieldProvider,
   IndexPanel,
   IndexTrigger,
-  Kicker,
   Wordmark,
   useHeaderState,
   type HeaderVariantProps,
@@ -76,41 +75,31 @@ export default function VariantIndex({
         />
 
         <div
-          className="relative mx-auto flex w-full max-w-[1440px] items-start justify-between px-6 md:px-12"
+          className="relative mx-auto flex w-full max-w-[1440px] items-center justify-between px-6 md:px-12"
           style={{ paddingTop: 30 }}
         >
+          {/* The resting state is the wordmark and nothing else — no descriptor,
+              no clerical line. Whatever Pholio is gets said inside the index. */}
           <Link
             href="/"
             aria-label="Pholio — home"
             className="focus:outline-none"
             style={{ textDecoration: "none" }}
           >
-            <span className="flex flex-col gap-2.5">
-              <Wordmark
-                size={16}
-                tracking={0.32}
-                color={open ? "#FAF7F2" : undefined}
-                style={{ transition: `color ${T}` }}
-              />
-              {/* The one clerical line the resting state is allowed. */}
-              <Kicker
-                color={open ? "rgba(250,247,242,0.32)" : tokens.textFaint}
-                size={8.5}
-                tracking={0.3}
-              >
-                Verified talent
-              </Kicker>
-            </span>
+            <Wordmark
+              size={16}
+              tracking={0.32}
+              color={open ? "#FAF7F2" : undefined}
+              style={{ transition: `color ${T}` }}
+            />
           </Link>
 
-          <div style={{ paddingTop: 2 }}>
-            <IndexTrigger
-              open={open}
-              onToggle={() => setOpen((v) => !v)}
-              label="Index"
-              tokens={open ? { ...tokens, text: "#FAF7F2" } : tokens}
-            />
-          </div>
+          <IndexTrigger
+            open={open}
+            onToggle={() => setOpen((v) => !v)}
+            label="Index"
+            tokens={open ? { ...tokens, text: "#FAF7F2" } : tokens}
+          />
         </div>
       </header>
 
