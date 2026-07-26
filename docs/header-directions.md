@@ -80,9 +80,11 @@ desktop visitor sees the destinations.
   rule read as a surface. It now outranks its siblings on full-strength color
   alone — `ActionLink` in `components/header/kit.tsx`.)
 - The wordmark is the pholio-app talent-dashboard mark, not a bespoke
-  marketing-site invention: Noto Serif Display 400, 24px, 0.2em tracking,
-  gold, uppercase (`Wordmark` in `components/header/kit.tsx`, sourced from
-  `.tl-logo-word` / `.apply-workspace-logo span` in `pholio-app`).
+  marketing-site invention: Noto Serif Display 400, 0.2em tracking, gold,
+  uppercase (`Wordmark` in `components/header/kit.tsx`, sourced from
+  `.tl-logo-word` / `.apply-workspace-logo span` in `pholio-app`, both 24px).
+  Size is the deliberate exception: the marketing header keeps it smaller
+  (16px, set in `VariantIndex.tsx`) than the app's 24px.
 - One ease, `cubic-bezier(0.22, 1, 0.36, 1)`; `useReducedMotion()` collapses
   every transition to `0s`.
 - The mobile hamburger → full-screen serif index is the pattern that worked,

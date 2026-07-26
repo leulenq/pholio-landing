@@ -384,7 +384,7 @@ export function GoldSweep({
 }
 
 export function Wordmark({
-  size = 24,
+  size = 15,
   tracking = 0.2,
   color,
   weight = 400,
