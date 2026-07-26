@@ -28,6 +28,35 @@ platform). This file captures conventions and hard-won lessons.
   grain (fractalNoise SVG at low opacity), mono kickers. Frame imagery, don't crop it;
   portraits are grayscale with warm grain.
 
+## Header (`components/header/`)
+
+Four live header directions under review — see `docs/header-directions.md` for the
+reasoning and `/lab/header` to compare them. Switch sitewide with `?header=<id>`
+(`masthead` · `ledger` · `index` · `plate` · `current`), `?header=reset` to clear.
+`DEFAULT_HEADER_VARIANT` in `lib/header-variants.ts` is what the live site renders;
+it is still `current` (the legacy glass pill in `components/Header.tsx`, untouched).
+
+Rules the directions share, and any future header must keep:
+
+- **No glass.** No `backdrop-filter`, no translucent shell. A header that needs a
+  backing takes the page's own paper colour, opaque. Blur only ever existed to
+  rescue a boxed header floating over imagery — don't reintroduce the box.
+- **Gold is a state, not a surface** — live route, action, sweep. No filled gold
+  shape larger than a word (the Ledger's CTA cell is a plate completing a ruled
+  grid, not a pill). No conic borders, no shimmer sweeps.
+- **Nav is not flat.** `TALENT` / `AGENCIES` are audience *doors*; `STUDIO+` is a
+  tier. `NAV` in `components/header/kit.tsx` carries `kind` and an index number.
+- The mobile hamburger → full-screen serif index is the pattern that worked; it is
+  kept in every direction (`IndexTrigger` + `IndexPanel`) with its chrome stripped.
+- Headers **sample the paper under the bar** (`useFieldPolarity`) and flip
+  ink/cream mid-scroll. Route theme is only the starting value.
+- Home reveal measures the hero section (`[data-hero-chrome]`'s `<section>`) and
+  falls back to one viewport of scroll. Don't reintroduce the
+  `[data-header-switch='comp-card']` marker gate — the attribute no longer exists
+  in the DOM, which is why the old header never appeared on `/` at all. (`/`
+  currently serves `TemporaryLanding`, which has no hero and doesn't scroll, so
+  the header stays hidden there by design.)
+
 ## Comp-card showcase (`components/SceneCompCard.tsx`)
 
 The home page's flagship section (mounted in `ClientPage.tsx`). It is a **cinematic,
