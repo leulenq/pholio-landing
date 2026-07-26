@@ -1,24 +1,22 @@
-# Header — design directions
+# Header — design direction
 
-Four header directions for the Pholio marketing site, built live and switchable.
-Compare them at **`/lab/header`**; apply any of them across the whole site with
-`?header=<id>` (remembered for the tab), and return to the existing header with
-`?header=reset`.
+Four header directions were built live and compared at `/lab/header`: masthead,
+ledger, index, and plate. **The Index won and shipped** — the other three
+(and the `/lab/header` comparison page) have been retired from the tree. Their
+rationale and screenshots live in git history if they're ever worth revisiting.
 
 | id | direction | one line |
 | --- | --- | --- |
-| `masthead` | 01 · The Masthead | A magazine masthead that condenses into a running head. |
-| `ledger` | 02 · The Ledger | A ruled grid of numbered cells — the two-sided market made structural. |
-| `index` | 03 · The Index | No header at rest; two corner marks and a full-height editorial index. |
-| `plate` | 04 · The Plate | The comp card's clerical margin over a centred symmetric masthead. |
-| `current` | 00 · Current | The existing glass pill, kept for A/B only. |
+| `index` | 01 · The Index | No header at rest; two corner marks and a full-height editorial index. |
+| `current` | 00 · Current (rollback only) | The pre-redesign glass pill, kept only as an emergency fallback. |
 
-`DEFAULT_HEADER_VARIANT` in `lib/header-variants.ts` decides what the live site
-renders. It is still `current` — promoting a direction is a one-line change.
+`DEFAULT_HEADER_VARIANT` in `lib/header-variants.ts` is `index` — that's what
+the live site renders. `?header=current` forces the old glass pill; `?header=reset`
+clears any override.
 
 ---
 
-## Why the current header doesn't work
+## Why the old header didn't work
 
 Not a taste problem; four structural ones.
 
@@ -36,22 +34,21 @@ Not a taste problem; four structural ones.
    gradient border and a looping shimmer sweep is SaaS grammar, and it sits
    directly against a brand whose whole argument is that it does not oversell.
 
-Two behavioural bugs found while reading it, fixed in all four directions:
+Two behavioural bugs were found while reading it, fixed in the shipped header:
 
 - On `/` the header **never appeared at all**: it gates on
   `[data-header-switch='comp-card']`, an attribute no longer present anywhere in
-  the DOM, so `getHomeHeaderActive()` always returned false. The new headers
-  measure the hero section itself (`[data-hero-chrome]`'s section) and reveal
+  the DOM, so `getHomeHeaderActive()` always returned false. The new header
+  measures the hero section itself (`[data-hero-chrome]`'s section) and reveals
   once it has largely left the viewport, falling back to one viewport of scroll
   when a page has no hero.
 
   Note `/` currently serves `TemporaryLanding` ("Launching soon"), which has no
   hero and does not scroll — so the header stays hidden there, which is right.
-  The directions were verified on `/talent`, `/agency` and the cream legal pages;
-  re-check `/` when `ClientPage` goes back on the route.
+  Re-check `/` when `ClientPage` goes back on the route.
 - Polarity was frozen per route, so the header stayed ink-dark while scrolling
-  across the home page's cream sections. The new headers **sample the paper
-  underneath the bar** and flip (`useFieldPolarity` in `components/header/kit.tsx`).
+  across the home page's cream sections. The new header **samples the paper
+  underneath the bar** and flips (`useFieldPolarity` in `components/header/kit.tsx`).
 
 ## What a Pholio header has to do
 
@@ -64,36 +61,39 @@ Two behavioural bugs found while reading it, fixed in all four directions:
 5. **Convert without shouting.** One action, permanently available, that never
    uses urgency or a gradient.
 
-Jobs 3 and 4 are in direct tension. **Each direction is a different resolution of
-that tension** — that, not the surface, is the actual choice.
+Jobs 3 and 4 are in direct tension. The Index resolves it by buying total
+silence at rest and spending all the brand weight in one place (the open
+index) where it has room to be good — at the cost of one extra click before a
+desktop visitor sees the destinations.
 
-## Rules shared by all four
+## Rules the shipped header keeps
 
 - No blur, no translucency. A header that needs a backing takes the page's own
   paper colour, opaque.
-- Gold is a state, not a surface: live route, action, sweep. Never a filled shape
-  larger than a word (the Ledger's cell is a plate completing a grid, not a pill).
-- Hover is a colour and a 1px rule — never a scale. The site runs a custom
-  cursor, so feedback has to live on the mark itself.
+- Gold is a state, not a surface: live route, action, sweep — never a filled
+  shape larger than a word, never a whole word set permanently in gold text.
+- Hover/prominence is a colour and a 1px rule — **never scale.** The site runs
+  a custom cursor, so feedback has to live on the mark itself, not its size.
+  (The mobile index's "Get scouted" action was briefly rendered at display
+  serif/25px to outrank "Log in" — that was wrong for the same reason; it now
+  uses the same permanent-gold-rule treatment as every other CTA in the header.)
+- The wordmark is the pholio-app talent-dashboard mark, not a bespoke
+  marketing-site invention: Noto Serif Display 400, 0.2em tracking, gold,
+  uppercase (`Wordmark` in `components/header/kit.tsx`, sourced from
+  `client/src/shared/layouts/TalentLayout/TalentLayout.css` in `pholio-app`).
 - One ease, `cubic-bezier(0.22, 1, 0.36, 1)`; `useReducedMotion()` collapses
   every transition to `0s`.
-- The mobile hamburger → full-screen serif index is kept in all four (it was the
-  part that worked), with its chrome stripped: no blurred backdrop, no rounded
-  button, no filled pill at the foot.
+- The mobile hamburger → full-screen serif index is the pattern that worked,
+  kept with its chrome stripped: no blurred backdrop, no rounded button, no
+  filled pill at the foot.
 
 ## Files
 
 ```
 lib/header-variants.ts            registry + DEFAULT_HEADER_VARIANT
 components/header/kit.tsx         state, tokens, primitives, account, index panel
-components/header/VariantMasthead.tsx
-components/header/VariantLedger.tsx
 components/header/VariantIndex.tsx
-components/header/VariantPlate.tsx
 components/header/index.tsx       id → component
 components/HeaderWrapper.tsx      variant selection + route field
-app/lab/header/page.tsx           the critique surface
-components/Header.tsx             untouched — still serves `current`
+components/Header.tsx             untouched — still serves `current` (rollback)
 ```
-
-Each variant file opens with its own thesis. Read those before changing one.

@@ -40,9 +40,9 @@ function fieldForRoute(pathname: string | null): "ink" | "cream" {
  * Nothing is persisted for ordinary visitors: with no override,
  * DEFAULT_HEADER_VARIANT renders. `?header=reset` clears it.
  *
- * There is deliberately no on-page indicator of which direction is applied —
- * anything pinned to the viewport competes with the header being judged.
- * /lab/header is where the comparison lives.
+ * There is deliberately no on-page indicator of which variant is applied —
+ * anything pinned to the viewport competes with the header. `?header=current`
+ * is kept only as an emergency rollback to the pre-redesign glass pill.
  */
 function useHeaderVariant(): HeaderVariantId {
   const [variant, setVariant] = useState<HeaderVariantId>(DEFAULT_HEADER_VARIANT);

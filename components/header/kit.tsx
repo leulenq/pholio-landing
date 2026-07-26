@@ -1,19 +1,20 @@
 "use client";
 
 /**
- * Shared machinery for the header directions.
+ * Shared machinery for the header (currently: VariantIndex, the shipped
+ * direction, and the untouched legacy pill it can roll back to).
  *
  * Deliberately holds *behaviour and state*, not looks: reveal gating, scroll
  * condensation, field-polarity sampling, the account cluster and the mobile
  * index. Each variant supplies its own structure and furniture on top.
  *
- * Two rules apply across every variant:
+ * Two rules apply:
  *  - No blur, no translucency. When a header needs a backing it takes the
  *    page's own paper colour, opaque. Glass exists to rescue boxed headers
  *    over imagery; a header made of type and one hairline doesn't need it.
  *  - Gold is a state, not a surface. It marks the live route, the action and
- *    the sweep — never a filled shape bigger than a word (except the Ledger's
- *    cell, which is a plate, not a pill).
+ *    the sweep — never a filled shape bigger than a word, and prominence
+ *    never comes from scale.
  */
 
 import {
@@ -56,7 +57,7 @@ export type Field = "ink" | "cream";
 export interface HeaderVariantProps {
   /** Route-level default polarity; live sampling can override it while scrolling. */
   theme?: Field;
-  /** Render inside a demo frame (the /lab/header comparison strips). */
+  /** Render inside a demo/preview frame instead of the fixed viewport. */
   preview?: boolean;
   /** Which scroll state the demo frame should hold. */
   previewState?: "rest" | "settled";
@@ -118,8 +119,7 @@ export const MONO = "var(--font-mono)";
 
 /**
  * The marketing nav is not a flat list of pages — it is two audience doors and
- * one product tier. Variants that can express that distinction (Ledger, Plate)
- * use `kind`; the others fall back to a plain index.
+ * one product tier, carried on `kind` for any variant that wants to express it.
  */
 export const NAV = MARKETING_NAV_LINKS.map((link, i) => ({
   ...link,
@@ -380,9 +380,9 @@ export function GoldSweep({
 
 export function Wordmark({
   size = 15,
-  tracking = 0.3,
+  tracking = 0.2,
   color,
-  weight = 600,
+  weight = 400,
   className,
   style,
 }: {
@@ -393,7 +393,6 @@ export function Wordmark({
   className?: string;
   style?: CSSProperties;
 }) {
-  const tokens = useTokens();
   return (
     <span
       className={className}
@@ -405,7 +404,11 @@ export function Wordmark({
         // letter-spacing adds a trailing gap after the O; pull it back so the
         // mark optically aligns with whatever sits to its right.
         marginRight: `-${tracking}em`,
-        color: color ?? tokens.text,
+        // The mark is gold everywhere it appears — in the app (talent
+        // dashboard topbar) as in the marketing header — not a themed
+        // ink/cream text color. Callers can still override for a specific
+        // surface (e.g. a scrim that needs more contrast).
+        color: color ?? GOLD,
         lineHeight: 1,
         display: "inline-block",
         transition:
@@ -843,7 +846,8 @@ export function AccountCluster({
 
 /**
  * The action. Not a pill: a word carrying a gold rule that thickens on hover.
- * The variants that want more weight (Ledger) build their own plate instead.
+ * Prominence over sibling links comes from full-strength color + the
+ * permanent rule, never from a larger font size.
  */
 export function ActionLink({
   href,
@@ -998,7 +1002,7 @@ export function IndexPanel({
   reduceMotion: boolean;
   full?: boolean;
   top?: number;
-  /** Scoped to a demo frame instead of the viewport (see /lab/header). */
+  /** Scoped to a demo frame instead of the viewport. */
   contained?: boolean;
 }) {
   const { isAuthenticated, dashboardHref } = usePholioAuth();
@@ -1102,14 +1106,14 @@ export function IndexPanel({
                   <Kicker color="rgba(250,247,242,0.3)">Account</Kicker>
                   <div className="mt-4 flex flex-col items-start gap-3">
                     {isAuthenticated ? (
-                      <IndexAction
+                      <ActionLink
                         href={dashboardHref}
                         label="Open dashboard"
                         onClick={onClose}
                       />
                     ) : (
                       <>
-                        <IndexAction
+                        <ActionLink
                           href={SIGNUP_HREF}
                           label="Get scouted"
                           onClick={onClose}
@@ -1168,46 +1172,6 @@ export function IndexPanel({
         </div>
       </FieldProvider>
     </motion.div>
-  );
-}
-
-/**
- * The index's primary action. It outranks "Log in" by *scale and value* rather
- * than by a rule under it: display serif at reading size against the clerical
- * caps of everything else in the column, at full paper strength while the rest
- * of the column is held back. Gold stays a hover state, so the one gold thing in
- * the open composition remains the live route.
- */
-function IndexAction({
-  href,
-  label,
-  onClick,
-}: {
-  href: string;
-  label: string;
-  onClick?: () => void;
-}) {
-  const [hover, setHover] = useState(false);
-  return (
-    <a
-      href={href}
-      onClick={onClick}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      className="focus:outline-none focus-visible:underline"
-      style={{
-        fontFamily: SERIF,
-        fontWeight: 500,
-        fontSize: 25,
-        letterSpacing: "-0.02em",
-        lineHeight: 1.1,
-        textDecoration: "none",
-        color: hover ? GOLD : "#FAF7F2",
-        transition: "color 0.32s cubic-bezier(0.22,1,0.36,1)",
-      }}
-    >
-      {label}
-    </a>
   );
 }
 

@@ -30,24 +30,33 @@ platform). This file captures conventions and hard-won lessons.
 
 ## Header (`components/header/`)
 
-Four live header directions under review — see `docs/header-directions.md` for the
-reasoning and `/lab/header` to compare them. Switch sitewide with `?header=<id>`
-(`masthead` · `ledger` · `index` · `plate` · `current`), `?header=reset` to clear.
-`DEFAULT_HEADER_VARIANT` in `lib/header-variants.ts` is what the live site renders;
-it is still `current` (the legacy glass pill in `components/Header.tsx`, untouched).
+"The Index" (`VariantIndex.tsx`) is the shipped header — see `docs/header-directions.md`
+for the reasoning and the three retired alternatives. `DEFAULT_HEADER_VARIANT` in
+`lib/header-variants.ts` is `index`. `?header=current` forces the pre-redesign glass
+pill (`components/Header.tsx`, untouched) as an emergency rollback only;
+`?header=reset` clears any override.
 
-Rules the directions share, and any future header must keep:
+The wordmark (`Wordmark` in `components/header/kit.tsx`) is the pholio-app
+talent-dashboard mark, not a bespoke marketing invention: Noto Serif Display 400,
+0.2em tracking, gold, uppercase — sourced from
+`client/src/shared/layouts/TalentLayout/TalentLayout.css` in `pholio-app`. Don't
+regress it back to a CLAUDE.md-brand-system guess (600 weight / 0.3+ tracking) —
+it must match the app mark.
+
+Rules the header keeps, and any future changes must respect:
 
 - **No glass.** No `backdrop-filter`, no translucent shell. A header that needs a
   backing takes the page's own paper colour, opaque. Blur only ever existed to
   rescue a boxed header floating over imagery — don't reintroduce the box.
 - **Gold is a state, not a surface** — live route, action, sweep. No filled gold
-  shape larger than a word (the Ledger's CTA cell is a plate completing a ruled
-  grid, not a pill). No conic borders, no shimmer sweeps.
+  shape larger than a word, no conic borders, no shimmer sweeps. Prominence
+  (e.g. the "Get scouted" CTA) comes from a permanent gold rule/color, never
+  from making the text bigger than its siblings — scale is not how this system
+  signals importance.
 - **Nav is not flat.** `TALENT` / `AGENCIES` are audience *doors*; `STUDIO+` is a
   tier. `NAV` in `components/header/kit.tsx` carries `kind` and an index number.
 - The mobile hamburger → full-screen serif index is the pattern that worked; it is
-  kept in every direction (`IndexTrigger` + `IndexPanel`) with its chrome stripped.
+  kept (`IndexTrigger` + `IndexPanel`) with its chrome stripped.
 - Headers **sample the paper under the bar** (`useFieldPolarity`) and flip
   ink/cream mid-scroll. Route theme is only the starting value.
 - Home reveal measures the hero section (`[data-hero-chrome]`'s `<section>`) and
