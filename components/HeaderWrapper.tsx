@@ -1,17 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import {
   DEFAULT_HEADER_VARIANT,
-  HEADER_VARIANTS,
   isHeaderVariantId,
   type HeaderVariantId,
 } from "@/lib/header-variants";
 import { HEADER_COMPONENTS } from "@/components/header";
-import { useIndexOpen } from "@/components/header/kit";
 
 const STORAGE_KEY = "pholio:header-variant";
 
@@ -39,12 +36,16 @@ function fieldForRoute(pathname: string | null): "ink" | "cream" {
 
 /**
  * Reads a header direction from `?header=<id>` and remembers it for the tab, so
- * a variant can be walked through the whole site. Nothing is persisted for
- * ordinary visitors: with no override, DEFAULT_HEADER_VARIANT renders.
+ * a direction can be walked through the whole site while it is being reviewed.
+ * Nothing is persisted for ordinary visitors: with no override,
+ * DEFAULT_HEADER_VARIANT renders. `?header=reset` clears it.
+ *
+ * There is deliberately no on-page indicator of which direction is applied —
+ * anything pinned to the viewport competes with the header being judged.
+ * /lab/header is where the comparison lives.
  */
-function useHeaderVariant(): [HeaderVariantId, boolean] {
+function useHeaderVariant(): HeaderVariantId {
   const [variant, setVariant] = useState<HeaderVariantId>(DEFAULT_HEADER_VARIANT);
-  const [overridden, setOverridden] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -54,68 +55,27 @@ function useHeaderVariant(): [HeaderVariantId, boolean] {
     if (fromQuery === "reset") {
       window.sessionStorage.removeItem(STORAGE_KEY);
       setVariant(DEFAULT_HEADER_VARIANT);
-      setOverridden(false);
       return;
     }
     if (isHeaderVariantId(fromQuery)) {
       window.sessionStorage.setItem(STORAGE_KEY, fromQuery);
       setVariant(fromQuery);
-      setOverridden(true);
       return;
     }
 
     const stored = window.sessionStorage.getItem(STORAGE_KEY);
     if (isHeaderVariantId(stored)) {
       setVariant(stored);
-      setOverridden(true);
     }
   }, [pathname]);
 
-  return [variant, overridden];
+  return variant;
 }
 
 export default function HeaderWrapper() {
   const pathname = usePathname();
-  const [variant, overridden] = useHeaderVariant();
-  const Header = HEADER_COMPONENTS[variant];
+  const Header = HEADER_COMPONENTS[useHeaderVariant()];
 
-  return (
-    <>
-      <Header theme={fieldForRoute(pathname)} />
-      {overridden && <VariantBadge variant={variant} />}
-    </>
-  );
+  return <Header theme={fieldForRoute(pathname)} />;
 }
 
-/** Only ever visible while a direction is being previewed. */
-function VariantBadge({ variant }: { variant: HeaderVariantId }) {
-  const indexOpen = useIndexOpen();
-  const meta = HEADER_VARIANTS.find((v) => v.id === variant);
-  if (!meta) return null;
-
-  return (
-    <Link
-      href="/lab/header"
-      /* Above the cookie banner (z-100), which otherwise buries it. */
-      className="fixed bottom-5 left-5 z-[110] flex items-center gap-2.5 focus:outline-none"
-      style={{
-        background: "#050505",
-        border: "1px solid rgba(201,165,90,0.32)",
-        padding: "7px 13px",
-        textDecoration: "none",
-        fontFamily: "var(--font-mono)",
-        fontSize: 9,
-        letterSpacing: "0.22em",
-        textTransform: "uppercase",
-        color: "rgba(250,247,242,0.62)",
-        // An open index owns the whole viewport; the badge steps aside.
-        opacity: indexOpen ? 0 : 1,
-        pointerEvents: indexOpen ? "none" : "auto",
-        transition: "opacity 0.3s cubic-bezier(0.22,1,0.36,1)",
-      }}
-    >
-      <span style={{ color: "#C9A55A" }}>{meta.index}</span>
-      <span>{meta.name}</span>
-    </Link>
-  );
-}

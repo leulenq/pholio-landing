@@ -295,32 +295,6 @@ function useFieldPolarity({
   return field;
 }
 
-/**
- * Whether a full-screen index is currently open. Module-level because the state
- * lives inside a variant, but chrome rendered outside the header (the preview
- * badge) needs to get out of its way. Contained demo panels don't report.
- */
-let indexOpenState = false;
-const indexOpenListeners = new Set<(open: boolean) => void>();
-
-function reportIndexOpen(open: boolean) {
-  if (indexOpenState === open) return;
-  indexOpenState = open;
-  indexOpenListeners.forEach((listen) => listen(open));
-}
-
-export function useIndexOpen(): boolean {
-  const [open, setOpen] = useState(indexOpenState);
-  useEffect(() => {
-    indexOpenListeners.add(setOpen);
-    setOpen(indexOpenState);
-    return () => {
-      indexOpenListeners.delete(setOpen);
-    };
-  }, []);
-  return open;
-}
-
 /** Locks page scroll while a full-screen index is open. */
 export function useScrollLock(active: boolean) {
   useEffect(() => {
@@ -1029,12 +1003,6 @@ export function IndexPanel({
 }) {
   const { isAuthenticated, dashboardHref } = usePholioAuth();
   useScrollLock(open && !contained);
-
-  useEffect(() => {
-    if (contained) return;
-    reportIndexOpen(open);
-    return () => reportIndexOpen(false);
-  }, [open, contained]);
 
   const entry = (i: number) => ({
     initial: false as const,
