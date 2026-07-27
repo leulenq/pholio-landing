@@ -9,13 +9,16 @@
  *
  * Field
  * -----
- * The footer takes the page's field from its `theme` prop, which is what every
- * existing call site already passes. There is a live argument for making it
- * *always* ink — the header is the variable element (it samples whatever
- * section it crosses), so a fixed terminal field would make the footer the
- * constant one, and every page in the publication would end on the same paper.
- * That is a content decision, not a mechanical one, so it is left to the
- * critique: `?footerfield=ink` previews it site-wide without editing a page.
+ * The footer is **ink on every page**, regardless of what the page above it is
+ * set in. The header is the variable element — it samples whatever section it
+ * crosses and flips mid-scroll — so the footer is the constant one, and the
+ * publication ends on the same velvet its own `body` is already set in.
+ *
+ * This replaced per-page paper after the cream footer was read as "too pale":
+ * at footer type sizes, muted ink on cream washes out, while cream on velvet
+ * holds its contrast and lets the gold actually register. `?footerfield=cream`
+ * still previews the alternative, and the `theme` prop is kept so the eighteen
+ * existing call sites need no edit.
  */
 
 import { useEffect, useState } from "react";
@@ -71,21 +74,24 @@ export interface FooterWrapperProps {
   theme?: "light" | "dark";
 }
 
-export default function FooterWrapper({ theme = "light" }: FooterWrapperProps) {
+export default function FooterWrapper({ theme }: FooterWrapperProps) {
   const variant = useOverride<FooterVariantId>(
     "footer",
     STORAGE_KEY,
     isFooterVariantId,
     DEFAULT_FOOTER_VARIANT,
   );
-  const routeField: Field = theme === "dark" ? "ink" : "cream";
-  const fieldOverride = useOverride<Field | "route">(
+  const fieldOverride = useOverride<Field | "default">(
     "footerfield",
     FIELD_KEY,
-    (value): value is Field | "route" => isField(value) || value === "route",
-    "route",
+    (value): value is Field | "default" => isField(value) || value === "default",
+    "default",
   );
 
+  /* `theme` is still accepted so no call site needs editing, but it no longer
+     picks the paper — the footer is the publication's constant field. */
+  void theme;
+
   const Footer = FOOTER_COMPONENTS[variant];
-  return <Footer field={fieldOverride === "route" ? routeField : fieldOverride} />;
+  return <Footer field={fieldOverride === "default" ? "ink" : fieldOverride} />;
 }

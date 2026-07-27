@@ -118,8 +118,18 @@ Rules the footer keeps, and any future change must respect:
 - **Small type only.** Links 13px sans, headings 10px mono caps, baseline 10px.
   The wordmark is the only non-clerical type in the block. **No display type,
   no headline, no brand prose** — a tagline down here is filler.
-- **The page's own paper, closed by one hairline.** No new colour field, no
-  gradient, no gold sweep bracket, no card, no blur.
+- **Ink, on every page.** The footer is the publication's *constant* terminal
+  field — the header is the variable one that samples each section. Per-page
+  paper was tried and read as "too pale": at footer sizes, muted ink on cream
+  washes out. `?footerfield=cream` previews the alternative.
+- **The band opens on the gold sweep** (the ported `GoldSweep` — see "Ported
+  from pholio-app's talent system"), over grain. An earlier note here banned the
+  sweep from the footer; that was wrong. A footer is a closing band, which is
+  exactly what the sweep is for.
+- **Restraint is not the same as absence.** Links run ~82–86%, labels ~52–66%,
+  and one action sits at full strength. Every value at the header's 58% muted is
+  what made the first two passes read as a placeholder. All resting values are
+  ≥4.5:1 against their own surface — check before lowering any of them.
 - **Air goes between the items, not above the block** (~64–80px top padding).
 - **Labelled semantic sections**, kept as a two-up grid on mobile so every group
   keeps its heading. Undivided link piles are the classic footer failure.
@@ -132,8 +142,10 @@ Rules the footer keeps, and any future change must respect:
   unresolved — don't reintroduce it. Secondary policies are reachable
   contextually (the cookie banner links the cookie policy).
 - **No copyright or corporate line.** Removed by request; the baseline carries
-  the legal links and "Back to top" only.
-- Gold appears exactly **twice**: the short rule under the wordmark, and hover.
+  Terms / Privacy / Copyright, the `CookiePreferencesButton` (a control that
+  re-raises the consent banner — better than linking a policy page with no
+  controls on it), and "Back to top".
+- Gold appears as: the sweep at the top edge, and hover. Never a fill.
 - Social are **glyphs under the wordmark** (`components/footer/icons.tsx`),
   never repeated in the baseline strip. They work there because a row of three
   under a mark reads as an identity block; in a line of legal links they read as

@@ -31,7 +31,7 @@ import {
   Group,
   GroupTitle,
   Note,
-  TOKENS,
+  footerTokens,
   Wordmark,
   type FooterVariantProps,
 } from "./kit";
@@ -39,7 +39,7 @@ import {
 export default function VariantServiceCounter({
   field = "cream",
 }: FooterVariantProps) {
-  const tokens = TOKENS[field];
+  const tokens = footerTokens(field);
 
   return (
     <FooterRoot field={field}>
@@ -54,7 +54,7 @@ export default function VariantServiceCounter({
             the end of the aisles rather than a fifth column. */}
         <div
           className="mt-14 flex flex-col gap-8 pt-10 md:flex-row md:items-end md:justify-between"
-          style={{ borderTop: `1px solid ${tokens.rule}` }}
+          style={{ borderTop: `1px solid ${tokens.line}` }}
         >
           <div>
             <GroupTitle tokens={tokens}>Talk to a person</GroupTitle>

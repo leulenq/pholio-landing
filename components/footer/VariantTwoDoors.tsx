@@ -34,13 +34,13 @@ import {
   FooterRoot,
   Group,
   GroupTitle,
-  TOKENS,
+  footerTokens,
   Wordmark,
   type FooterVariantProps,
 } from "./kit";
 
-export default function VariantTwoDoors({ field = "cream" }: FooterVariantProps) {
-  const tokens = TOKENS[field];
+export default function VariantTwoDoors({ field = "ink" }: FooterVariantProps) {
+  const tokens = footerTokens(field);
 
   return (
     <FooterRoot field={field}>
@@ -50,7 +50,7 @@ export default function VariantTwoDoors({ field = "cream" }: FooterVariantProps)
             up orphaned against the page margin. */}
         <div
           className="grid grid-cols-1 lg:grid-cols-[1fr_1fr_minmax(190px,0.8fr)]"
-          style={{ borderColor: tokens.rule }}
+          style={{ borderColor: tokens.line }}
         >
           {/* Door one. */}
           <div className="pb-10 lg:pb-0 lg:pr-12">
@@ -61,7 +61,7 @@ export default function VariantTwoDoors({ field = "cream" }: FooterVariantProps)
               separating them, and it is the only thing that should be. */}
           <div
             className="border-t pt-10 lg:border-l lg:border-t-0 lg:pl-12 lg:pr-12 lg:pt-0"
-            style={{ borderColor: tokens.rule }}
+            style={{ borderColor: tokens.line }}
           >
             <Group group={AUDIENCE_AGENCY} tokens={tokens} />
           </div>
@@ -69,7 +69,7 @@ export default function VariantTwoDoors({ field = "cream" }: FooterVariantProps)
           {/* Identity, kept out of the doors so neither appears to own it. */}
           <div
             className="mt-10 border-t pt-10 lg:mt-0 lg:border-l lg:border-t-0 lg:pl-12 lg:pt-0"
-            style={{ borderColor: tokens.rule }}
+            style={{ borderColor: tokens.line }}
           >
             <Wordmark size={15} />
             <div className="mt-5">
@@ -89,7 +89,7 @@ export default function VariantTwoDoors({ field = "cream" }: FooterVariantProps)
         {/* Everything that belongs to both audiences. */}
         <div
           className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-3 pt-8"
-          style={{ borderTop: `1px solid ${tokens.rule}` }}
+          style={{ borderTop: `1px solid ${tokens.line}` }}
         >
           {/* Not "Pholio" — set in mono caps beside the wordmark it reads as a
               second, broken lockup rather than a section label. */}

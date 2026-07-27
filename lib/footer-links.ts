@@ -170,11 +170,15 @@ export const SHARED_LINKS: FooterLink[] = [
  * The contractual and procedural documents, and the *only* place any of them
  * is listed. They used to appear both in a Legal column and again down here,
  * which is what made the old baseline read as unresolved.
+ *
+ * The cookie *policy* is deliberately not here: the baseline carries
+ * `CookiePreferencesButton` instead, which re-raises the consent banner — a
+ * control beats a link to a page with no controls on it, and the banner links
+ * the policy anyway.
  */
 export const BASELINE_LEGAL: FooterLink[] = [
   { label: "Terms", href: "/terms" },
   { label: "Privacy", href: "/privacy" },
-  { label: "Cookies", href: "/cookies" },
   { label: "Copyright", href: "/dmca" },
 ];
 

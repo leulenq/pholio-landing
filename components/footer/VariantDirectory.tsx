@@ -1,32 +1,32 @@
 "use client";
 
 /**
- * A — THE DIRECTORY (refined)
+ * A — THE DIRECTORY
  *
- * The chosen direction, reworked after review. The first pass was structurally
- * right and visually inert: four even columns of equal weight, a 15px wordmark
- * that anchored nothing, and a utility strip that repeated the legal links
- * already sitting in a column above it.
+ * The chosen direction, on its third pass. The first was a placeholder; the
+ * second fixed the architecture but was still called "too pale, too inactive,
+ * not elevated enough."
  *
- * What changed, and why:
+ * Paleness turned out to be literal, not a matter of taste. Everything sat at
+ * 58–60% opacity on flat cream, with a single 38px gold rule as the only accent
+ * in a block the width of the page. So this pass changes the material, not the
+ * skeleton:
  *
- *  - **A real brand anchor.** The mark is set at 23px with a short gold rule
- *    beneath it and the address and social marks hanging off the same left
- *    edge. The left bay now has weight instead of trailing off.
- *  - **Three columns, not four.** The Legal column is gone; its documents live
- *    on the baseline, listed once. Fewer, wider columns give the block rhythm
- *    and let the gutters do real work.
- *  - **Hairlines between the columns.** The nav bay is organised rather than
- *    merely spaced — precision is what reads as premium here, not decoration.
- *  - **An open gutter between brand and nav.** No rule there: negative space
- *    separates the identity from the directory, hairlines organise within it.
- *  - **Motion.** Links draw a gold rule on hover, and the block arrives once
- *    on scroll. That is the whole answer to "visually inactive" — nothing
- *    loops, nothing shimmers.
+ *  - **Ink by default.** The site's own body is velvet; the header is the
+ *    variable element that samples each section, so the footer is the constant
+ *    one and the publication ends on the same field every time.
+ *  - **The gold sweep opens the band** — the ported hairline that closes the
+ *    app's workspace topbar, full width, solid at the centre.
+ *  - **Grain** over the field, so it reads as paper rather than a fill.
+ *  - **Links at 82%, labels at 50%.** Hierarchy from the gap between them.
+ *  - **One action at full strength.** "Get scouted" is the only element at
+ *    100% — prominence by colour against muted siblings, per the header's rule:
+ *    no larger size, no permanent rule, no fill.
  *
- * Asymmetry is deliberate: the bays are 0.9fr / 2.1fr, not halves, and the
- * three columns are not equal widths either. An even grid is what made the
- * first pass read as a placeholder.
+ * The skeleton is unchanged and deliberately asymmetric: a brand bay against
+ * three uneven columns (0.85 / 0.85 / 1.15) with hairline spines between them
+ * and an open gutter before them. Negative space separates identity from
+ * directory; hairlines organise within it.
  */
 
 import { motion, useInView, useReducedMotion } from "framer-motion";
@@ -40,12 +40,12 @@ import {
   EASE,
   FooterRoot,
   Group,
-  TOKENS,
+  footerTokens,
   type FooterVariantProps,
 } from "./kit";
 
-export default function VariantDirectory({ field = "cream" }: FooterVariantProps) {
-  const tokens = TOKENS[field];
+export default function VariantDirectory({ field = "ink" }: FooterVariantProps) {
+  const tokens = footerTokens(field);
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-10%" });
   const reduceMotion = !!useReducedMotion();
@@ -64,28 +64,25 @@ export default function VariantDirectory({ field = "cream" }: FooterVariantProps
     <FooterRoot field={field}>
       <div
         ref={ref}
-        className="grid grid-cols-1 gap-14 pb-16 pt-20 lg:grid-cols-[minmax(260px,0.9fr)_2.1fr] lg:gap-24 lg:pb-20 lg:pt-28"
+        className="grid grid-cols-1 gap-14 pb-14 pt-20 lg:grid-cols-[minmax(240px,0.85fr)_2.15fr] lg:gap-24 lg:pb-16 lg:pt-24"
       >
         <motion.div {...arrive(0)}>
           <BrandAnchor tokens={tokens} />
         </motion.div>
 
-        {/* The nav bay. Two-up on a phone so each group keeps its heading;
-            three uneven columns with hairline spines once there is room. */}
+        {/* Two-up on a phone so every group keeps its heading; three uneven
+            columns with hairline spines once there is room for them. */}
         <motion.div
           {...arrive(1)}
           className="grid grid-cols-2 gap-x-8 gap-y-12 sm:gap-x-12 lg:grid-cols-[0.85fr_0.85fr_1.15fr] lg:gap-x-0"
-          style={{ borderColor: tokens.rule }}
         >
           {DIRECTORY_GROUPS.map((group, i) => (
             <div
               key={group.title}
               className={
-                i === 0
-                  ? "lg:pr-12"
-                  : "lg:border-l lg:pl-12 lg:pr-12 lg:last:pr-0"
+                i === 0 ? "lg:pr-12" : "lg:border-l lg:pl-12 lg:pr-12 lg:last:pr-0"
               }
-              style={{ borderColor: tokens.rule }}
+              style={{ borderColor: tokens.line }}
             >
               <Group group={group} tokens={tokens} />
             </div>
