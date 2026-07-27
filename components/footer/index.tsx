@@ -4,8 +4,6 @@ import type { FooterVariantId } from "@/lib/footer-variants";
 import MarketingFooterLegacy from "@/components/MarketingFooterLegacy";
 
 import VariantDirectory from "./VariantDirectory";
-import VariantServiceCounter from "./VariantServiceCounter";
-import VariantTwoDoors from "./VariantTwoDoors";
 import type { FooterVariantProps } from "./kit";
 
 /**
@@ -21,8 +19,6 @@ export const FOOTER_COMPONENTS: Record<
   ComponentType<FooterVariantProps>
 > = {
   directory: VariantDirectory,
-  counter: VariantServiceCounter,
-  doors: VariantTwoDoors,
   current: VariantCurrent,
 };
 

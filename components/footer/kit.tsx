@@ -530,26 +530,3 @@ function Dot({ tokens }: { tokens: FooterTokens }) {
     </span>
   );
 }
-
-/** Baseline-scale text, kept for the alternate directions. */
-export function Note({
-  children,
-  tokens,
-}: {
-  children: ReactNode;
-  tokens: FooterTokens;
-}) {
-  return (
-    <span
-      style={{
-        fontFamily: MONO,
-        fontSize: 10,
-        letterSpacing: "0.06em",
-        color: tokens.quiet,
-        whiteSpace: "nowrap",
-      }}
-    >
-      {children}
-    </span>
-  );
-}

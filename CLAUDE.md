@@ -95,12 +95,13 @@ Rules the header keeps, and any future changes must respect:
 
 ## Footer (`components/footer/`)
 
-Three directions are live for critique — see `docs/footer-directions.md`.
-Nothing is chosen yet: `DEFAULT_FOOTER_VARIANT` in `lib/footer-variants.ts` is
-`directory` only because rendering requires a default. Compare them at
-**`/lab/footer`**; pin one site-wide with `?footer=<id>`, clear with
-`?footer=reset`, `?footer=current` rolls back to the pre-redesign card
-(`components/MarketingFooterLegacy.tsx`, untouched).
+"The Directory" (`VariantDirectory.tsx`) is the shipped footer — see
+`docs/footer-directions.md` for the reasoning, the two retired alternatives and
+the three rejected passes. `DEFAULT_FOOTER_VARIANT` in `lib/footer-variants.ts`
+is `directory`. `?footer=current` forces the pre-redesign card
+(`components/MarketingFooterLegacy.tsx`, untouched) as an emergency rollback
+only; `?footer=reset` clears any override; `?footerfield=cream` previews the
+footer on cream paper.
 
 `components/MarketingFooter.tsx` is a **shim** onto `FooterWrapper`. It keeps its
 name and its `theme?: "light" | "dark"` prop so the eighteen pages that already
@@ -112,6 +113,16 @@ of four directions (colophon / ledger / open index / comp-card reverse) was
 built and rejected for taking the header's display grammar and stretching it
 downward — display serif, a brand verdict line, a full-bleed ink slab, 200px of
 top air. That reads as a second hero. Don't rebuild it.
+
+**The composition is fixed and asymmetric:** a brand bay (wordmark at the app's
+24px, one action, the enquiries address, social glyphs) against three uneven
+columns — 0.85 / 0.85 / 1.15 — with hairline spines between the columns and an
+open gutter before them. Negative space separates identity from directory;
+hairlines organise within it. An even four-column grid is what made an earlier
+pass look like a placeholder.
+
+**One element sits at full strength** — the "Get scouted" action. Prominence is
+colour against muted siblings, never size, never a permanent rule, never a fill.
 
 Rules the footer keeps, and any future change must respect:
 
