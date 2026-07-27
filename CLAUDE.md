@@ -96,12 +96,26 @@ Rules the footer keeps, and any future change must respect:
 - **Air goes between the items, not above the block** (~64–80px top padding).
 - **Labelled semantic sections**, kept as a two-up grid on mobile so every group
   keeps its heading. Undivided link piles are the classic footer failure.
-- **Legal and trust documents are primary content**, not something to minimise.
-  "Trust & safety" (community guidelines, submission programme, AI notice,
-  copyright) is broken out of the legal pile deliberately — that group is what a
-  scam-wary applicant is checking.
-- Gold is a state: the wordmark, and hover. Social links are **words, not glyph
-  buttons**.
+- **The footer is curated, not exhaustive**, and **no route is listed twice.**
+  Three columns — Platform / Company / Trust & safety — plus the legal documents
+  on the baseline. "Trust & safety" is talent-facing (community guidelines,
+  submission programme, AI notice: *what protects you*); Terms / Privacy /
+  Cookies / Copyright are contractual and live only on the baseline. Listing
+  Terms in both a column and the baseline is what made the first pass read as
+  unresolved — don't reintroduce it. Secondary policies are reachable
+  contextually (the cookie banner links the cookie policy).
+- **No copyright or corporate line.** Removed by request; the baseline carries
+  the legal links and "Back to top" only.
+- Gold appears exactly **twice**: the short rule under the wordmark, and hover.
+- Social are **glyphs under the wordmark** (`components/footer/icons.tsx`),
+  never repeated in the baseline strip. They work there because a row of three
+  under a mark reads as an identity block; in a line of legal links they read as
+  leftovers.
+- **Asymmetry is deliberate** — 0.9fr/2.1fr bays, uneven columns, hairline
+  spines between nav columns but an open gutter between brand and nav. An even
+  four-column grid is what made this look like a placeholder.
+- Beware inline `style={{margin:0}}` on an element that also carries a Tailwind
+  margin utility — the inline rule wins and silently collapses the gap.
 - All content lives in `lib/footer-links.ts` — one source for every direction, so
   variants differ in organisation only. Every href must be a route that exists.
 - Coherence with the header comes from the shared palette, ease, mono label

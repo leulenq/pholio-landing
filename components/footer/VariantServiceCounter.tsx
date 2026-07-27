@@ -79,7 +79,7 @@ export default function VariantServiceCounter({
       </div>
 
       {/* The entity line is already stated above the baseline here. */}
-      <Baseline tokens={tokens} showEntity={false} />
+      <Baseline tokens={tokens} />
     </FooterRoot>
   );
 }

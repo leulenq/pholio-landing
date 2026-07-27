@@ -82,15 +82,51 @@ two things people come down here for. It gets a heading like everything else.
 
 ## The directions
 
-### A · The Directory
+### A · The Directory — **chosen, and since refined**
 
-Identity left, four labelled sections right, baseline underneath. The pattern
-every well-built site converges on — and convention is a feature down here,
-because the footer's job is to be *found*, not to be original.
+Identity left, labelled sections right, baseline underneath. The pattern every
+well-built site converges on — and convention is a feature down here, because
+the footer's job is to be *found*, not to be original.
 
-- **Strength:** instantly legible; nothing to learn.
-- **Tradeoff:** the least distinctive of the three. Nobody will remember it —
-  arguably correct for a footer, arguably a wasted opportunity.
+Reviewed as "structurally right, but too plain, too static, and too repetitive
+in its legal structure — a placeholder rather than a final footer." The rework:
+
+- **A real brand anchor.** The mark goes from 15px to 23px, gains a short gold
+  rule, and the address and social glyphs hang off the same left edge. The left
+  bay had been trailing off into nothing.
+- **Three columns, not four.** The Legal column is gone (see IA below). Fewer,
+  wider, *uneven* columns — 0.85 / 0.85 / 1.15 — give the bay rhythm.
+- **Hairline spines between the nav columns**, but an open gutter between brand
+  and nav: negative space separates identity from directory, hairlines organise
+  within it.
+- **Motion.** Links draw a gold rule from the left on hover; the block arrives
+  once on scroll. That is the whole answer to "visually inactive" — nothing
+  loops, nothing shimmers, reduced motion drops the transform.
+- **Social moved under the wordmark as glyphs**, out of the utility strip.
+- **The copyright / incorporation line is gone**, by request.
+
+- **Strength:** instantly legible, and now anchored. Nothing to learn.
+- **Tradeoff:** still the most conventional of the three — which is arguably
+  the correct ambition for a footer.
+
+#### The information architecture
+
+The complaint that unlocked this: Terms, Privacy and Cookies appeared in a Legal
+column *and* again in the baseline. Duplication is what made the block feel
+unresolved. The principle is now **edited, not exhaustive** — the footer carries
+the highest-value destinations, every route appears exactly once, and secondary
+policies live deeper in the site.
+
+| Where | Contents | Why |
+| --- | --- | --- |
+| Platform | For talent, For agencies, Studio+ | The doors. |
+| Company | About, Careers, Press, Contact | The house. |
+| Trust & safety | Community guidelines, Submission program, AI notice | Talent-facing — *what protects you*. |
+| Baseline | Terms · Privacy · Cookies · Copyright | Contractual and procedural. Listed once, nowhere else. |
+
+Copyright/DMCA moved from the Trust column to the baseline: it is a procedure,
+not a protection a talent reads. The cookie policy is additionally reachable
+from the consent banner, which is where people actually look for it.
 
 ### B · The Service Counter
 

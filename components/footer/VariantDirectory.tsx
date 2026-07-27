@@ -1,56 +1,101 @@
 "use client";
 
 /**
- * A — THE DIRECTORY
+ * A — THE DIRECTORY (refined)
  *
- * The conventional premium footer, executed properly. Identity on the left,
- * four labelled sections across the right, a baseline underneath. It is the
- * pattern every well-built site converges on, and the reason to consider it is
- * that convention is a feature down here: a visitor looking for the careers
- * page or the privacy policy already knows where to look, and the footer's job
- * is to be found, not to be original.
+ * The chosen direction, reworked after review. The first pass was structurally
+ * right and visually inert: four even columns of equal weight, a 15px wordmark
+ * that anchored nothing, and a utility strip that repeated the legal links
+ * already sitting in a column above it.
  *
- * The four sections are chosen, not inherited. "Trust & safety" is pulled out
- * of the legal pile and given its own heading because those four documents —
- * community guidelines, the submission programme, the AI notice, the copyright
- * policy — are precisely what a scam-wary applicant scrolls down here to check.
- * Leaving them buried under "Legal" answers the question technically and hides
- * from it in practice.
+ * What changed, and why:
  *
- * Tradeoff: it is the least distinctive of the three. It will never be the
- * thing anyone remembers about the site — which is arguably correct for a
- * footer, and arguably a wasted opportunity.
+ *  - **A real brand anchor.** The mark is set at 23px with a short gold rule
+ *    beneath it and the address and social marks hanging off the same left
+ *    edge. The left bay now has weight instead of trailing off.
+ *  - **Three columns, not four.** The Legal column is gone; its documents live
+ *    on the baseline, listed once. Fewer, wider columns give the block rhythm
+ *    and let the gutters do real work.
+ *  - **Hairlines between the columns.** The nav bay is organised rather than
+ *    merely spaced — precision is what reads as premium here, not decoration.
+ *  - **An open gutter between brand and nav.** No rule there: negative space
+ *    separates the identity from the directory, hairlines organise within it.
+ *  - **Motion.** Links draw a gold rule on hover, and the block arrives once
+ *    on scroll. That is the whole answer to "visually inactive" — nothing
+ *    loops, nothing shimmers.
+ *
+ * Asymmetry is deliberate: the bays are 0.9fr / 2.1fr, not halves, and the
+ * three columns are not equal widths either. An even grid is what made the
+ * first pass read as a placeholder.
  */
+
+import { motion, useInView, useReducedMotion } from "framer-motion";
+import { useRef } from "react";
 
 import { DIRECTORY_GROUPS } from "@/lib/footer-links";
 
 import {
   Baseline,
+  BrandAnchor,
+  EASE,
   FooterRoot,
   Group,
-  IdentityBlock,
   TOKENS,
   type FooterVariantProps,
 } from "./kit";
 
 export default function VariantDirectory({ field = "cream" }: FooterVariantProps) {
   const tokens = TOKENS[field];
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-10%" });
+  const reduceMotion = !!useReducedMotion();
+
+  const arrive = (i: number) => ({
+    initial: reduceMotion ? { opacity: 0 } : { opacity: 0, y: 16 },
+    animate: inView ? { opacity: 1, y: 0 } : {},
+    transition: {
+      duration: reduceMotion ? 0.2 : 0.66,
+      delay: reduceMotion ? 0 : i * 0.07,
+      ease: EASE,
+    },
+  });
 
   return (
     <FooterRoot field={field}>
-      <div className="grid grid-cols-1 gap-12 pb-14 pt-16 lg:grid-cols-[minmax(200px,1fr)_2.4fr] lg:gap-16 lg:pt-20">
-        <IdentityBlock tokens={tokens} />
+      <div
+        ref={ref}
+        className="grid grid-cols-1 gap-14 pb-16 pt-20 lg:grid-cols-[minmax(260px,0.9fr)_2.1fr] lg:gap-24 lg:pb-20 lg:pt-28"
+      >
+        <motion.div {...arrive(0)}>
+          <BrandAnchor tokens={tokens} />
+        </motion.div>
 
-        {/* Two per row on a phone so each group keeps its heading and the
-            block stays scannable instead of becoming one long stack. */}
-        <div className="grid grid-cols-2 gap-x-8 gap-y-10 sm:gap-x-10 lg:grid-cols-4">
-          {DIRECTORY_GROUPS.map((group) => (
-            <Group key={group.title} group={group} tokens={tokens} />
+        {/* The nav bay. Two-up on a phone so each group keeps its heading;
+            three uneven columns with hairline spines once there is room. */}
+        <motion.div
+          {...arrive(1)}
+          className="grid grid-cols-2 gap-x-8 gap-y-12 sm:gap-x-12 lg:grid-cols-[0.85fr_0.85fr_1.15fr] lg:gap-x-0"
+          style={{ borderColor: tokens.rule }}
+        >
+          {DIRECTORY_GROUPS.map((group, i) => (
+            <div
+              key={group.title}
+              className={
+                i === 0
+                  ? "lg:pr-12"
+                  : "lg:border-l lg:pl-12 lg:pr-12 lg:last:pr-0"
+              }
+              style={{ borderColor: tokens.rule }}
+            >
+              <Group group={group} tokens={tokens} />
+            </div>
           ))}
-        </div>
+        </motion.div>
       </div>
 
-      <Baseline tokens={tokens} />
+      <motion.div {...arrive(2)}>
+        <Baseline tokens={tokens} />
+      </motion.div>
     </FooterRoot>
   );
 }

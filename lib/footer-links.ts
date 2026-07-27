@@ -62,30 +62,32 @@ export const GROUP_COMPANY: FooterGroup = {
   ],
 };
 
+/**
+ * Talent-facing, and deliberately not a synonym for Legal. These three answer
+ * "what protects me" — the question a scam-wary applicant scrolls down with.
+ * The contractual documents live on the baseline instead, so no route is
+ * listed twice and the two kinds of document stop blurring together.
+ */
 export const GROUP_TRUST: FooterGroup = {
   title: "Trust & safety",
   links: [
     { label: "Community guidelines", href: "/community-guidelines" },
     { label: "Submission program", href: "/legal/submission-program" },
     { label: "AI notice", href: "/ai-notice" },
-    { label: "Copyright & DMCA", href: "/dmca" },
   ],
 };
 
-export const GROUP_LEGAL: FooterGroup = {
-  title: "Legal",
-  links: [
-    { label: "Terms of service", href: "/terms" },
-    { label: "Privacy policy", href: "/privacy" },
-    { label: "Cookie policy", href: "/cookies" },
-  ],
-};
-
+/**
+ * Three columns, not four. The footer is curated rather than exhaustive: it
+ * carries the highest-value destinations, and the procedural legal pages are
+ * reachable from the baseline and from the flows that actually need them
+ * (the cookie banner links the cookie policy; copyright sits beside the
+ * community rules it enforces).
+ */
 export const DIRECTORY_GROUPS: FooterGroup[] = [
   GROUP_PLATFORM,
   GROUP_COMPANY,
   GROUP_TRUST,
-  GROUP_LEGAL,
 ];
 
 /* ── Intent grouping ─────────────────────────────────────────────────────
@@ -164,22 +166,22 @@ export const SHARED_LINKS: FooterLink[] = [
 
 /* ── Baseline ────────────────────────────────────────────────────────── */
 
-/** The three documents that belong on the last line of every page. */
+/**
+ * The contractual and procedural documents, and the *only* place any of them
+ * is listed. They used to appear both in a Legal column and again down here,
+ * which is what made the old baseline read as unresolved.
+ */
 export const BASELINE_LEGAL: FooterLink[] = [
   { label: "Terms", href: "/terms" },
   { label: "Privacy", href: "/privacy" },
   { label: "Cookies", href: "/cookies" },
+  { label: "Copyright", href: "/dmca" },
 ];
 
-/**
- * Set as words, not glyph buttons. A row of brand icons is the last piece of
- * SaaS furniture on the page, and at footer scale the words are easier to hit
- * and easier to read.
- */
-export const FOOTER_SOCIAL: FooterLink[] = [
-  { label: "Instagram", href: "https://instagram.com/pholiostudio", external: true },
-  { label: "LinkedIn", href: "https://linkedin.com/company/pholiostudio", external: true },
-  { label: "X", href: "https://x.com/pholiostudio", external: true },
+export const FOOTER_SOCIAL: (FooterLink & { icon: "instagram" | "linkedin" | "x" })[] = [
+  { label: "Instagram", href: "https://instagram.com/pholiostudio", external: true, icon: "instagram" },
+  { label: "LinkedIn", href: "https://linkedin.com/company/pholiostudio", external: true, icon: "linkedin" },
+  { label: "X", href: "https://x.com/pholiostudio", external: true, icon: "x" },
 ];
 
 /**

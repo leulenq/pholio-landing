@@ -51,10 +51,10 @@ import {
   ENTITY,
   FOOTER_SOCIAL,
   SUPPORT_MAILTO,
-  footerCopyright,
   type FooterGroup as FooterGroupModel,
   type FooterLink as FooterLinkModel,
 } from "@/lib/footer-links";
+import { SocialGlyph, type SocialIcon } from "./icons";
 
 export { EASE, MONO, SANS, TOKENS, Wordmark };
 export type { Field, FieldTokens, FooterGroupModel, FooterLinkModel };
@@ -117,7 +117,7 @@ export function GroupTitle({
         fontWeight: 500,
         letterSpacing: "0.18em",
         textTransform: "uppercase",
-        color: tokens.textFaint,
+        color: tokens.textMuted,
         margin: 0,
       }}
     >
@@ -136,11 +136,12 @@ export function FooterLink({
   label,
   external = false,
   tokens,
-  size = 13,
+  size = 13.5,
 }: FooterLinkModel & { tokens: FieldTokens; size?: number }) {
   const [hover, setHover] = useState(false);
 
   const style: CSSProperties = {
+    position: "relative",
     fontFamily: SANS,
     fontSize: size,
     lineHeight: 1.5,
@@ -149,6 +150,7 @@ export function FooterLink({
     textDecoration: "none",
     transition: `color ${T}`,
     display: "inline-block",
+    paddingBottom: 3,
   };
 
   const props = {
@@ -158,13 +160,34 @@ export function FooterLink({
     onMouseLeave: () => setHover(false),
   };
 
+  /* A rule that draws in from the left rather than a static underline — the
+     footer's only piece of motion, and what stops the link columns reading as
+     an inert list. */
+  const content = (
+    <>
+      {label}
+      <span
+        aria-hidden
+        style={{
+          position: "absolute",
+          left: 0,
+          bottom: 0,
+          height: 1,
+          width: hover ? "100%" : 0,
+          background: tokens.gold,
+          transition: `width 0.42s cubic-bezier(${EASE.join(",")})`,
+        }}
+      />
+    </>
+  );
+
   return external ? (
     <a href={href} rel="noopener noreferrer" {...props}>
-      {label}
+      {content}
     </a>
   ) : (
     <Link href={href} {...props}>
-      {label}
+      {content}
     </Link>
   );
 }
@@ -205,41 +228,69 @@ export function Group({
  * than everything above it, which is what makes the block read as a base
  * rather than another section.
  */
-export function Baseline({
-  tokens,
-  showEntity = true,
-  children,
-}: {
-  tokens: FieldTokens;
-  /** Off for directions that carry the entity line elsewhere. */
-  showEntity?: boolean;
-  children?: ReactNode;
-}) {
+export function Baseline({ tokens }: { tokens: FieldTokens }) {
   return (
     <div
-      className="flex flex-col gap-5 py-7 lg:flex-row lg:items-center lg:justify-between"
+      className="flex flex-col gap-5 py-7 md:flex-row md:items-center md:justify-between"
       style={{ borderTop: `1px solid ${tokens.rule}` }}
     >
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <Note tokens={tokens}>{footerCopyright()}</Note>
-        {showEntity && (
-          <>
-            <Dot tokens={tokens} />
-            <Note tokens={tokens}>Incorporated in {ENTITY.jurisdiction}</Note>
-          </>
-        )}
-        {children}
-      </div>
-
-      {/* Two clusters, not one run: the documents and the social accounts are
-          different errands, and a single dotted string of six items reads as
-          one undifferentiated list. The dots bind within a cluster; the wider
-          gap separates them. */}
-      <div className="flex flex-wrap items-center gap-x-8 gap-y-2 lg:justify-end">
-        <Cluster links={BASELINE_LEGAL} tokens={tokens} />
-        <Cluster links={FOOTER_SOCIAL} tokens={tokens} />
-      </div>
+      {/* The legal documents, and the only place any of them is listed. The
+          social accounts have moved up to sit under the wordmark, and the
+          corporate line is gone — both were making this strip a dumping
+          ground rather than a closing edge. */}
+      <Cluster links={BASELINE_LEGAL} tokens={tokens} />
+      <BackToTop tokens={tokens} />
     </div>
+  );
+}
+
+/**
+ * The last piece of utility on the page. On a site whose pages are long
+ * scroll-driven scenes, returning to the top is a real errand — and it gives
+ * the baseline a right-hand anchor now that the copyright line is gone.
+ */
+function BackToTop({ tokens }: { tokens: FieldTokens }) {
+  const [hover, setHover] = useState(false);
+
+  return (
+    <button
+      type="button"
+      onClick={() =>
+        window.scrollTo({
+          top: 0,
+          behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+            ? "auto"
+            : "smooth",
+        })
+      }
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      className="group flex items-center gap-2.5 self-start focus:outline-none focus-visible:underline md:self-auto"
+      style={{
+        background: "none",
+        border: "none",
+        padding: 0,
+        cursor: "pointer",
+        fontFamily: MONO,
+        fontSize: 10,
+        letterSpacing: "0.18em",
+        textTransform: "uppercase",
+        color: hover ? tokens.gold : tokens.textFaint,
+        transition: `color ${T}`,
+      }}
+    >
+      <span>Back to top</span>
+      <span
+        aria-hidden
+        style={{
+          display: "inline-block",
+          transform: hover ? "translateY(-2px)" : "none",
+          transition: `transform 0.4s cubic-bezier(${EASE.join(",")})`,
+        }}
+      >
+        &#8593;
+      </span>
+    </button>
   );
 }
 
@@ -335,40 +386,106 @@ function Dot({ tokens }: { tokens: FieldTokens }) {
    ══════════════════════════════════════════════════════════════════════ */
 
 /**
- * The mark and how to reach a person. No tagline: a sentence of brand copy in
- * a footer is filler, and the one genuinely useful thing to put beside a
- * wordmark down here is an address that a human answers.
+ * The brand anchor.
+ *
+ * The old identity block set the wordmark at the header's 15px and left the
+ * bay to trail off, which is what made the footer read as unweighted. Here the
+ * mark is set larger and carries a short gold rule beneath it — the one
+ * deliberate accent in the block — with the address and the social marks
+ * hanging off the same left edge. Still no tagline: the anchor is the mark and
+ * a way to reach a person, nothing else.
  */
-export function IdentityBlock({
-  tokens,
-  align = "start",
-}: {
-  tokens: FieldTokens;
-  align?: "start" | "end";
-}) {
+export function BrandAnchor({ tokens }: { tokens: FieldTokens }) {
   return (
-    <div
-      className={`flex flex-col ${align === "end" ? "items-start lg:items-end" : "items-start"}`}
-    >
+    <div className="flex flex-col items-start">
       <Link
         href="/"
         aria-label="Pholio — home"
         style={{ textDecoration: "none" }}
         className="focus:outline-none"
       >
-        <Wordmark size={15} />
+        <Wordmark size={23} />
       </Link>
-      <div className="mt-5">
+
+      {/* A single short rule. Gold appears exactly twice in the footer: here,
+          and on hover. */}
+      <span
+        aria-hidden
+        style={{
+          display: "block",
+          width: 38,
+          height: 1,
+          marginTop: 20,
+          background: tokens.gold,
+          opacity: 0.75,
+        }}
+      />
+
+      <div className="mt-8">
         <GroupTitle tokens={tokens}>Enquiries</GroupTitle>
-        <div className="mt-3">
+        <div className="mt-3.5">
           <FooterLink
             href={SUPPORT_MAILTO}
             label={ENTITY.email}
             external
             tokens={tokens}
+            size={15}
           />
         </div>
       </div>
+
+      <SocialRow tokens={tokens} className="mt-9" />
     </div>
+  );
+}
+
+/**
+ * The social marks, sitting under the wordmark as a signature rather than
+ * repeated in the utility strip. Glyphs earn their place here — as a row of
+ * three under a mark they read as an identity block; in a line of legal links
+ * they read as leftovers.
+ */
+export function SocialRow({
+  tokens,
+  className = "",
+}: {
+  tokens: FieldTokens;
+  className?: string;
+}) {
+  return (
+    <ul className={`flex list-none items-center gap-5 p-0 ${className}`}>
+      {FOOTER_SOCIAL.map((link) => (
+        <li key={link.href}>
+          <SocialMark {...link} tokens={tokens} />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function SocialMark({
+  href,
+  label,
+  icon,
+  tokens,
+}: FooterLinkModel & { icon: SocialIcon; tokens: FieldTokens }) {
+  const [hover, setHover] = useState(false);
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={label}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      className="focus:outline-none focus-visible:underline"
+      style={{
+        display: "block",
+        color: hover ? tokens.gold : tokens.textMuted,
+        transition: `color ${T}`,
+      }}
+    >
+      <SocialGlyph icon={icon} size={16} />
+    </a>
   );
 }
