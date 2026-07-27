@@ -93,6 +93,84 @@ Rules the header keeps, and any future changes must respect:
   currently serves `TemporaryLanding`, which has no hero and doesn't scroll, so
   the header stays hidden there by design.)
 
+## Footer (`components/footer/`)
+
+"The Directory" (`VariantDirectory.tsx`) is the shipped footer — see
+`docs/footer-directions.md` for the reasoning, the two retired alternatives and
+the three rejected passes. `DEFAULT_FOOTER_VARIANT` in `lib/footer-variants.ts`
+is `directory`. `?footer=current` forces the pre-redesign card
+(`components/MarketingFooterLegacy.tsx`, untouched) as an emergency rollback
+only; `?footer=reset` clears any override; `?footerfield=cream` previews the
+footer on cream paper.
+
+`components/MarketingFooter.tsx` is a **shim** onto `FooterWrapper`. It keeps its
+name and its `theme?: "light" | "dark"` prop so the eighteen pages that already
+mount it need no edit — don't "clean it up" by rewriting call sites.
+
+**A footer is a service counter, not a second header.** The people who scroll
+here are verifying or hunting one specific thing, not browsing. An earlier set
+of four directions (colophon / ledger / open index / comp-card reverse) was
+built and rejected for taking the header's display grammar and stretching it
+downward — display serif, a brand verdict line, a full-bleed ink slab, 200px of
+top air. That reads as a second hero. Don't rebuild it.
+
+**The composition is fixed and asymmetric:** a brand bay (wordmark at the app's
+24px, one action, the enquiries address, social glyphs) against three uneven
+columns — 0.85 / 0.85 / 1.15 — with hairline spines between the columns and an
+open gutter before them. Negative space separates identity from directory;
+hairlines organise within it. An even four-column grid is what made an earlier
+pass look like a placeholder.
+
+**One element sits at full strength** — the "Get scouted" action. Prominence is
+colour against muted siblings, never size, never a permanent rule, never a fill.
+
+Rules the footer keeps, and any future change must respect:
+
+- **Small type only.** Links 13px sans, headings 10px mono caps, baseline 10px.
+  The wordmark is the only non-clerical type in the block. **No display type,
+  no headline, no brand prose** — a tagline down here is filler.
+- **Ink, on every page.** The footer is the publication's *constant* terminal
+  field — the header is the variable one that samples each section. Per-page
+  paper was tried and read as "too pale": at footer sizes, muted ink on cream
+  washes out. `?footerfield=cream` previews the alternative.
+- **The band opens on the gold sweep** (the ported `GoldSweep` — see "Ported
+  from pholio-app's talent system"), over grain. An earlier note here banned the
+  sweep from the footer; that was wrong. A footer is a closing band, which is
+  exactly what the sweep is for.
+- **Restraint is not the same as absence.** Links run ~82–86%, labels ~52–66%,
+  and one action sits at full strength. Every value at the header's 58% muted is
+  what made the first two passes read as a placeholder. All resting values are
+  ≥4.5:1 against their own surface — check before lowering any of them.
+- **Air goes between the items, not above the block** (~64–80px top padding).
+- **Labelled semantic sections**, kept as a two-up grid on mobile so every group
+  keeps its heading. Undivided link piles are the classic footer failure.
+- **The footer is curated, not exhaustive**, and **no route is listed twice.**
+  Three columns — Platform / Company / Trust & safety — plus the legal documents
+  on the baseline. "Trust & safety" is talent-facing (community guidelines,
+  submission programme, AI notice: *what protects you*); Terms / Privacy /
+  Cookies / Copyright are contractual and live only on the baseline. Listing
+  Terms in both a column and the baseline is what made the first pass read as
+  unresolved — don't reintroduce it. Secondary policies are reachable
+  contextually (the cookie banner links the cookie policy).
+- **No copyright or corporate line.** Removed by request; the baseline carries
+  Terms / Privacy / Copyright, the `CookiePreferencesButton` (a control that
+  re-raises the consent banner — better than linking a policy page with no
+  controls on it), and "Back to top".
+- Gold appears as: the sweep at the top edge, and hover. Never a fill.
+- Social are **glyphs under the wordmark** (`components/footer/icons.tsx`),
+  never repeated in the baseline strip. They work there because a row of three
+  under a mark reads as an identity block; in a line of legal links they read as
+  leftovers.
+- **Asymmetry is deliberate** — 0.9fr/2.1fr bays, uneven columns, hairline
+  spines between nav columns but an open gutter between brand and nav. An even
+  four-column grid is what made this look like a placeholder.
+- Beware inline `style={{margin:0}}` on an element that also carries a Tailwind
+  margin utility — the inline rule wins and silently collapses the gap.
+- All content lives in `lib/footer-links.ts` — one source for every direction, so
+  variants differ in organisation only. Every href must be a route that exists.
+- Coherence with the header comes from the shared palette, ease, mono label
+  voice and `Wordmark` — **not** from reusing its composition or its `NavLink`.
+
 ## Comp-card showcase (`components/SceneCompCard.tsx`)
 
 The home page's flagship section (mounted in `ClientPage.tsx`). It is a **cinematic,
