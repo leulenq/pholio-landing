@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import ThemeColor from "@/components/ThemeColor";
 
 const legalLinks = [
   { href: "/privacy", label: "Privacy" },
@@ -14,7 +15,8 @@ const legalLinks = [
 
 export default function TemporaryLanding() {
   return (
-    <main className="fixed inset-0 flex h-dvh items-center justify-center overflow-hidden bg-[#050505] px-6 text-[#FAF7F2]">
+    <main className="fixed inset-0 flex h-mobile-screen min-h-mobile-screen items-center justify-center overflow-hidden bg-[#050505] px-6 text-[#FAF7F2]">
+      <ThemeColor color="#050505" />
       <div
         aria-hidden="true"
         className="absolute rounded-full opacity-[0.04]"

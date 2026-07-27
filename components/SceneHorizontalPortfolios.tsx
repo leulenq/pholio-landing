@@ -207,7 +207,7 @@ export default function SceneHorizontalPortfolios() {
     <section
       ref={sectionRef}
       className="relative overflow-hidden"
-      style={{ backgroundColor: "#040608", height: "100vh" }}
+      style={{ backgroundColor: "#040608", height: "100dvh" }}
     >
       {/* ── Stage spotlight — warm radial at top center ──────────────── */}
       <div

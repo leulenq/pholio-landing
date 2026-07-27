@@ -72,15 +72,19 @@ desktop visitor sees the destinations.
   paper colour, opaque.
 - Gold is a state, not a surface: live route, action, sweep — never a filled
   shape larger than a word, never a whole word set permanently in gold text.
-- Hover/prominence is a colour and a 1px rule — **never scale.** The site runs
-  a custom cursor, so feedback has to live on the mark itself, not its size.
-  (The mobile index's "Get scouted" action was briefly rendered at display
-  serif/25px to outrank "Log in" — that was wrong for the same reason; it now
-  uses the same permanent-gold-rule treatment as every other CTA in the header.)
+- Hover/prominence is a colour shift — **never scale, never a rule.** The site
+  runs a custom cursor, so feedback has to live on the mark itself, not its
+  size. (The mobile index's "Get scouted" action was briefly rendered at
+  display serif/25px to outrank "Log in" — wrong for the same reason. It then
+  went through a permanent-gold-underline-rule treatment, also retired: the
+  rule read as a surface. It now outranks its siblings on full-strength color
+  alone — `ActionLink` in `components/header/kit.tsx`.)
 - The wordmark is the pholio-app talent-dashboard mark, not a bespoke
   marketing-site invention: Noto Serif Display 400, 0.2em tracking, gold,
   uppercase (`Wordmark` in `components/header/kit.tsx`, sourced from
-  `client/src/shared/layouts/TalentLayout/TalentLayout.css` in `pholio-app`).
+  `.tl-logo-word` / `.apply-workspace-logo span` in `pholio-app`, both 24px).
+  Size is the deliberate exception: the marketing header keeps it smaller
+  (16px, set in `VariantIndex.tsx`) than the app's 24px.
 - One ease, `cubic-bezier(0.22, 1, 0.36, 1)`; `useReducedMotion()` collapses
   every transition to `0s`.
 - The mobile hamburger → full-screen serif index is the pattern that worked,

@@ -9,12 +9,10 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { onAuthStateChanged } from "firebase/auth";
 import { PHOLIO_APP_ORIGIN } from "@/lib/pholio-app-origin";
 import { dashboardPathForRole } from "./constants";
 import { subscribeAuthChanges } from "./broadcast";
-import { fetchPublicSession, logoutSession, syncFirebaseSession } from "./session-api";
-import { getPholioFirebaseAuth } from "./firebase";
+import { fetchPublicSession, logoutSession } from "./session-api";
 import type { PublicSession } from "./types";
 
 type PholioAuthContextValue = {
@@ -38,12 +36,20 @@ export function PholioAuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(false);
   }, []);
 
+  /**
+   * Sign-out is server-authoritative: POST /api/logout destroys the Express
+   * session AND revokes the account's Firebase refresh tokens.
+   *
+   * This site deliberately does NOT run a Firebase client. Firebase Web SDK
+   * persistence is per-origin (IndexedDB), so a `signOut()` here could only ever
+   * clear www.pholio.studio's own Firebase state — never app.pholio.studio's.
+   * The previous client-side signOut therefore could not make logout stick on
+   * the app even when NEXT_PUBLIC_FIREBASE_* were configured: the app's
+   * PholioAuthBridge would find a live Firebase user, see no Express session,
+   * and silently re-create one. Server-side revocation is what actually closes
+   * that loop, and it works regardless of client config.
+   */
   const logout = useCallback(async () => {
-    const auth = getPholioFirebaseAuth();
-    if (auth) {
-      const { signOut } = await import("firebase/auth");
-      await signOut(auth).catch(() => {});
-    }
     await logoutSession();
     setSession({ authenticated: false });
   }, []);
@@ -57,19 +63,6 @@ export function PholioAuthProvider({ children }: { children: ReactNode }) {
     };
 
     load();
-
-    const auth = getPholioFirebaseAuth();
-    let unsubscribeFirebase: (() => void) | undefined;
-
-    if (auth) {
-      unsubscribeFirebase = onAuthStateChanged(auth, async (user) => {
-        if (user) {
-          const token = await user.getIdToken();
-          await syncFirebaseSession(token);
-        }
-        if (!cancelled) await refresh();
-      });
-    }
 
     const unsubscribeBroadcast = subscribeAuthChanges(() => {
       if (!cancelled) refresh();
@@ -89,7 +82,6 @@ export function PholioAuthProvider({ children }: { children: ReactNode }) {
 
     return () => {
       cancelled = true;
-      unsubscribeFirebase?.();
       unsubscribeBroadcast();
       window.removeEventListener("focus", onFocus);
       window.clearInterval(poll);

@@ -86,8 +86,11 @@ export default function VariantIndex({
             transition: `opacity ${T}, background ${T}`,
           }}
         />
-        {/* The band's bottom edge is the gold sweep, not a flat rule — the same
-            gradient the app's workspace header closes with. */}
+        {/* The band's bottom edge is the gold sweep, not a flat rule — the exact
+            gradient .apply-workspace-top::after closes the app's /apply
+            workspace topbar with (verified against pholio-app's source).
+            Only shows once there's paper under it (condensed, index closed) —
+            a permanent line at true page-top would sit on raw hero imagery. */}
         <GoldSweep
           opacity={onPaper ? 1 : 0}
           style={{

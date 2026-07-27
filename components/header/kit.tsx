@@ -370,23 +370,22 @@ export function Rule({
 }
 
 /**
- * The gold sweep — brand furniture, reused as the header's bottom edge instead
- * of a flat hairline: transparent at both margins, gold through the middle.
- *
- * The gold tracks the paper by default, the same way the wordmark does, so the
- * sweep does not go pale against cream.
+ * The furniture rule shared with the app: a 1px hairline that fades in from
+ * transparent, peaks at solid gold in the center, and fades back out — not a
+ * feathered/alpha-stepped glow. Matches `.apply-workspace-top::after` in
+ * pholio-app's talent /apply workspace exactly (`--app-gold` === `GOLD` here).
  */
 export function GoldSweep({
   opacity = 1,
-  color,
+  color = GOLD,
   style,
 }: {
   opacity?: number;
+  /** Defaults to the fixed brand gold — the same `--app-gold` /apply uses,
+      not a paper-tracking token — so the match holds on cream pages too. */
   color?: string;
   style?: CSSProperties;
 }) {
-  const tokens = useTokens();
-  const gold = color ?? tokens.gold;
   return (
     <span
       aria-hidden
@@ -395,8 +394,8 @@ export function GoldSweep({
         height: 1,
         width: "100%",
         opacity,
-        background: `linear-gradient(to right, transparent, ${gold}00 12%, ${gold}66 50%, ${gold}00 88%, transparent)`,
-        transition: `opacity 0.5s cubic-bezier(0.22,1,0.36,1), background 0.5s cubic-bezier(0.22,1,0.36,1)`,
+        background: `linear-gradient(to right, transparent, ${color}, transparent)`,
+        transition: `opacity 0.5s cubic-bezier(0.22,1,0.36,1)`,
         ...style,
       }}
     />
@@ -532,6 +531,7 @@ export function NavLink({
           fontWeight: 500,
           letterSpacing: `${tracking}em`,
           textTransform: "uppercase",
+          lineHeight: 1,
           color: live
             ? (activeColor ?? tokens.gold)
             : (color ?? tokens.textMuted),
@@ -825,7 +825,7 @@ export function AccountCluster({
           <div style={{ padding: "6px 0" }}>
             {session?.role === "TALENT" && profile?.slug && (
               <a
-                href={`${APP_URL}/talent/${profile.slug}`}
+                href={`${APP_URL}/portfolio/${profile.slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={item("public")}
@@ -872,9 +872,9 @@ export function AccountCluster({
 }
 
 /**
- * The action. Not a pill: a word carrying a gold rule that thickens on hover.
- * Prominence over sibling links comes from full-strength color + the
- * permanent rule, never from a larger font size.
+ * The action. Not a pill: a word at full-strength color against its muted
+ * siblings. Prominence comes from that color contrast alone — no rule, no
+ * larger font size.
  */
 export function ActionLink({
   href,
@@ -899,7 +899,9 @@ export function ActionLink({
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       className="relative inline-block focus:outline-none focus-visible:underline"
-      style={{ textDecoration: "none", paddingBottom: 6 }}
+      /* Match NavLink's box (padding for its hover rule) so a CTA and a
+         muted sibling share one baseline when they sit in the same row. */
+      style={{ textDecoration: "none", paddingBottom: 5 }}
     >
       <span
         style={{
@@ -908,6 +910,7 @@ export function ActionLink({
           fontWeight: 600,
           letterSpacing: `${tracking}em`,
           textTransform: "uppercase",
+          lineHeight: 1,
           color: hover ? tokens.gold : tokens.text,
           transition: "color 0.32s cubic-bezier(0.22,1,0.36,1)",
           whiteSpace: "nowrap",
@@ -915,18 +918,6 @@ export function ActionLink({
       >
         {label}
       </span>
-      <span
-        aria-hidden
-        style={{
-          position: "absolute",
-          left: 0,
-          bottom: 0,
-          width: "100%",
-          height: hover ? 2 : 1,
-          background: GOLD,
-          transition: "height 0.3s cubic-bezier(0.22,1,0.36,1)",
-        }}
-      />
     </a>
   );
 }
@@ -1070,18 +1061,20 @@ export function IndexPanel({
       <FieldProvider tokens={TOKENS.ink}>
         <div
           className="relative mx-auto flex h-full w-full max-w-[1440px] flex-col px-6 md:px-12"
-          /* `full` runs beneath the still-visible corner marks, so it clears them. */
+          /* `full` clears the corner marks; extra top inset gives Talent room
+             under the bar. Clerical pair follows the index at a fixed gap —
+             not mt-auto — so More / Account sit higher on the sheet. */
           style={{
-            paddingTop: full ? (contained ? 96 : 128) : 44,
+            paddingTop: full ? (contained ? 112 : 160) : 44,
             paddingBottom: contained
               ? "1.5rem"
-              : "max(2rem, env(safe-area-inset-bottom))",
+              : "max(1.75rem, env(safe-area-inset-bottom))",
           }}
         >
           <div
             className={
               full
-                ? "grid flex-1 grid-cols-1 gap-10 overflow-y-auto md:grid-cols-[1.5fr_1fr] md:gap-12 md:overflow-visible"
+                ? "flex flex-1 flex-col overflow-y-auto md:grid md:grid-cols-[1.5fr_1fr] md:gap-12 md:overflow-visible"
                 : "flex flex-1 flex-col"
             }
           >
@@ -1093,7 +1086,7 @@ export function IndexPanel({
                     href={link.href}
                     onClick={onClose}
                     className="group flex items-baseline focus:outline-none"
-                    style={{ textDecoration: "none", padding: "18px 0" }}
+                    style={{ textDecoration: "none", padding: "15px 0" }}
                   >
                     <IndexEntryLabel
                       label={link.label}
@@ -1106,20 +1099,29 @@ export function IndexPanel({
               ))}
             </nav>
 
-            {/* Clerical column. Sits beside the entries on desktop and drops
-                under them on a phone — it carries the only sign-up route in this
-                composition, so it can never be a desktop-only luxury. On a phone
-                the two groups sit as one row, More against the left margin and
-                Account against the right, so the block reads as a single
-                clerical footer rather than two stacked lists. */}
+            {/* Clerical pair — fixed gap under the index (not pinned to the
+                bottom). Kickers share one grid row so More / Account lock. */}
             {full && (
               <motion.div
-                className="flex flex-row items-start justify-between gap-8 md:flex-col md:justify-center md:gap-10"
+                className="pt-10 md:flex md:flex-col md:justify-center md:pt-0"
                 {...entry(NAV.length)}
               >
-                <div>
-                  <Kicker color="rgba(250,247,242,0.3)">More</Kicker>
-                  <div className="mt-5 flex flex-col gap-3.5">
+                {/* Mobile: two-column grid, kickers on row 1 */}
+                <div className="grid grid-cols-2 items-start gap-x-8 md:hidden">
+                  <Kicker
+                    color="rgba(250,247,242,0.3)"
+                    style={{ display: "block" }}
+                  >
+                    More
+                  </Kicker>
+                  <Kicker
+                    color="rgba(250,247,242,0.3)"
+                    className="text-right"
+                    style={{ display: "block" }}
+                  >
+                    Account
+                  </Kicker>
+                  <div className="mt-3.5 flex flex-col gap-3">
                     {SECONDARY_LINKS.map((link) => (
                       <NavLink
                         key={link.href}
@@ -1131,10 +1133,7 @@ export function IndexPanel({
                       />
                     ))}
                   </div>
-                </div>
-                <div className="flex flex-col items-end text-right md:items-start md:text-left">
-                  <Kicker color="rgba(250,247,242,0.3)">Account</Kicker>
-                  <div className="mt-4 flex flex-col items-end gap-3 md:items-start">
+                  <div className="mt-3.5 flex flex-col items-end gap-3">
                     {isAuthenticated ? (
                       <ActionLink
                         href={dashboardHref}
@@ -1162,6 +1161,67 @@ export function IndexPanel({
                         />
                       </>
                     )}
+                  </div>
+                </div>
+
+                {/* Desktop: stacked clerical column beside the entries */}
+                <div className="hidden md:flex md:flex-col md:gap-9">
+                  <div>
+                    <Kicker
+                      color="rgba(250,247,242,0.3)"
+                      style={{ display: "block" }}
+                    >
+                      More
+                    </Kicker>
+                    <div className="mt-3.5 flex flex-col gap-3">
+                      {SECONDARY_LINKS.map((link) => (
+                        <NavLink
+                          key={link.href}
+                          href={link.href}
+                          label={link.label}
+                          size={11}
+                          tracking={0.12}
+                          onClick={onClose}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <Kicker
+                      color="rgba(250,247,242,0.3)"
+                      style={{ display: "block" }}
+                    >
+                      Account
+                    </Kicker>
+                    <div className="mt-3.5 flex flex-col gap-3">
+                      {isAuthenticated ? (
+                        <ActionLink
+                          href={dashboardHref}
+                          label="Open dashboard"
+                          size={11}
+                          tracking={0.14}
+                          onClick={onClose}
+                        />
+                      ) : (
+                        <>
+                          <ActionLink
+                            href={SIGNUP_HREF}
+                            label="Get scouted"
+                            size={11}
+                            tracking={0.14}
+                            onClick={onClose}
+                          />
+                          <NavLink
+                            href={LOGIN_HREF}
+                            label="Log in"
+                            external
+                            size={11}
+                            tracking={0.14}
+                            onClick={onClose}
+                          />
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
               </motion.div>

@@ -1,5 +1,9 @@
 import type { PublicSession } from "./types";
-import { PUBLIC_SESSION_PATH } from "./constants";
+import {
+  PUBLIC_SESSION_PATH,
+  SAME_ORIGIN_HEADER,
+  SAME_ORIGIN_VALUE,
+} from "./constants";
 
 export async function fetchPublicSession(): Promise<PublicSession> {
   const response = await fetch(PUBLIC_SESSION_PATH, {
@@ -15,24 +19,14 @@ export async function fetchPublicSession(): Promise<PublicSession> {
   return response.json();
 }
 
-export async function syncFirebaseSession(idToken: string) {
-  const response = await fetch("/api/login", {
-    method: "POST",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-    body: JSON.stringify({ firebase_token: idToken }),
-  });
-
-  return response.ok;
-}
 
 export async function logoutSession() {
   await fetch("/api/logout", {
     method: "POST",
     credentials: "include",
-    headers: { Accept: "application/json" },
+    headers: {
+      Accept: "application/json",
+      [SAME_ORIGIN_HEADER]: SAME_ORIGIN_VALUE,
+    },
   }).catch(() => {});
 }

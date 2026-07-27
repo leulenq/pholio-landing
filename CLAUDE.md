@@ -24,9 +24,37 @@ platform). This file captures conventions and hard-won lessons.
   `text + <span class="font-editorial-italic" style={{color:'#C9A55A'}}>word</span> + rest`.
 - **Motion = arrival, not animation.** Single ease `cubic-bezier(0.22,1,0.36,1)`. Hover =
   color shift, not scale. No looping/shimmer. Always honor `useReducedMotion()`.
-- **Furniture:** hairlines (1px), the gold sweep (`linear-gradient(to right, …, gold, …)`),
-  grain (fractalNoise SVG at low opacity), mono kickers. Frame imagery, don't crop it;
-  portraits are grayscale with warm grain.
+- **Furniture:** hairlines (1px), the gold sweep (spec below), grain (fractalNoise SVG
+  at low opacity), mono kickers. Frame imagery, don't crop it; portraits are grayscale
+  with warm grain.
+
+### Ported from pholio-app's talent system (non-negotiable, don't re-derive)
+
+Two pieces of brand furniture are not marketing-site inventions — they're the literal
+talent-dashboard mark and rule, copied from `pholio-app`. Read the values here, not
+CLAUDE.md's general brand-system notes above, whenever you touch either: a
+brand-system-only read produces plausible but wrong numbers (400→600 weight,
+0.2em→0.3em+ tracking, a feathered gradient instead of a solid one) — this has
+happened twice, once as the marketing site's own placeholder and once from a session
+that couldn't reach `pholio-app` to check. If `pholio-app` isn't in reach, these values
+*are* the source of truth — no need to go re-read the app to confirm them.
+
+- **Wordmark** — Noto Serif Display, **400** weight, **0.2em** letter-spacing, **gold**
+  (`#C9A55A`), uppercase "PHOLIO". Source: `.tl-logo-word` in
+  `client/src/shared/layouts/TalentLayout/TalentLayout.css` and `.apply-workspace-logo
+  span` in `client/src/domains/talent/pages/ApplyPage/ApplyExperience.css` in
+  `pholio-app` — both files agree on every value, including a literal size of **24px**.
+  Implemented as `Wordmark` in `components/header/kit.tsx`. Size is the one deliberate
+  exception: the marketing header renders it at **16px** (set explicitly in
+  `VariantIndex.tsx`), smaller than the app's 24px, by explicit product call — that's
+  a marketing-site sizing decision, not a mismatch to "fix."
+- **Gold sweep** — a 1px hairline, `linear-gradient(to right, transparent, gold,
+  transparent)`: solid gold at the center, fading to transparent at both edges. No
+  alpha-stepped stops, no feathering, no narrow clamp band. Source:
+  `.apply-workspace-top::after` in that same `ApplyExperience.css`, which closes the
+  `/apply` workspace topbar this exact way. Implemented as `GoldSweep` in
+  `components/header/kit.tsx`, default color the fixed brand gold (not a
+  paper-tracking token) so the match holds on cream pages too.
 
 ## Header (`components/header/`)
 
@@ -36,12 +64,10 @@ for the reasoning and the three retired alternatives. `DEFAULT_HEADER_VARIANT` i
 pill (`components/Header.tsx`, untouched) as an emergency rollback only;
 `?header=reset` clears any override.
 
-The wordmark (`Wordmark` in `components/header/kit.tsx`) is the pholio-app
-talent-dashboard mark, not a bespoke marketing invention: Noto Serif Display 400,
-0.2em tracking, gold, uppercase — sourced from
-`client/src/shared/layouts/TalentLayout/TalentLayout.css` in `pholio-app`. Don't
-regress it back to a CLAUDE.md-brand-system guess (600 weight / 0.3+ tracking) —
-it must match the app mark.
+The wordmark (`Wordmark` in `components/header/kit.tsx`) and the gold sweep that
+closes the header band (`GoldSweep`, same file) are both the pholio-app talent-system
+pieces documented above under "Ported from pholio-app's talent system" — read that
+section for the exact values and source files before touching either.
 
 Rules the header keeps, and any future changes must respect:
 
@@ -49,10 +75,11 @@ Rules the header keeps, and any future changes must respect:
   backing takes the page's own paper colour, opaque. Blur only ever existed to
   rescue a boxed header floating over imagery — don't reintroduce the box.
 - **Gold is a state, not a surface** — live route, action, sweep. No filled gold
-  shape larger than a word, no conic borders, no shimmer sweeps. Prominence
-  (e.g. the "Get scouted" CTA) comes from a permanent gold rule/color, never
-  from making the text bigger than its siblings — scale is not how this system
-  signals importance.
+  shape larger than a word, no conic borders, no shimmer sweeps, no permanent
+  rule under a CTA. Prominence (e.g. the "Get scouted" CTA, `ActionLink` in
+  `components/header/kit.tsx`) comes from full-strength color against its
+  muted siblings, never from making the text bigger — scale is not how this
+  system signals importance.
 - **Nav is not flat.** `TALENT` / `AGENCIES` are audience *doors*; `STUDIO+` is a
   tier. `NAV` in `components/header/kit.tsx` carries `kind` and an index number.
 - The mobile hamburger → full-screen serif index is the pattern that worked; it is

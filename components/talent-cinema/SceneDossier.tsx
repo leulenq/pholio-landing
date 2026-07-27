@@ -109,7 +109,7 @@ function DossierStrip({ caption }: { caption: React.ReactNode }) {
 
   return (
     <div ref={wrapperRef} className="relative h-[260vh]">
-      <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden">
+      <div className="sticky top-0 flex h-mobile-screen flex-col justify-center overflow-hidden">
         {/* the caption rides the sticky stage so the story stays present
             while the seven sheets travel */}
         <div className="mx-auto w-full max-w-6xl px-6 pt-16 lg:px-8">{caption}</div>

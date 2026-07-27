@@ -82,7 +82,7 @@ export default function AgencyCTA() {
           transition={{ duration: 0.55, delay: 0.35, ease }}
           className="mt-10 flex flex-wrap items-center justify-center gap-4"
         >
-          <a href={`${APP_URL}/agency/register`} className="agency-btn-primary">
+          <a href="/agency/request-access" className="agency-btn-primary">
             Request access
             <svg
               width="14"

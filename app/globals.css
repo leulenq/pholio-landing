@@ -56,6 +56,17 @@ html {
   text-rendering: optimizeLegibility;
   scroll-behavior: auto;
   background-color: #050505;
+  /*
+   * Fill the mobile visual viewport. `100vh` alone leaves a gap above the
+   * iOS Safari toolbar (large-viewport unit ≠ currently visible height);
+   * `-webkit-fill-available` covers older WebKit, `100dvh` tracks chrome
+   * show/hide. `viewport-fit=cover` (app/layout.tsx) lets this reach the
+   * physical edges including the home-indicator band.
+   */
+  height: 100%;
+  min-height: 100%;
+  min-height: -webkit-fill-available;
+  min-height: 100dvh;
 }
 
 body {
@@ -63,6 +74,23 @@ body {
   background-color: var(--color-velvet, #050505);
   color: var(--color-text-primary);
   overflow-x: hidden;
+  min-height: 100%;
+  min-height: -webkit-fill-available;
+  min-height: 100dvh;
+}
+
+/* Full-bleed mobile stage — prefer over Tailwind `h-screen` / `min-h-screen`
+   (those compile to `100vh` and undershoot or overshoot Safari chrome). */
+.h-mobile-screen {
+  height: 100vh;
+  height: -webkit-fill-available;
+  height: 100dvh;
+}
+
+.min-h-mobile-screen {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  min-height: 100dvh;
 }
 
 ::selection {

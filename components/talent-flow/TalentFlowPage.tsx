@@ -8,9 +8,14 @@
    Invisible logic: seen → sent → shared → remembered. Never printed.
    ═══════════════════════════════════════════════════════════════════ */
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { SCENES } from "./kit";
+import { useRef, useState, useEffect } from "react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useMotionValueEvent,
+} from "framer-motion";
+import { SCENES, INK } from "./kit";
 import SceneArrival from "./SceneArrival";
 import SceneCard from "./SceneCard";
 import SceneBook from "./SceneBook";
@@ -20,6 +25,7 @@ import SceneAddress from "./SceneAddress";
 import SceneWallet from "./SceneWallet";
 import SceneClose from "./SceneClose";
 import MarketingFooter from "@/components/MarketingFooter";
+import ThemeColor from "@/components/ThemeColor";
 
 /* Colour stops, derived from when each scene actually OWNS THE FRAME.
    A sticky stage is pinned from its own top until one viewport before
@@ -76,9 +82,20 @@ export default function TalentFlowPage() {
   });
   const { stops, colors } = buildColorTrack();
   const field = useTransform(scrollYProgress, stops, colors);
+  const [themeColor, setThemeColor] = useState(INK);
+
+  useEffect(() => {
+    const latest = field.get();
+    if (typeof latest === "string") setThemeColor(latest);
+  }, [field]);
+
+  useMotionValueEvent(field, "change", (latest) => {
+    if (typeof latest === "string") setThemeColor(latest);
+  });
 
   return (
-    <main>
+    <main className="min-h-mobile-screen">
+      <ThemeColor color={themeColor} />
       <motion.div ref={flowRef} style={{ backgroundColor: field }}>
         <SceneArrival />
         <SceneCard />

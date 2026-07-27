@@ -399,7 +399,7 @@ export default function SceneCompCard() {
 
   return (
     <section ref={sectionRef} className="relative h-[480vh] bg-[#080808] text-[#FAF7F2]">
-      <div className="sticky top-0 h-screen overflow-hidden bg-[#080808]">
+      <div className="sticky top-0 h-mobile-screen overflow-hidden bg-[#080808]">
         <div
           aria-hidden
           className="absolute inset-0"

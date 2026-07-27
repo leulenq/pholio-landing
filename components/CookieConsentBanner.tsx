@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { getConsent, setConsent } from "@/lib/cookie-consent";
+import { getConsent, setConsent, onConsentChange } from "@/lib/cookie-consent";
 
 const linkClassName =
   "underline decoration-[#C9A55A]/40 underline-offset-2 transition-colors duration-150 hover:text-[#C9A55A]";
@@ -15,15 +15,19 @@ export default function CookieConsentBanner() {
     if (!getConsent()) {
       setVisible(true);
     }
+    // Withdrawing consent (the "Cookie preferences" control in the footer or on
+    // /cookies) deletes the record and re-raises this banner, so withdrawal is
+    // no harder than granting.
+    return onConsentChange(() => setVisible(!getConsent()));
   }, []);
 
   const handleAcceptAll = () => {
-    setConsent({ necessary: true, analytics: true });
+    setConsent({ analytics: true });
     setVisible(false);
   };
 
   const handleNecessaryOnly = () => {
-    setConsent({ necessary: true, analytics: false });
+    setConsent({ analytics: false });
     setVisible(false);
   };
 

@@ -60,7 +60,7 @@ export default function StudioPlusHero() {
   return (
     <section
       ref={rootRef}
-      className="relative min-h-[100svh] flex flex-col justify-center overflow-hidden"
+      className="relative min-h-mobile-screen flex flex-col justify-center overflow-hidden"
       style={{
         backgroundColor: "#060508",
         perspective: 1200,

@@ -85,10 +85,10 @@ export default function SceneCuratorial() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen overflow-hidden"
+      className="relative min-h-mobile-screen overflow-hidden"
       style={{ backgroundColor: "var(--color-cream-warm)" }}
     >
-      <div className="mx-auto flex h-screen max-w-7xl items-center px-6">
+      <div className="mx-auto flex h-mobile-screen max-w-7xl items-center px-6">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-20 items-center w-full">
           {/* Left: Narrative */}
           <div>

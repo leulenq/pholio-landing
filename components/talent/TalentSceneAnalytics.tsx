@@ -65,7 +65,7 @@ export default function TalentSceneAnalytics() {
     <section
       ref={ref}
       style={{
-        minHeight: "100vh",
+        minHeight: "100dvh",
         backgroundColor: "#050505",
         display: "flex",
         flexDirection: "column",

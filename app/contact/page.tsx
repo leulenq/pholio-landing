@@ -1,6 +1,7 @@
 import { ContactHero } from "@/components/ContactHero";
 import { ContactForm } from "@/components/ContactForm";
 import MarketingFooter from "@/components/MarketingFooter";
+import ThemeColor from "@/components/ThemeColor";
 
 export const metadata = {
   title: "Contact Us | Pholio",
@@ -9,7 +10,8 @@ export const metadata = {
 
 export default function ContactPage() {
   return (
-    <main className="min-h-screen bg-[#050505] selection:bg-[#C9A55A] selection:text-[#050505]">
+    <main className="min-h-mobile-screen bg-[#050505] selection:bg-[#C9A55A] selection:text-[#050505]">
+      <ThemeColor color="#050505" />
       <ContactHero />
       <ContactForm />
       <MarketingFooter />

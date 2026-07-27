@@ -46,7 +46,7 @@ export default function StudioPortfolio() {
       style={{ backgroundColor: "#0a0a0a", color: "#f8fafc", fontFamily: "var(--font-sans), system-ui, sans-serif" }}
     >
       {/* ════════════ SCREEN 1 — HERO ════════════ */}
-      <section className="relative h-screen w-full overflow-hidden">
+      <section className="relative h-mobile-screen w-full overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={HERO_IMG} alt="Elara Keats Portrait" className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: "50% 20%" }} />
         {/* a clean image — only a soft bottom scrim so the name lockup reads */}
@@ -71,7 +71,7 @@ export default function StudioPortfolio() {
       </section>
 
       {/* ════════════ SCREEN 2 — FEATURED WORK ════════════ */}
-      <section className="relative flex h-screen w-full flex-col justify-center overflow-hidden px-7 py-12 sm:px-12">
+      <section className="relative flex h-mobile-screen w-full flex-col justify-center overflow-hidden px-7 py-12 sm:px-12">
         <div className="mb-7 flex items-end justify-between">
           <h3 className="font-bold uppercase tracking-tighter" style={{ fontSize: "clamp(2rem, 4.4vw, 3.4rem)" }}>
             Featured{" "}
@@ -102,7 +102,7 @@ export default function StudioPortfolio() {
       </section>
 
       {/* ════════════ SCREEN 3 — ABOUT + REPRESENTATION ════════════ */}
-      <section className="relative grid h-screen w-full grid-cols-1 content-center gap-12 overflow-hidden px-7 py-12 sm:px-12 md:grid-cols-2 md:gap-16">
+      <section className="relative grid h-mobile-screen w-full grid-cols-1 content-center gap-12 overflow-hidden px-7 py-12 sm:px-12 md:grid-cols-2 md:gap-16">
         {/* About */}
         <div className="flex flex-col">
           <h3 className="mb-7 font-bold uppercase tracking-tight" style={{ fontSize: "clamp(2rem, 4.4vw, 3.4rem)" }}>
@@ -151,7 +151,7 @@ export default function StudioPortfolio() {
       </section>
 
       {/* ════════════ SCREEN 4 — CONTACT ════════════ */}
-      <section className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden px-7 text-center sm:px-12">
+      <section className="relative flex h-mobile-screen w-full flex-col items-center justify-center overflow-hidden px-7 text-center sm:px-12">
         <div aria-hidden className="pointer-events-none absolute left-1/2 top-1/2 h-[460px] w-[680px] -translate-x-1/2 -translate-y-1/2 rounded-full" style={{ background: "radial-gradient(ellipse, rgba(201,165,90,0.12), transparent 64%)" }} />
         <span className="relative z-10 mb-3 block text-sm font-bold uppercase tracking-tight" style={{ color: "rgba(255,255,255,0.6)" }}>
           Ready to

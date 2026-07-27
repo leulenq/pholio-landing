@@ -100,7 +100,7 @@ export default function TalentScenePhotoIntelligence() {
         className={
           prefersReducedMotion
             ? "relative py-24"
-            : "sticky top-0 h-screen overflow-hidden"
+            : "sticky top-0 h-mobile-screen overflow-hidden"
         }
         style={{ backgroundColor: "#050505" }}
       >

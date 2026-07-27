@@ -276,10 +276,10 @@ export function Stage({
       }}
     >
       <div
+        className="h-mobile-screen"
         style={{
           position: "sticky",
           top: 0,
-          height: "100vh",
           overflow: clip ? "hidden" : "visible",
         }}
       >

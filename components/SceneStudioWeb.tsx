@@ -100,7 +100,7 @@ export default function SceneStudioWeb() {
       style={{ height: "680vh", zIndex: 30, marginTop: "-100vh" }}
     >
       <div
-        className="sticky top-0 h-screen overflow-hidden"
+        className="sticky top-0 h-mobile-screen overflow-hidden"
         style={{ backgroundColor: "#FFFDF8", boxShadow: "0 -40px 90px -10px rgba(5,5,5,0.6)", perspective: "1600px", perspectiveOrigin: "center center" }}
       >
         {/* ── Base layer: the live site, rising out of depth into focus ── */}

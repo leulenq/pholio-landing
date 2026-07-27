@@ -210,7 +210,7 @@ export default function SceneCurated() {
           transition={{ duration: 0.7, delay: 0.8, ease }}
         >
           <a
-            href={`${APP_URL}/casting`}
+            href={`${APP_URL}/onboarding`}
             className="btn-gold rounded-[8px]"
             style={{ padding: "0.85rem 2rem", fontSize: "13px" }}
           >
