@@ -2,6 +2,8 @@
 
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
+import { PHOLIO_APP_ORIGIN } from "@/lib/pholio-app-origin";
+import { AGENCY_ACCESS_REQUEST_PATH } from "@/lib/pholio-auth/constants";
 
 /**
  * Agency access request form.
@@ -112,8 +114,10 @@ export default function AgencyRequestAccessForm() {
     };
 
     try {
-      // Proxied to the app API by the /api/:path* rewrite in next.config.ts.
-      const response = await fetch("/api/public/agency-access-requests", {
+      // Cross-origin to the app API. Not proxied — Netlify's Next runtime
+      // returns 500 for this site's external rewrites (see
+      // lib/pholio-auth/constants.ts).
+      const response = await fetch(`${PHOLIO_APP_ORIGIN}${AGENCY_ACCESS_REQUEST_PATH}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -4,16 +4,6 @@ import type { NextConfig } from "next";
 const pholioAppOrigin =
   process.env.NEXT_PUBLIC_APP_URL || "https://app.pholio.studio";
 
-/**
- * API proxy target for /api/* (session, logout). Defaults to the same host as the web app.
- * Override with APP_BACKEND_URL (e.g. http://localhost:3000) when the app runs locally.
- */
-const apiBackendOrigin =
-  process.env.APP_BACKEND_URL ||
-  (process.env.NODE_ENV === "development"
-    ? "http://localhost:3000"
-    : pholioAppOrigin);
-
 const nextConfig: NextConfig = {
   reactStrictMode: false,
   images: {
@@ -44,7 +34,7 @@ const nextConfig: NextConfig = {
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob: https://images.unsplash.com",
       "font-src 'self' data:",
-      `connect-src 'self' ${apiBackendOrigin} https://*.googleapis.com https://*.firebaseio.com https://www.gstatic.com`,
+      `connect-src 'self' ${pholioAppOrigin}`,
       "frame-ancestors 'none'",
       "base-uri 'self'",
       "form-action 'self'",
@@ -74,12 +64,20 @@ const nextConfig: NextConfig = {
     ];
   },
 
+  /**
+   * Internal rewrites only.
+   *
+   * An external `/api/:path*` proxy to the app used to live here. It returned
+   * 500 for every path in production — Netlify's Next runtime does not serve
+   * this site's external rewrites, though these internal ones work fine — which
+   * silently killed the whole session integration. The site now calls the app
+   * API cross-origin instead (see lib/pholio-auth/constants.ts). Do not
+   * reintroduce an external rewrite here.
+   *
+   * Public URL stays /studio-plus; page lives at /studio/plus so dev (Turbopack)
+   * resolves the route reliably.
+   */
   async rewrites() {
-    const apiProxy = {
-      source: "/api/:path*",
-      destination: `${apiBackendOrigin}/api/:path*`,
-    };
-    // Public URL stays /studio-plus; page lives at /studio/plus so dev (Turbopack) resolves the route reliably.
     return {
       beforeFiles: [
         { source: "/studio-plus", destination: "/studio/plus" },
@@ -87,7 +85,6 @@ const nextConfig: NextConfig = {
         { source: "/agencies", destination: "/agency" },
         { source: "/agencies/", destination: "/agency" },
       ],
-      afterFiles: [apiProxy],
     };
   },
 };
