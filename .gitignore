@@ -13,3 +13,13 @@ tsconfig.tsbuildinfo
 .agents/
 .claude/
 skills-lock.json
+
+# Local env files — NEVER commit these.
+# A tracked .env.local is what broke production: it carried
+# APP_BACKEND_URL=http://localhost:3000, Next loaded it at build time (Netlify
+# build env vars only override the keys they define), and every /api/* rewrite
+# was pointed at localhost inside the Lambda. .env.example is the documented
+# template and is the only env file that belongs in git.
+.env
+.env.*
+!.env.example
