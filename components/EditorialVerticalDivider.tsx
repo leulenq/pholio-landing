@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 type EditorialVerticalDividerProps = {
   className?: string;
   height?: number;
-  animation?: "travel" | "reveal";
+  animation?: "travel" | "reveal" | "none";
   revealed?: boolean;
 };
 
@@ -19,6 +19,7 @@ export function EditorialVerticalDivider({
   revealed = true,
 }: EditorialVerticalDividerProps) {
   const isReveal = animation === "reveal";
+  const isStatic = animation === "none";
 
   return (
     <motion.div
@@ -32,7 +33,9 @@ export function EditorialVerticalDivider({
       }}
       initial={isReveal ? { scaleY: 0 } : undefined}
       animate={
-        isReveal
+        isStatic
+          ? undefined
+          : isReveal
           ? revealed
             ? { scaleY: 1 }
             : {}
@@ -43,7 +46,9 @@ export function EditorialVerticalDivider({
             }
       }
       transition={
-        isReveal
+        isStatic
+          ? undefined
+          : isReveal
           ? { delay: 0.6, duration: 0.8, ease: "easeOut" }
           : {
               duration: 2.5,

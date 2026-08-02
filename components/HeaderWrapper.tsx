@@ -8,7 +8,9 @@ import {
   isHeaderVariantId,
   type HeaderVariantId,
 } from "@/lib/header-variants";
-import { HEADER_COMPONENTS } from "@/components/header";
+// Use the directory entrypoint explicitly so it cannot collide with the
+// top-level `Header.tsx` on case-insensitive filesystems.
+import { HEADER_COMPONENTS } from "@/components/header/index";
 
 const STORAGE_KEY = "pholio:header-variant";
 
@@ -78,4 +80,3 @@ export default function HeaderWrapper() {
 
   return <Header theme={fieldForRoute(pathname)} />;
 }
-

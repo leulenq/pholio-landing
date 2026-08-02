@@ -29,7 +29,9 @@ import {
   isFooterVariantId,
   type FooterVariantId,
 } from "@/lib/footer-variants";
-import { FOOTER_COMPONENTS } from "@/components/footer";
+// Keep the directory entrypoint explicit: `components/Footer.tsx` also exists,
+// and case-insensitive resolution can otherwise select the wrong module.
+import { FOOTER_COMPONENTS } from "@/components/footer/index";
 import type { Field } from "@/components/header/kit";
 
 const STORAGE_KEY = "pholio:footer-variant";
