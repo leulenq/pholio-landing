@@ -28,6 +28,12 @@ export const INK = "#050505";
 export const CREAM = "#FAF7F2";
 export const CREAM_WARM = "#F5F0E8";
 export const BLACK = "#000000";
+/* The product-shot cyclorama. Not a fourth brand colour — it is the lit
+   white sweep a device is photographed against, used by the Wallet
+   scene only (and by /for-talent's wallet section before it). It reads
+   as a *lift* off the page's cream paper, and the stage warms its own
+   edges back toward CREAM_WARM so it never goes clinical-cold. */
+export const STUDIO_WHITE = "#FFFFFF";
 export const GOLD = "#C9A55A";
 export const GOLD_LIGHT = "#D4BC8A";
 
@@ -72,8 +78,17 @@ export const SCENES = [
   { id: "send", h: 285, bg: INK, overlap: 116, hold: 0.06 },
   { id: "signal", h: 255, bg: INK, overlap: 100, hold: 0.2 },
   { id: "address", h: 235, bg: CREAM, overlap: 110, hold: 0.12 },
-  { id: "wallet", h: 280, bg: BLACK, overlap: 100, hold: 0.08 },
-  { id: "close", h: 150, bg: INK, overlap: 92, hold: 0.18 },
+  /* The wallet beat is the page's one product shot, so it takes the
+     white sweep rather than the darkroom it used to sit in — and both
+     it and `close` hold almost to their edges, which is the tightest
+     pairing on the page. That is deliberate: white → ink is the only
+     morph here that passes through mid-grey, and mid-grey is the one
+     value that reads as an unstyled section rather than a colour. A
+     loose hold dissolves through it and dwells there forms of scroll;
+     a tight one cuts, so the studio stays white for its whole scene
+     and the field snaps to ink over the empty frame behind it. */
+  { id: "wallet", h: 280, bg: STUDIO_WHITE, overlap: 100, hold: 0.03 },
+  { id: "close", h: 150, bg: INK, overlap: 92, hold: 0.03 },
 ] as const;
 
 export type SceneId = (typeof SCENES)[number]["id"];
