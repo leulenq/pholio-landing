@@ -2,9 +2,12 @@
 
 /* ═══════════════════════════════════════════════════════════════════
    Scene 2 — The card (cream). The scene the page is remembered by.
-   GESTURE: convergence → material wipes → recede.
-   Her real source frames gather and set into the composed card. The
-   art directions do NOT crossfade — each new edition is WIPED over the
+   GESTURE: material wipes → recede.
+   The scene is ONE card and nothing else. An earlier pass flew three
+   loose source frames in from off-stage to "gather" into the card;
+   they read as scattered photographs rather than as raw material and
+   were removed. The card presents itself by turning, and the art
+   directions do NOT crossfade — each new edition is WIPED over the
    last from a different edge, so the card reads as printed matter
    being re-laid rather than layers dissolving. The exit tips the card
    back into depth instead of sliding it away.
@@ -18,7 +21,6 @@ import {
   V,
   usePrm,
   RENDERS,
-  SOURCE_FRAMES,
   GOLD,
   ON_CREAM_FAINT,
   ON_CREAM_SOFT,
@@ -26,70 +28,7 @@ import {
 } from "./kit";
 import { useMass, useScrub, useWipe } from "./motion";
 
-/* the converging raw material — her actual source frames */
-const SOURCES = [
-  { src: SOURCE_FRAMES.crossedArm, alt: "Source frame, three-quarter", from: { x: -340, y: -150, r: -11 } },
-  { src: SOURCE_FRAMES.profile, alt: "Source frame, profile", from: { x: 320, y: -200, r: 9 } },
-  { src: SOURCE_FRAMES.redHero, alt: "Source frame, hero", from: { x: -280, y: 225, r: 6 } },
-] as const;
-
 const CARD_AR = "1056 / 1632";
-
-function ConvergingFrame({
-  s,
-  i,
-  progress,
-  prm,
-}: {
-  s: (typeof SOURCES)[number];
-  i: number;
-  progress: MotionValue<number>;
-  prm: boolean;
-}) {
-  /* each frame closes on the card at its own rate, arriving in order */
-  const t0 = 0.03 + i * 0.025;
-  const t1 = 0.25 + i * 0.025;
-  const x = useScrub(progress, [t0, t1], [s.from.x, 0], "arrival");
-  const y = useScrub(progress, [t0, t1], [s.from.y, 0], "arrival");
-  const rotate = useScrub(progress, [t0, t1], [s.from.r, 0], "arrival");
-  const scale = useScrub(progress, [t0, t1], [0.52, 1], "arrival");
-  const opacity = useTransform(progress, [0.27, 0.33], [1, 0]);
-
-  if (prm) return null; // reduced motion shows the finished card only
-
-  return (
-    <motion.div
-      style={{
-        position: "absolute",
-        top: 0,
-        right: 0,
-        bottom: 0,
-        left: 0,
-        x,
-        y,
-        rotate,
-        scale,
-        willChange: "transform",
-      }}
-    >
-      <motion.div style={{ opacity, height: "100%" }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={s.src}
-          alt={s.alt}
-          draggable={false}
-          style={{
-            display: "block",
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            filter: "grayscale(1)",
-          }}
-        />
-      </motion.div>
-    </motion.div>
-  );
-}
 
 /** An art direction wiped over the one beneath it. */
 function EditionLayer({
@@ -180,7 +119,7 @@ function SceneCardStage({
     ["0 12px 30px rgba(26,26,26,0.08)", "0 34px 90px rgba(26,26,26,0.2)"],
   );
 
-  /* the stats line rides up with the last converging frame */
+  /* the stats line rides up as the card sets */
   const statsY = useScrub(progress, [0.06, 0.26], [180, 0], "arrival");
   const statsOpacity = useTransform(progress, [0.06, 0.12, 0.26, 0.32], [0, 1, 1, 0]);
 
@@ -229,13 +168,6 @@ function SceneCardStage({
           className="order-2 w-[min(62vw,240px)] md:w-[min(30vw,340px)]"
           style={{ perspective: 1500, position: "relative" }}
         >
-          {/* converging source frames, siblings of the card body */}
-          <div aria-hidden="true" style={{ position: "absolute", inset: 0 }}>
-            {SOURCES.map((s, i) => (
-              <ConvergingFrame key={s.src} s={s} i={i} progress={progress} prm={prm} />
-            ))}
-          </div>
-
           <motion.div
             style={{
               position: "relative",

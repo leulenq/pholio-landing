@@ -238,6 +238,21 @@ export function useHeaderState({
 
 const OPAQUE_SKIP = new Set(["rgba(0, 0, 0, 0)", "transparent"]);
 
+/** An element's opacity multiplied by every ancestor's, up to the body.
+    `getComputedStyle().backgroundColor` never reflects `opacity`, so a
+    layer mid-fade looks solid to a naive sampler. */
+function effectiveOpacity(el: HTMLElement): number {
+  let value = 1;
+  let node: HTMLElement | null = el;
+  while (node && node !== document.body) {
+    const own = Number(window.getComputedStyle(node).opacity);
+    if (Number.isFinite(own)) value *= own;
+    if (value === 0) return 0;
+    node = node.parentElement;
+  }
+  return value;
+}
+
 /**
  * Samples the first opaque background beneath the header band: returns both the
  * polarity its luminance implies and the colour itself. Progressive enhancement:
@@ -275,7 +290,15 @@ function useFieldPolarity({
             /rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)(?:,\s*([\d.]+))?\)/,
           );
           if (!match) continue;
-          const alpha = match[4] === undefined ? 1 : Number(match[4]);
+          /* Effective alpha is the background's own alpha TIMES the
+             element's inherited `opacity`. Checking only the former made
+             the bar read a scene's fading cover as solid paper: a layer
+             animating from opaque ink to nothing still reports
+             `rgb(5, 5, 5)` all the way down, so the header stayed ink
+             over an already-cream page for a full viewport of scroll. */
+          const alpha =
+            (match[4] === undefined ? 1 : Number(match[4])) *
+            effectiveOpacity(el);
           if (alpha < 0.85) continue;
           const [r, g, b] = [
             Number(match[1]),

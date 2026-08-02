@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pholio — Model Reference Candidates</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #080806;
+      --paper: #f0eadf;
+      --muted: #9b978f;
+      --line: rgba(240, 234, 223, .18);
+      --gold: #c9a65f;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    a { color: inherit; }
+    header {
+      min-height: 82vh;
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(250px, .65fr);
+      gap: clamp(32px, 8vw, 144px);
+      align-items: end;
+      padding: clamp(28px, 5vw, 76px);
+      border-bottom: 1px solid var(--line);
+    }
+    .brand {
+      display: inline-block;
+      margin-bottom: 16vh;
+      font-size: 13px;
+      letter-spacing: .32em;
+    }
+    h1 {
+      max-width: 980px;
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(54px, 8.4vw, 146px);
+      font-weight: 400;
+      letter-spacing: -.055em;
+      line-height: .84;
+    }
+    .intro {
+      max-width: 430px;
+      margin: 0 0 .6rem;
+      color: #c6c0b6;
+      font-size: clamp(16px, 1.25vw, 21px);
+      line-height: 1.55;
+    }
+    .license-note {
+      margin-top: 34px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 12px clamp(18px, 5vw, 76px);
+      background: rgba(8, 8, 6, .86);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(18px);
+    }
+    nav a {
+      flex: 0 0 auto;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      text-decoration: none;
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    nav a:first-child { border-color: var(--gold); color: #ecd39f; }
+    main { padding: 0 clamp(18px, 5vw, 76px) 12vh; }
+    section {
+      scroll-margin-top: 78px;
+      padding: clamp(74px, 10vw, 160px) 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, .62fr);
+      gap: 40px;
+      align-items: end;
+      margin-bottom: clamp(36px, 5vw, 72px);
+    }
+    .rank {
+      display: block;
+      margin-bottom: 16px;
+      color: var(--gold);
+      font-size: 11px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+    h2 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(46px, 6.5vw, 104px);
+      font-weight: 400;
+      letter-spacing: -.045em;
+      line-height: .92;
+    }
+    .section-copy {
+      max-width: 560px;
+      margin: 0;
+      color: #bcb6ad;
+      line-height: 1.62;
+    }
+    .facts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+    .fact {
+      padding: 8px 11px;
+      border: 1px solid var(--line);
+      color: #d9d1c5;
+      font-size: 10px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: clamp(8px, 1.15vw, 18px);
+      align-items: start;
+    }
+    figure {
+      grid-column: span 3;
+      margin: 0;
+      cursor: zoom-in;
+    }
+    figure.hero { grid-column: span 5; }
+    figure.wide { grid-column: span 7; }
+    figure img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 2 / 3;
+      object-fit: cover;
+      filter: saturate(.92) contrast(1.02);
+      transition: filter .35s ease, transform .5s cubic-bezier(.22,.8,.25,1);
+    }
+    figure.wide img { aspect-ratio: 16 / 9; }
+    figure:hover img { filter: saturate(1.06) contrast(1.02); transform: scale(.995); }
+    figcaption {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 10px;
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: .08em;
+      line-height: 1.45;
+      text-transform: uppercase;
+    }
+    .source { color: #d8c08f; text-decoration: none; }
+    dialog {
+      width: min(92vw, 1280px);
+      max-width: none;
+      height: min(92vh, 950px);
+      max-height: none;
+      padding: 0;
+      border: 1px solid var(--line);
+      background: #050504;
+      color: white;
+    }
+    dialog::backdrop { background: rgba(0, 0, 0, .88); backdrop-filter: blur(10px); }
+    dialog img { width: 100%; height: 100%; object-fit: contain; }
+    dialog button {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: 0;
+      background: rgba(0,0,0,.5);
+      color: white;
+      cursor: pointer;
+      font-size: 20px;
+    }
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 30px;
+      padding: 42px clamp(18px, 5vw, 76px) 70px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    @media (max-width: 820px) {
+      header, .section-head { grid-template-columns: 1fr; }
+      header { min-height: 90vh; align-content: space-between; }
+      .brand { margin-bottom: 18vh; }
+      figure, figure.hero { grid-column: span 6; }
+      figure.wide { grid-column: span 12; }
+      footer { flex-direction: column; }
+    }
+    @media (max-width: 520px) {
+      figure, figure.hero, figure.wide { grid-column: span 12; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <span class="brand">PHOLIO / CASTING STUDY 01</span>
+      <h1>One face.<br>Four directions.</h1>
+    </div>
+    <div>
+      <p class="intro">A local reference library for choosing the continuous model presence across Pholio's Higgsfield-driven landing-page film.</p>
+      <p class="license-note">23 standard Unsplash images. Free photo license confirmed at selection time. Model-likeness approval is still required before commercial synthetic-video use.</p>
+    </div>
+  </header>
+
+  <nav aria-label="Candidates">
+    <a href="#ola">01 Ola</a>
+    <a href="#tamara">02 Tamara</a>
+    <a href="#studio">03 Studio model</a>
+    <a href="#valerie">04 Brunette series</a>
+    <a href="SOURCES.md">Source manifest</a>
+  </nav>
+
+  <main>
+    <section id="ola">
+      <div class="section-head">
+        <div><span class="rank">Recommendation 01 / strongest overall</span><h2>Ola Szkolda</h2></div>
+        <div><p class="section-copy">The most complete identity pack: clean facial detail, controlled fashion poses, full-body proportions, and a natural walking frame. Her body of work already speaks an editorial language close to Pholio.</p><div class="facts"><span class="fact">7 references</span><span class="fact">Close + full body</span><span class="fact">Walking</span><span class="fact">High fashion</span></div></div>
+      </div>
+      <div class="gallery">
+        <figure class="hero"><img src="01-ola-szkolda/01-walking-columns.jpg" alt="Ola walking past white columns"><figcaption><span>Walking / full body</span><a class="source" href="https://unsplash.com/photos/a-blonde-woman-walks-past-a-building-with-columns-TUENd4Ctk3c">Source ↗</a></figcaption></figure>
+        <figure><img src="01-ola-szkolda/06-close-jewelry.jpg" alt="Ola close portrait"><figcaption><span>Face / detail</span><a class="source" href="https://unsplash.com/photos/blonde-woman-in-pink-top-wearing-necklace-and-rings-gKEFqs0tYAc">Source ↗</a></figcaption></figure>
+        <figure><img src="01-ola-szkolda/07-studio-closeup-bw.jpg" alt="Ola studio portrait"><figcaption><span>Studio / close</span><a class="source" href="https://unsplash.com/photos/elegant-young-woman-in-a-black-and-white-studio-portrait-t29xtYbNvLQ">Source ↗</a></figcaption></figure>
+        <figure><img src="01-ola-szkolda/03-leaning-three-quarter.jpg" alt="Ola leaning against a column"><figcaption><span>Three-quarter</span><a class="source" href="https://unsplash.com/photos/fashionable-woman-in-polka-dot-shorts-leaning-on-a-column-XaSmLh9VeRA">Source ↗</a></figcaption></figure>
+        <figure><img src="01-ola-szkolda/02-full-body-columns.jpg" alt="Ola standing at classical columns"><figcaption><span>Full body</span><a class="source" href="https://unsplash.com/photos/a-stylish-woman-poses-in-front-of-classical-white-columns-SU3iUmmtjq0">Source ↗</a></figcaption></figure>
+        <figure><img src="01-ola-szkolda/04-front-with-bag.jpg" alt="Ola with a handbag"><figcaption><span>Frontal pose</span><a class="source" href="https://unsplash.com/photos/young-woman-in-black-and-polka-dots-holding-a-purse-rT4CrEMZNPQ">Source ↗</a></figcaption></figure>
+        <figure><img src="01-ola-szkolda/05-editorial-standing.jpg" alt="Ola in a polka-dot editorial look"><figcaption><span>Editorial stance</span><a class="source" href="https://unsplash.com/photos/stylish-blonde-woman-in-black-and-white-polka-dot-outfit-D0sXhrIBlfg">Source ↗</a></figcaption></figure>
+      </div>
+    </section>
+
+    <section id="tamara">
+      <div class="section-head">
+        <div><span class="rank">Recommendation 02 / strongest motion coverage</span><h2>Tamara Bellis</h2></div>
+        <div><p class="section-copy">The broadest natural movement vocabulary. Walking, standing, seated, close, and upper-body references make her useful for mapping the same person across distinct scroll scenes.</p><div class="facts"><span class="fact">7 references</span><span class="fact">Two walks</span><span class="fact">Seated + standing</span><span class="fact">Warm editorial</span></div></div>
+      </div>
+      <div class="gallery">
+        <figure class="hero"><img src="02-tamara-bellis/06-walking-green-dress.jpg" alt="Tamara walking in a green dress"><figcaption><span>Walking / full body</span><a class="source" href="https://unsplash.com/photos/a-woman-in-a-green-dress-walking-on-the-beach-LrTlwg07cDc">Source ↗</a></figcaption></figure>
+        <figure><img src="02-tamara-bellis/01-close-portrait.jpg" alt="Tamara close portrait"><figcaption><span>Face / close</span><a class="source" href="https://unsplash.com/photos/a-person-with-red-lipstick-J_ur5KHfTtY">Source ↗</a></figcaption></figure>
+        <figure><img src="02-tamara-bellis/02-upper-body-white.jpg" alt="Tamara in a white top"><figcaption><span>Upper body</span><a class="source" href="https://unsplash.com/photos/a-woman-with-long-blonde-hair-wearing-a-white-top-zjutZxfnLrE">Source ↗</a></figcaption></figure>
+        <figure><img src="02-tamara-bellis/04-seated-white-dress.jpg" alt="Tamara seated in a white dress"><figcaption><span>Seated</span><a class="source" href="https://unsplash.com/photos/a-woman-in-a-white-dress-sitting-on-a-stone-wall-nx1EW7aMp58">Source ↗</a></figcaption></figure>
+        <figure><img src="02-tamara-bellis/03-standing-rock.jpg" alt="Tamara standing on a rock"><figcaption><span>Elevated stance</span><a class="source" href="https://unsplash.com/photos/a-woman-standing-on-a-rock-UoXmqJGpSfw">Source ↗</a></figcaption></figure>
+        <figure><img src="02-tamara-bellis/05-standing-white-dress.jpg" alt="Tamara standing in a white dress"><figcaption><span>Dress pose</span><a class="source" href="https://unsplash.com/photos/a-woman-in-a-white-dress-sIzKOK2xOqs">Source ↗</a></figcaption></figure>
+        <figure><img src="02-tamara-bellis/07-walking-pink-swimsuit.jpg" alt="Tamara walking on a beach"><figcaption><span>Walking / alternate</span><a class="source" href="https://unsplash.com/photos/a-woman-in-a-pink-swimsuit-walking-on-the-beach-1SXe6eTmKWI">Source ↗</a></figcaption></figure>
+      </div>
+    </section>
+
+    <section id="studio">
+      <div class="section-head">
+        <div><span class="rank">Recommendation 03 / strongest single-shoot continuity</span><h2>Studio model</h2></div>
+        <div><p class="section-copy">Five frames from one controlled studio session keep hair, wardrobe, light, and proportions unusually stable. An excellent technical consistency test, though the set lacks a clean close portrait.</p><div class="facts"><span class="fact">5 references</span><span class="fact">One shoot</span><span class="fact">Full body</span><span class="fact">Horizontal frames</span></div></div>
+      </div>
+      <div class="gallery">
+        <figure class="wide"><img src="03-vitaly-studio-model/01-full-body-center.jpg" alt="Studio model posing full body"><figcaption><span>Full body / centered</span><a class="source" href="https://unsplash.com/photos/model-posing-for-photographer-in-studio-setting-MfNVQxUAZB0">Source ↗</a></figcaption></figure>
+        <figure class="wide"><img src="03-vitaly-studio-model/02-full-body-profile.jpg" alt="Studio model posing in profile"><figcaption><span>Full body / profile</span><a class="source" href="https://unsplash.com/photos/model-posing-with-photographer-and-stylist-in-studio-LJk-okCeAdg">Source ↗</a></figcaption></figure>
+        <figure class="wide"><img src="03-vitaly-studio-model/03-three-quarter-pose.jpg" alt="Studio model in a three-quarter pose"><figcaption><span>Three-quarter</span><a class="source" href="https://unsplash.com/photos/model-posing-in-a-white-dress-and-leather-jacket-qSpVMxzqYQ8">Source ↗</a></figcaption></figure>
+        <figure class="wide"><img src="03-vitaly-studio-model/04-standing-studio.jpg" alt="Studio model standing"><figcaption><span>Standing</span><a class="source" href="https://unsplash.com/photos/a-woman-poses-in-a-studio-with-lighting-equipment-RkDD7bj7zaU">Source ↗</a></figcaption></figure>
+        <figure class="wide"><img src="03-vitaly-studio-model/05-full-body-lighting.jpg" alt="Studio model under photographic lighting"><figcaption><span>Lighting context</span><a class="source" href="https://unsplash.com/photos/model-posing-for-photographer-in-studio-lighting-98_Q-M8WttQ">Source ↗</a></figcaption></figure>
+      </div>
+    </section>
+
+    <section id="valerie">
+      <div class="section-head">
+        <div><span class="rank">Recommendation 04 / strongest intimate mood</span><h2>Brunette series</h2></div>
+        <div><p class="section-copy">A close editorial series with distinctive identity and quiet observation. Especially compelling for an intelligence scene, but it needs a separate full-body source before walking generation.</p><div class="facts"><span class="fact">4 references</span><span class="fact">Strong face</span><span class="fact">Monochrome</span><span class="fact">No full body</span></div></div>
+      </div>
+      <div class="gallery">
+        <figure class="hero"><img src="04-valerie-brunette-series/01-seated-portrait-bw.jpg" alt="Brunette model seated at a table"><figcaption><span>Seated portrait</span><a class="source" href="https://unsplash.com/photos/a-black-and-white-photo-of-a-woman-sitting-at-a-table-sAXfnTM7_7A">Source ↗</a></figcaption></figure>
+        <figure><img src="04-valerie-brunette-series/04-close-coffee.jpg" alt="Brunette model holding coffee"><figcaption><span>Face / close</span><a class="source" href="https://unsplash.com/photos/a-woman-holding-a-cup-of-coffee-up-to-her-face-ZvK5o37VmOY">Source ↗</a></figcaption></figure>
+        <figure><img src="04-valerie-brunette-series/03-three-quarter-bw.jpg" alt="Brunette model in a three-quarter pose"><figcaption><span>Three-quarter</span><a class="source" href="https://unsplash.com/photos/a-black-and-white-photo-of-a-woman-posing-for-a-picture-l7bW8sdAmRo">Source ↗</a></figcaption></figure>
+        <figure><img src="04-valerie-brunette-series/02-seated-wide.jpg" alt="Brunette model seated at a table in a wider frame"><figcaption><span>Seated / wide</span><a class="source" href="https://unsplash.com/photos/a-woman-sitting-at-a-table-eating-food-ml_M-ZwIszA">Source ↗</a></figcaption></figure>
+      </div>
+    </section>
+  </main>
+
+  <footer><span>Internal visual development / July 2026</span><span>Click any image to inspect it full screen.</span></footer>
+
+  <dialog id="viewer"><button aria-label="Close image viewer">×</button><img alt="Expanded reference"></dialog>
+  <script>
+    const viewer = document.querySelector('#viewer');
+    const viewerImage = viewer.querySelector('img');
+    document.querySelectorAll('figure img').forEach((image) => {
+      image.addEventListener('click', () => {
+        viewerImage.src = image.src;
+        viewerImage.alt = image.alt;
+        viewer.showModal();
+      });
+    });
+    viewer.querySelector('button').addEventListener('click', () => viewer.close());
+    viewer.addEventListener('click', (event) => {
+      if (event.target === viewer) viewer.close();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,987 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title>Pholio Talent Landing - Prototype Varieties</title>
+  <style>
+    :root {
+      --black: #080807;
+      --ink: #171713;
+      --cream: #f2eee5;
+      --paper: #faf8f2;
+      --white: #fffdf8;
+      --gold: #c9a55a;
+      --gold-deep: #98753b;
+      --line-dark: rgba(255, 253, 248, 0.18);
+      --line-light: rgba(23, 23, 19, 0.17);
+      --sans: "Helvetica Neue", "Neue Haas Grotesk", Arial, sans-serif;
+      --serif: "Iowan Old Style", "Baskerville", "Times New Roman", serif;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --mx: 50%;
+      --my: 50%;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      min-width: 320px;
+      margin: 0;
+      overflow-x: hidden;
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+    }
+    button, a { color: inherit; font: inherit; }
+    button { border: 0; }
+    a { text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    figure, h1, h2, h3, p { margin: 0; }
+
+    .review-bar {
+      position: fixed;
+      z-index: 500;
+      inset: 16px 16px auto;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 16px;
+      align-items: center;
+      min-height: 56px;
+      padding: 9px 10px 9px 18px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 3px;
+      background: rgba(8, 8, 7, 0.82);
+      box-shadow: 0 12px 50px rgba(0, 0, 0, 0.22);
+      color: var(--white);
+    }
+    @supports (backdrop-filter: blur(16px)) {
+      .review-bar { backdrop-filter: blur(16px); }
+    }
+    .review-brand {
+      display: flex;
+      gap: 11px;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+    }
+    .review-brand::before {
+      width: 26px;
+      height: 1px;
+      background: var(--gold);
+      content: "";
+    }
+    .review-note {
+      color: rgba(255, 255, 255, 0.45);
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+    .concept-tabs { display: flex; gap: 4px; }
+    .concept-tab {
+      min-height: 36px;
+      padding: 0 13px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 2px;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.62);
+      cursor: pointer;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: 220ms var(--ease);
+    }
+    .concept-tab:hover,
+    .concept-tab:focus-visible {
+      border-color: var(--gold);
+      color: var(--white);
+      outline: none;
+    }
+    .concept-tab[aria-selected="true"] {
+      border-color: var(--paper);
+      background: var(--paper);
+      color: var(--black);
+    }
+
+    .concept { display: none; min-height: 100dvh; }
+    .concept.is-active { display: block; animation: concept-in 600ms var(--ease) both; }
+    @keyframes concept-in {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .wordmark {
+      position: relative;
+      display: inline-block;
+      padding-bottom: 9px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+    }
+    .wordmark::after {
+      position: absolute;
+      right: 0.25em;
+      bottom: 0;
+      left: 0;
+      height: 2px;
+      transform: scaleX(0);
+      transform-origin: left;
+      background: var(--gold);
+      content: "";
+      animation: underline-in 1s 300ms var(--ease) forwards;
+    }
+    @keyframes underline-in { to { transform: scaleX(1); } }
+    .nav-link {
+      position: relative;
+      font-size: 11px;
+      font-weight: 650;
+    }
+    .nav-link::after {
+      position: absolute;
+      right: 0;
+      bottom: -5px;
+      left: 0;
+      height: 1px;
+      transform: scaleX(0);
+      transform-origin: right;
+      background: var(--gold);
+      content: "";
+      transition: transform 240ms var(--ease);
+    }
+    .nav-link:hover::after,
+    .nav-link:focus-visible::after { transform: scaleX(1); transform-origin: left; }
+    .nav-link:focus-visible { outline: 1px solid var(--gold); outline-offset: 8px; }
+    .cta {
+      display: inline-flex;
+      min-height: 44px;
+      padding: 0 20px;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid currentColor;
+      border-radius: 2px;
+      background: transparent;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+      transition: 220ms var(--ease);
+    }
+    .cta:hover, .cta:focus-visible { transform: translateY(-2px); outline: none; }
+    .cta:active { transform: translateY(0) scale(0.98); }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 800ms var(--ease), transform 800ms var(--ease);
+    }
+    .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+    /* Concept A - The Stage */
+    .stage-concept { background: #080807; color: var(--white); }
+    .stage-nav {
+      position: absolute;
+      z-index: 5;
+      top: 106px;
+      right: 4vw;
+      left: 4vw;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .stage-nav-links { display: flex; gap: 28px; }
+    .stage-hero {
+      position: relative;
+      display: grid;
+      min-height: 100dvh;
+      overflow: hidden;
+      align-items: end;
+      isolation: isolate;
+    }
+    .stage-hero::after {
+      position: absolute;
+      z-index: -1;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(8, 8, 7, 0.98) 0%, rgba(8, 8, 7, 0.78) 36%, rgba(8, 8, 7, 0.06) 72%),
+        linear-gradient(0deg, rgba(8, 8, 7, 0.7), transparent 45%);
+      content: "";
+    }
+    .stage-hero-image {
+      position: absolute;
+      z-index: -2;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      animation: image-breathe 12s ease-in-out infinite alternate;
+    }
+    @keyframes image-breathe { to { transform: scale(1.035); } }
+    .stage-hero-copy {
+      width: min(760px, 64vw);
+      padding: 0 4vw 8vh;
+    }
+    .stage-display {
+      max-width: 760px;
+      font-size: clamp(62px, 8.8vw, 148px);
+      font-weight: 650;
+      letter-spacing: -0.075em;
+      line-height: 0.83;
+    }
+    .stage-display span { display: block; color: var(--gold); }
+    .stage-lede {
+      max-width: 440px;
+      margin: 28px 0 30px;
+      color: rgba(255, 255, 255, 0.69);
+      font-size: clamp(15px, 1.35vw, 19px);
+      line-height: 1.55;
+    }
+    .stage-chapter {
+      display: grid;
+      min-height: 220dvh;
+      grid-template-columns: 1fr;
+      background: #0e0e0c;
+    }
+    .stage-chapter-sticky {
+      position: sticky;
+      top: 0;
+      display: grid;
+      min-height: 100dvh;
+      padding: 11vh 4vw 6vh;
+      grid-template-columns: minmax(280px, 0.75fr) minmax(460px, 1.25fr);
+      gap: 7vw;
+      align-items: center;
+      overflow: hidden;
+    }
+    .stage-index {
+      margin-bottom: 38px;
+      color: var(--gold);
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+    .stage-chapter h2 {
+      max-width: 560px;
+      font-size: clamp(44px, 6vw, 94px);
+      font-weight: 600;
+      letter-spacing: -0.065em;
+      line-height: 0.92;
+    }
+    .stage-chapter p {
+      max-width: 430px;
+      margin-top: 24px;
+      color: rgba(255, 255, 255, 0.57);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    .film-stack { position: relative; height: min(72vh, 680px); }
+    .film-frame {
+      position: absolute;
+      width: 42%;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: #151513;
+      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.38);
+      transition: transform 700ms var(--ease);
+    }
+    .film-frame img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.06); }
+    .film-frame:nth-child(1) { top: 0; left: 0; height: 64%; transform: rotate(-5deg); }
+    .film-frame:nth-child(2) { top: 12%; left: 31%; z-index: 2; height: 72%; transform: rotate(2deg); }
+    .film-frame:nth-child(3) { right: 0; bottom: 0; height: 58%; transform: rotate(6deg); }
+    .film-stack:hover .film-frame:nth-child(1) { transform: translate(-8px, -6px) rotate(-8deg); }
+    .film-stack:hover .film-frame:nth-child(2) { transform: translateY(-12px) rotate(0); }
+    .film-stack:hover .film-frame:nth-child(3) { transform: translate(8px, 5px) rotate(9deg); }
+    .stage-package {
+      min-height: 100dvh;
+      padding: 14vh 4vw;
+      background: var(--cream);
+      color: var(--ink);
+    }
+    .package-head { display: grid; grid-template-columns: 1fr 1fr; gap: 8vw; align-items: end; }
+    .package-head h2 { max-width: 760px; font-size: clamp(54px, 7.7vw, 116px); letter-spacing: -0.075em; line-height: 0.86; }
+    .package-head p { max-width: 420px; padding-bottom: 8px; color: rgba(23, 23, 19, 0.62); line-height: 1.6; }
+    .package-ledger { margin-top: 14vh; border-top: 1px solid var(--line-light); }
+    .package-row {
+      display: grid;
+      padding: 24px 0;
+      grid-template-columns: 52px 1fr auto;
+      align-items: center;
+      border-bottom: 1px solid var(--line-light);
+    }
+    .package-row span:first-child { color: var(--gold-deep); font-family: var(--mono); font-size: 10px; }
+    .package-row strong { font-size: clamp(22px, 2.4vw, 38px); letter-spacing: -0.03em; }
+    .package-row em { color: rgba(23, 23, 19, 0.48); font-size: 12px; font-style: normal; }
+    .stage-finale {
+      display: grid;
+      min-height: 100dvh;
+      padding: 12vh 4vw;
+      place-items: center;
+      background: #080807;
+      text-align: center;
+    }
+    .stage-finale h2 { max-width: 1050px; font-size: clamp(58px, 9vw, 150px); letter-spacing: -0.075em; line-height: 0.86; }
+    .stage-finale h2 span { color: var(--gold); }
+    .stage-finale p { max-width: 540px; margin: 28px auto 32px; color: rgba(255, 255, 255, 0.58); line-height: 1.6; }
+
+    /* Concept B - The Atelier */
+    .atelier-concept { background: var(--paper); color: var(--ink); }
+    .atelier-nav {
+      position: absolute;
+      z-index: 4;
+      top: 104px;
+      right: 4vw;
+      left: 4vw;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .atelier-nav .wordmark { color: var(--ink); }
+    .atelier-hero {
+      position: relative;
+      display: grid;
+      min-height: 100dvh;
+      padding: 18vh 4vw 6vh;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 4vw;
+      align-items: center;
+      overflow: hidden;
+    }
+    .atelier-copy { position: relative; z-index: 2; }
+    .atelier-copy h1 {
+      max-width: 700px;
+      font-family: var(--serif);
+      font-size: clamp(55px, 7vw, 112px);
+      font-weight: 400;
+      letter-spacing: -0.055em;
+      line-height: 0.9;
+    }
+    .atelier-copy h1 i { color: var(--gold-deep); font-weight: 400; }
+    .atelier-copy p { max-width: 430px; margin: 26px 0 28px; color: rgba(23, 23, 19, 0.62); line-height: 1.6; }
+    .atelier-visual { position: relative; height: 70vh; min-height: 520px; }
+    .atelier-visual img { width: 100%; height: 100%; object-fit: cover; object-position: 26% center; }
+    .atelier-visual::before {
+      position: absolute;
+      z-index: 2;
+      top: 20px;
+      right: 20px;
+      width: 90px;
+      height: 90px;
+      border-top: 1px solid var(--gold-deep);
+      border-right: 1px solid var(--gold-deep);
+      content: "";
+    }
+    .atelier-caption {
+      position: absolute;
+      right: 20px;
+      bottom: 18px;
+      padding: 7px 9px;
+      background: var(--paper);
+      font-family: var(--mono);
+      font-size: 9px;
+    }
+    .atelier-manifesto {
+      padding: 16vh 4vw 18vh 18vw;
+      border-top: 1px solid var(--line-light);
+    }
+    .atelier-manifesto p {
+      max-width: 1120px;
+      font-family: var(--serif);
+      font-size: clamp(40px, 6.2vw, 92px);
+      letter-spacing: -0.055em;
+      line-height: 1.03;
+    }
+    .atelier-manifesto span { color: var(--gold-deep); font-style: italic; }
+    .atelier-workroom {
+      display: grid;
+      min-height: 100dvh;
+      padding: 12vh 4vw;
+      grid-template-columns: minmax(300px, 0.7fr) minmax(560px, 1.3fr);
+      gap: 9vw;
+      align-items: start;
+      background: #e8e3d9;
+    }
+    .atelier-sticky { position: sticky; top: 15vh; }
+    .atelier-sticky h2 { max-width: 540px; font-family: var(--serif); font-size: clamp(46px, 5vw, 76px); font-weight: 400; letter-spacing: -0.045em; line-height: 0.95; }
+    .atelier-sticky p { max-width: 390px; margin-top: 24px; color: rgba(23, 23, 19, 0.61); line-height: 1.6; }
+    .atelier-steps { padding-top: 10vh; }
+    .atelier-step { min-height: 58vh; padding: 30px 0 70px; border-top: 1px solid var(--line-light); }
+    .atelier-step strong { display: block; margin-bottom: 60px; color: var(--gold-deep); font-family: var(--mono); font-size: 10px; }
+    .atelier-step h3 { max-width: 700px; font-size: clamp(34px, 4vw, 62px); letter-spacing: -0.045em; line-height: 0.98; }
+    .atelier-step p { max-width: 500px; margin-top: 20px; color: rgba(23, 23, 19, 0.58); line-height: 1.6; }
+    .atelier-card-room {
+      display: grid;
+      min-height: 120dvh;
+      padding: 13vh 4vw;
+      grid-template-columns: 1fr 1fr;
+      gap: 8vw;
+      align-items: center;
+      background: #11110f;
+      color: var(--paper);
+    }
+    .atelier-card-copy h2 { max-width: 660px; font-family: var(--serif); font-size: clamp(50px, 6.2vw, 92px); font-weight: 400; letter-spacing: -0.055em; line-height: 0.92; }
+    .atelier-card-copy p { max-width: 460px; margin: 26px 0 30px; color: rgba(255, 253, 248, 0.57); line-height: 1.6; }
+    .card-pair { position: relative; height: min(72vh, 680px); perspective: 1500px; }
+    .card-pair img { position: absolute; width: 55%; border: 1px solid rgba(255,255,255,.25); box-shadow: 0 35px 90px rgba(0,0,0,.48); transition: transform 700ms var(--ease); }
+    .card-pair img:first-child { top: 0; left: 4%; transform: rotateY(8deg) rotate(-5deg); }
+    .card-pair img:last-child { right: 4%; bottom: 0; transform: rotateY(-8deg) rotate(5deg); }
+    .card-pair:hover img:first-child { transform: translate(-12px,-10px) rotateY(3deg) rotate(-8deg); }
+    .card-pair:hover img:last-child { transform: translate(12px,10px) rotateY(-3deg) rotate(8deg); }
+    .atelier-close {
+      padding: 18vh 4vw 12vh;
+      background: var(--paper);
+      text-align: center;
+    }
+    .atelier-close h2 { max-width: 1050px; margin: 0 auto; font-family: var(--serif); font-size: clamp(55px, 8vw, 126px); font-weight: 400; letter-spacing: -0.065em; line-height: 0.9; }
+    .atelier-close p { max-width: 520px; margin: 28px auto 32px; color: rgba(23,23,19,.58); line-height: 1.6; }
+
+    /* Concept C - The Signal */
+    .signal-concept { background: #060605; color: var(--white); }
+    .signal-nav {
+      position: absolute;
+      z-index: 4;
+      top: 104px;
+      right: 4vw;
+      left: 4vw;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .signal-hero {
+      position: relative;
+      display: grid;
+      min-height: 100dvh;
+      padding: 18vh 4vw 7vh;
+      align-items: end;
+      overflow: hidden;
+      isolation: isolate;
+    }
+    .signal-hero img {
+      position: absolute;
+      z-index: -2;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .signal-hero::after {
+      position: absolute;
+      z-index: -1;
+      inset: 0;
+      background: linear-gradient(0deg, #060605 0%, transparent 56%), linear-gradient(90deg, rgba(6,6,5,.15), rgba(6,6,5,.2));
+      content: "";
+    }
+    .signal-copy { display: grid; grid-template-columns: 1fr 0.55fr; gap: 10vw; align-items: end; }
+    .signal-copy h1 { max-width: 950px; font-size: clamp(62px, 9.5vw, 150px); letter-spacing: -0.08em; line-height: .82; }
+    .signal-copy h1 span { color: var(--gold); }
+    .signal-copy p { max-width: 380px; padding-bottom: 8px; color: rgba(255,255,255,.67); line-height: 1.6; }
+    .signal-ticker {
+      display: grid;
+      min-height: 100dvh;
+      padding: 12vh 4vw;
+      grid-template-columns: 0.55fr 1.45fr;
+      gap: 8vw;
+      align-items: center;
+      overflow: hidden;
+    }
+    .signal-ticker h2 { max-width: 450px; font-size: clamp(48px, 5.7vw, 88px); letter-spacing: -.065em; line-height: .9; }
+    .signal-ticker p { max-width: 380px; margin-top: 24px; color: rgba(255,255,255,.53); line-height: 1.6; }
+    .events { border-top: 1px solid var(--line-dark); }
+    .event {
+      display: grid;
+      padding: 19px 0;
+      grid-template-columns: 100px 1fr auto;
+      border-bottom: 1px solid var(--line-dark);
+      font-family: var(--mono);
+      font-size: 11px;
+      transition: padding 250ms var(--ease), color 250ms var(--ease);
+    }
+    .event:hover { padding-right: 12px; padding-left: 12px; color: var(--gold); }
+    .event span:first-child, .event span:last-child { color: rgba(255,255,255,.34); }
+    .signal-field {
+      position: relative;
+      min-height: 180dvh;
+      background: #10100e;
+    }
+    .signal-field-inner {
+      position: sticky;
+      top: 0;
+      display: grid;
+      min-height: 100dvh;
+      padding: 12vh 4vw 7vh;
+      grid-template-columns: 1fr 1fr;
+      gap: 8vw;
+      align-items: center;
+      overflow: hidden;
+    }
+    .field-orbit {
+      position: relative;
+      display: grid;
+      width: min(70vw, 680px);
+      aspect-ratio: 1;
+      place-items: center;
+      border: 1px solid rgba(201,165,90,.28);
+      border-radius: 50%;
+    }
+    .field-orbit::before, .field-orbit::after {
+      position: absolute;
+      inset: 12%;
+      border: 1px solid rgba(201,165,90,.17);
+      border-radius: 50%;
+      content: "";
+    }
+    .field-orbit::after { inset: 27%; }
+    .field-core { text-align: center; }
+    .field-core strong { display: block; color: var(--gold); font-size: clamp(52px, 8vw, 118px); letter-spacing: -.075em; line-height: .85; }
+    .field-core span { display: block; margin-top: 17px; color: rgba(255,255,255,.48); font-family: var(--mono); font-size: 10px; }
+    .orbit-label { position: absolute; padding: 4px 7px; background: #10100e; font-family: var(--mono); font-size: 9px; }
+    .orbit-label:nth-of-type(1) { top: 10%; left: 12%; }
+    .orbit-label:nth-of-type(2) { top: 23%; right: -2%; }
+    .orbit-label:nth-of-type(3) { right: 8%; bottom: 13%; }
+    .orbit-label:nth-of-type(4) { bottom: 21%; left: -2%; }
+    .signal-field-copy h2 { max-width: 650px; font-size: clamp(52px, 6.5vw, 102px); letter-spacing: -.07em; line-height: .86; }
+    .signal-field-copy p { max-width: 430px; margin-top: 27px; color: rgba(255,255,255,.55); line-height: 1.6; }
+    .signal-book {
+      padding: 14vh 4vw;
+      background: var(--cream);
+      color: var(--ink);
+    }
+    .signal-book h2 { max-width: 970px; font-size: clamp(54px, 8vw, 122px); letter-spacing: -.075em; line-height: .86; }
+    .rank-grid { display: grid; margin-top: 12vh; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+    .rank-frame { position: relative; padding-top: 18px; border-top: 1px solid var(--line-light); }
+    .rank-frame img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; filter: grayscale(1); }
+    .rank-frame figcaption { display: flex; margin-top: 12px; align-items: center; justify-content: space-between; font-family: var(--mono); font-size: 10px; }
+    .rank-frame b { color: var(--gold-deep); font-size: 16px; }
+    .signal-close { display: grid; min-height: 100dvh; padding: 12vh 4vw; place-items: center; text-align: center; }
+    .signal-close h2 { max-width: 1100px; font-size: clamp(56px, 8.6vw, 138px); letter-spacing: -.08em; line-height: .84; }
+    .signal-close h2 span { color: var(--gold); }
+    .signal-close p { max-width: 550px; margin: 28px auto 32px; color: rgba(255,255,255,.54); line-height: 1.6; }
+
+    /* Concept D - The Dossier */
+    .dossier-concept { background: #f6f3eb; color: #0c0c0a; }
+    .dossier-nav {
+      position: absolute;
+      z-index: 4;
+      top: 104px;
+      right: 3vw;
+      left: 3vw;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+    }
+    .dossier-nav .wordmark { justify-self: start; }
+    .dossier-nav-center { justify-self: center; font-family: var(--mono); font-size: 9px; }
+    .dossier-nav .nav-link { justify-self: end; }
+    .dossier-hero {
+      display: grid;
+      min-height: 100dvh;
+      padding: 19vh 3vw 6vh;
+      grid-template-columns: 1fr 0.83fr;
+      gap: 4vw;
+      align-items: stretch;
+    }
+    .dossier-title {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      justify-content: space-between;
+      border-top: 1px solid #0c0c0a;
+      border-bottom: 1px solid #0c0c0a;
+      padding: 22px 0;
+    }
+    .dossier-title h1 { max-width: 820px; font-size: clamp(64px, 9vw, 145px); letter-spacing: -.085em; line-height: .78; }
+    .dossier-title h1 span { display: block; font-family: var(--serif); font-weight: 400; font-style: italic; }
+    .dossier-title-foot { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: end; }
+    .dossier-title-foot p { max-width: 370px; font-size: 14px; line-height: 1.6; }
+    .dossier-title-foot strong { justify-self: end; color: var(--gold-deep); font-family: var(--mono); font-size: 10px; }
+    .dossier-card {
+      position: relative;
+      display: grid;
+      min-height: 68vh;
+      padding: 22px;
+      place-items: center;
+      overflow: hidden;
+      background: #0c0c0a;
+    }
+    .dossier-card img { max-height: 72vh; filter: grayscale(1) contrast(1.06); box-shadow: 0 32px 80px rgba(0,0,0,.35); transition: transform 600ms var(--ease); }
+    .dossier-card:hover img { transform: scale(1.025) rotate(-1deg); }
+    .dossier-sequence { padding: 12vh 3vw 16vh; }
+    .dossier-sequence-head { display: grid; grid-template-columns: 1.2fr .8fr; gap: 7vw; align-items: end; }
+    .dossier-sequence h2 { max-width: 800px; font-size: clamp(52px, 7vw, 106px); letter-spacing: -.075em; line-height: .84; }
+    .dossier-sequence-head p { max-width: 430px; padding-bottom: 8px; color: rgba(12,12,10,.6); line-height: 1.6; }
+    .dossier-pages { margin-top: 12vh; border-top: 2px solid #0c0c0a; }
+    .dossier-page {
+      display: grid;
+      min-height: 52vh;
+      padding: 26px 0;
+      grid-template-columns: 70px 1fr .75fr;
+      gap: 5vw;
+      align-items: start;
+      border-bottom: 1px solid rgba(12,12,10,.25);
+    }
+    .dossier-page > span { padding-top: 8px; color: var(--gold-deep); font-family: var(--mono); font-size: 10px; }
+    .dossier-page h3 { max-width: 640px; font-size: clamp(38px, 5vw, 76px); letter-spacing: -.055em; line-height: .92; }
+    .dossier-page-copy { align-self: end; padding-bottom: 12px; }
+    .dossier-page-copy p { max-width: 420px; color: rgba(12,12,10,.62); line-height: 1.6; }
+    .dossier-page-copy em { display: block; margin-top: 24px; color: #0c0c0a; font-family: var(--mono); font-size: 10px; font-style: normal; }
+    .dossier-status {
+      padding: 14vh 3vw;
+      background: #0c0c0a;
+      color: var(--paper);
+    }
+    .dossier-status h2 { max-width: 1080px; font-family: var(--serif); font-size: clamp(54px, 8vw, 124px); font-weight: 400; letter-spacing: -.06em; line-height: .9; }
+    .status-line { display: grid; margin-top: 13vh; grid-template-columns: repeat(5, 1fr); border-top: 1px solid var(--line-dark); }
+    .status-stop { min-height: 220px; padding: 22px 18px 22px 0; border-right: 1px solid var(--line-dark); }
+    .status-stop:last-child { border-right: 0; }
+    .status-stop span { display: block; margin-bottom: 80px; color: var(--gold); font-family: var(--mono); font-size: 10px; }
+    .status-stop strong { display: block; font-size: 19px; }
+    .status-stop small { display: block; margin-top: 8px; color: rgba(255,255,255,.43); line-height: 1.45; }
+    .dossier-close {
+      display: grid;
+      min-height: 100dvh;
+      padding: 12vh 3vw;
+      grid-template-columns: 1.25fr .75fr;
+      gap: 8vw;
+      align-items: center;
+    }
+    .dossier-close h2 { max-width: 900px; font-size: clamp(62px, 9vw, 145px); letter-spacing: -.085em; line-height: .78; }
+    .dossier-close h2 span { display: block; color: var(--gold-deep); font-family: var(--serif); font-weight: 400; font-style: italic; }
+    .dossier-close p { max-width: 430px; margin-bottom: 28px; color: rgba(12,12,10,.6); line-height: 1.6; }
+
+    .prototype-footer {
+      display: flex;
+      min-height: 120px;
+      padding: 36px 4vw;
+      align-items: flex-end;
+      justify-content: space-between;
+      border-top: 1px solid currentColor;
+      font-family: var(--mono);
+      font-size: 9px;
+      opacity: .7;
+    }
+
+    @media (max-width: 900px) {
+      .review-bar { grid-template-columns: 1fr; gap: 8px; }
+      .review-note { display: none; }
+      .concept-tabs { overflow-x: auto; padding-bottom: 2px; }
+      .concept-tab { flex: 0 0 auto; }
+      .stage-nav, .atelier-nav, .signal-nav, .dossier-nav { top: 136px; }
+      .stage-nav-links { display: none; }
+      .stage-hero-copy { width: 100%; padding-bottom: 7vh; }
+      .stage-display { font-size: clamp(54px, 15vw, 92px); }
+      .stage-chapter { min-height: auto; }
+      .stage-chapter-sticky { position: relative; min-height: auto; padding-top: 15vh; grid-template-columns: 1fr; }
+      .film-stack { height: 520px; margin-top: 50px; }
+      .package-head, .signal-copy, .dossier-sequence-head, .dossier-close { grid-template-columns: 1fr; }
+      .package-head p { padding-top: 20px; }
+      .atelier-hero, .atelier-workroom, .atelier-card-room { grid-template-columns: 1fr; }
+      .atelier-copy { padding-top: 8vh; }
+      .atelier-visual { height: 58vh; min-height: 420px; }
+      .atelier-manifesto { padding-left: 4vw; }
+      .atelier-sticky { position: relative; top: 0; }
+      .atelier-steps { padding-top: 8vh; }
+      .signal-ticker, .signal-field-inner { grid-template-columns: 1fr; }
+      .signal-ticker { padding-top: 18vh; }
+      .signal-field { min-height: auto; }
+      .signal-field-inner { position: relative; min-height: auto; padding-top: 15vh; }
+      .field-orbit { width: min(90vw, 620px); margin: 40px auto 0; }
+      .rank-grid { grid-template-columns: 1fr; }
+      .rank-frame img { aspect-ratio: 16 / 10; }
+      .dossier-hero { grid-template-columns: 1fr; padding-top: 20vh; }
+      .dossier-title { min-height: 68vh; }
+      .dossier-card { min-height: 70vh; }
+      .dossier-page { grid-template-columns: 46px 1fr; }
+      .dossier-page-copy { grid-column: 2; }
+      .status-line { grid-template-columns: 1fr 1fr; }
+      .status-stop { min-height: 180px; }
+    }
+
+    @media (max-width: 560px) {
+      .review-bar { inset: 8px 8px auto; padding: 10px; }
+      .review-brand { display: none; }
+      .stage-nav, .atelier-nav, .signal-nav, .dossier-nav { top: 112px; right: 20px; left: 20px; }
+      .stage-nav .nav-link, .atelier-nav .nav-link, .signal-nav .nav-link, .dossier-nav .nav-link, .dossier-nav-center { display: none; }
+      .stage-hero, .atelier-hero, .signal-hero, .dossier-hero { padding-right: 20px; padding-left: 20px; }
+      .stage-chapter-sticky, .stage-package, .stage-finale, .atelier-manifesto, .atelier-workroom, .atelier-card-room, .atelier-close, .signal-ticker, .signal-field-inner, .signal-book, .signal-close, .dossier-sequence, .dossier-status, .dossier-close { padding-right: 20px; padding-left: 20px; }
+      .stage-display, .signal-copy h1 { font-size: clamp(50px, 17vw, 76px); }
+      .film-stack { height: 430px; }
+      .film-frame { width: 56%; }
+      .package-row { grid-template-columns: 34px 1fr; }
+      .package-row em { display: none; }
+      .atelier-copy h1 { font-size: clamp(52px, 16vw, 78px); }
+      .atelier-visual { min-height: 360px; }
+      .card-pair { height: 480px; }
+      .card-pair img { width: 65%; }
+      .event { grid-template-columns: 70px 1fr; }
+      .event span:last-child { display: none; }
+      .field-orbit { width: 100%; }
+      .dossier-title-foot { grid-template-columns: 1fr; }
+      .dossier-title-foot strong { justify-self: start; }
+      .dossier-page { grid-template-columns: 34px 1fr; }
+      .status-line { grid-template-columns: 1fr; }
+      .status-stop { border-right: 0; border-bottom: 1px solid var(--line-dark); }
+      .prototype-footer { align-items: flex-start; flex-direction: column; gap: 12px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="review-bar" aria-label="Prototype selector">
+    <div class="review-brand">PHOLIO PROTOTYPES</div>
+    <p class="review-note">Four blank-sheet directions. Press 1-4 to switch.</p>
+    <div class="concept-tabs" role="tablist" aria-label="Landing page concepts">
+      <button class="concept-tab" type="button" role="tab" aria-selected="true" aria-controls="concept-stage" data-concept="stage">1. The Stage</button>
+      <button class="concept-tab" type="button" role="tab" aria-selected="false" aria-controls="concept-atelier" data-concept="atelier">2. Atelier</button>
+      <button class="concept-tab" type="button" role="tab" aria-selected="false" aria-controls="concept-signal" data-concept="signal">3. Signal</button>
+      <button class="concept-tab" type="button" role="tab" aria-selected="false" aria-controls="concept-dossier" data-concept="dossier">4. Dossier</button>
+    </div>
+  </header>
+
+  <main>
+    <article class="concept stage-concept is-active" id="concept-stage" role="tabpanel" data-concept-panel="stage">
+      <nav class="stage-nav" aria-label="Stage concept navigation">
+        <a class="wordmark" href="#stage-top">PHOLIO</a>
+        <div class="stage-nav-links">
+          <a class="nav-link" href="#stage-book">The Book</a>
+          <a class="nav-link" href="#stage-market">The Market</a>
+          <a class="nav-link" href="#stage-close">Join</a>
+        </div>
+      </nav>
+      <section class="stage-hero" id="stage-top">
+        <img class="stage-hero-image" src="assets/talent-varieties/stage-hero.png" alt="Model in black tailoring standing in a dark studio">
+        <div class="stage-hero-copy">
+          <h1 class="stage-display">Your work.<span>In motion.</span></h1>
+          <p class="stage-lede">Build the book, card, submission package, and intelligence layer that carry your career into every room.</p>
+          <a class="cta" href="#stage-book">Enter Pholio</a>
+        </div>
+      </section>
+      <section class="stage-chapter" id="stage-book">
+        <div class="stage-chapter-sticky">
+          <div class="reveal">
+            <div class="stage-index">THE BOOK</div>
+            <h2>Not stored. Staged.</h2>
+            <p>Digitals stay current. Tests, campaigns, tearsheets, and motion stay in their proper place. Every frame carries its credits, rights, and role.</p>
+          </div>
+          <div class="film-stack reveal" aria-label="Editorial image stack">
+            <figure class="film-frame"><img src="../public/assets/Leul_Portrait.PNG" alt="Editorial portrait"></figure>
+            <figure class="film-frame"><img src="../public/assets/Natan_Portrait.png" alt="Studio portrait"></figure>
+            <figure class="film-frame"><img src="../public/assets/hero-model.jpg" alt="Fashion portrait"></figure>
+          </div>
+        </div>
+      </section>
+      <section class="stage-package" id="stage-market">
+        <div class="package-head reveal">
+          <h2>Ready before you send.</h2>
+          <p>Pholio turns your work into the complete package an agency actually reviews, then keeps the response visible after it leaves your hands.</p>
+        </div>
+        <div class="package-ledger reveal">
+          <div class="package-row"><span>01</span><strong>Current digitals</strong><em>Dated, honest, submission-ready</em></div>
+          <div class="package-row"><span>02</span><strong>Professional stats</strong><em>Correctly formatted for the board</em></div>
+          <div class="package-row"><span>03</span><strong>Curated book</strong><em>Selected for the specific house</em></div>
+          <div class="package-row"><span>04</span><strong>Composed comp card</strong><em>Unique to your material</em></div>
+          <div class="package-row"><span>05</span><strong>Submission note</strong><em>Direct, relevant, yours</em></div>
+        </div>
+      </section>
+      <section class="stage-finale" id="stage-close">
+        <div class="reveal">
+          <h2>Walk in <span>ready.</span></h2>
+          <p>Pholio is the modern operating system for a talent career. Your work leads. The intelligence follows.</p>
+          <a class="cta" href="#stage-top">Build your Pholio</a>
+        </div>
+      </section>
+      <footer class="prototype-footer"><span>THE STAGE</span><span>Cinematic, portrait-led, emotional</span></footer>
+    </article>
+
+    <article class="concept atelier-concept" id="concept-atelier" role="tabpanel" data-concept-panel="atelier" hidden>
+      <nav class="atelier-nav" aria-label="Atelier concept navigation">
+        <a class="wordmark" href="#atelier-top">PHOLIO</a>
+        <a class="nav-link" href="#atelier-close">Begin your book</a>
+      </nav>
+      <section class="atelier-hero" id="atelier-top">
+        <div class="atelier-copy">
+          <h1>Your career, <i>properly composed.</i></h1>
+          <p>One studio for the images, materials, submissions, and decisions that shape a professional talent career.</p>
+          <a class="cta" href="#atelier-workroom">Open the studio</a>
+        </div>
+        <figure class="atelier-visual">
+          <img src="assets/talent-varieties/atelier-hero.png" alt="Model in an ivory suit inside a portfolio atelier">
+          <figcaption class="atelier-caption">THE PHOLIO ATELIER</figcaption>
+        </figure>
+      </section>
+      <section class="atelier-manifesto reveal">
+        <p>A book should do more than look finished. It should know what is current, what is cleared, what belongs, and <span>where it should go next.</span></p>
+      </section>
+      <section class="atelier-workroom" id="atelier-workroom">
+        <div class="atelier-sticky reveal">
+          <h2>Every material in its place.</h2>
+          <p>Pholio is designed around the way the industry actually reads talent, not around generic profile fields.</p>
+        </div>
+        <div class="atelier-steps">
+          <article class="atelier-step reveal"><strong>THE MATERIALS</strong><h3>Digitals stay distinct from the Book.</h3><p>Five essential views, dated sets, unretouched checks, and freshness guidance keep the most important material honest.</p></article>
+          <article class="atelier-step reveal"><strong>THE RANGE</strong><h3>Tests, campaigns, tearsheets, motion.</h3><p>Credits, usage rights, visibility, and image roles travel with every frame without competing with the photography.</p></article>
+          <article class="atelier-step reveal"><strong>THE PROFILE</strong><h3>Representation that reflects real careers.</h3><p>Mother agencies, placement agencies, markets, availability, bookouts, training, and professional stats live in one record.</p></article>
+        </div>
+      </section>
+      <section class="atelier-card-room">
+        <div class="atelier-card-copy reveal">
+          <h2>No template decides who you are.</h2>
+          <p>Pholio composes each card from your images, proportions, tone, and book. Save the directions that feel like you, then send the right one.</p>
+          <a class="cta" href="#atelier-close">See the full system</a>
+        </div>
+        <div class="card-pair reveal">
+          <img src="../public/generated/comp-card/elara-keats-front.png" alt="Generated comp card front">
+          <img src="../public/generated/comp-card/elara-keats-back.png" alt="Generated comp card back">
+        </div>
+      </section>
+      <section class="atelier-close" id="atelier-close">
+        <div class="reveal">
+          <h2>Make the work impossible to misread.</h2>
+          <p>A professional presence, a complete submission package, and the intelligence to keep moving.</p>
+          <a class="cta" href="#atelier-top">Start your Pholio</a>
+        </div>
+      </section>
+      <footer class="prototype-footer"><span>THE ATELIER</span><span>Editorial, tactile, craft-focused</span></footer>
+    </article>
+
+    <article class="concept signal-concept" id="concept-signal" role="tabpanel" data-concept-panel="signal" hidden>
+      <nav class="signal-nav" aria-label="Signal concept navigation">
+        <a class="wordmark" href="#signal-top">PHOLIO</a>
+        <a class="nav-link" href="#signal-close">Get started</a>
+      </nav>
+      <section class="signal-hero" id="signal-top">
+        <img src="assets/talent-varieties/signal-hero.png" alt="Model in a dark photographic archive threaded by gold light">
+        <div class="signal-copy">
+          <h1>See what moves <span>after you send.</span></h1>
+          <p>Pholio makes the market legible: who reviewed, what was opened, which images held attention, and what to do next.</p>
+        </div>
+      </section>
+      <section class="signal-ticker">
+        <div class="reveal"><h2>The rooms leave a trace.</h2><p>Reviews, card pulls, link opens, advances, and messages become a clear record rather than a period of silence.</p></div>
+        <div class="events reveal" aria-label="Example career signals">
+          <div class="event"><span>09:14</span><strong>Submission reviewed</strong><span>NEW YORK</span></div>
+          <div class="event"><span>11:08</span><strong>Comp card opened</strong><span>PARIS</span></div>
+          <div class="event"><span>14:32</span><strong>Book returned to</strong><span>LONDON</span></div>
+          <div class="event"><span>16:05</span><strong>Fresh digitals requested</strong><span>YOUR MOVE</span></div>
+          <div class="event"><span>18:41</span><strong>Submission advanced</strong><span>MILAN</span></div>
+        </div>
+      </section>
+      <section class="signal-field">
+        <div class="signal-field-inner">
+          <div class="field-orbit reveal" aria-label="Attention spectrum visualization">
+            <span class="orbit-label">REVIEWED</span><span class="orbit-label">PULLED</span><span class="orbit-label">OPENED</span><span class="orbit-label">ADVANCED</span>
+            <div class="field-core"><strong>LIVE</strong><span>YOUR MATERIALS IN MARKET</span></div>
+          </div>
+          <div class="signal-field-copy reveal"><h2>Intelligence that ends in an action.</h2><p>Current materials, market attention, submission movement, image performance, and search demand resolve into a short list of next moves.</p></div>
+        </div>
+      </section>
+      <section class="signal-book">
+        <h2 class="reveal">The photography becomes the chart.</h2>
+        <div class="rank-grid">
+          <figure class="rank-frame reveal"><img src="../public/assets/Leul_Portrait.PNG" alt="Ranked portfolio portrait"><figcaption><b>#1</b><span>HOLDS ATTENTION</span></figcaption></figure>
+          <figure class="rank-frame reveal"><img src="../public/assets/Natan_Portrait.png" alt="Ranked portfolio portrait"><figcaption><b>#2</b><span>MOST OPENED</span></figcaption></figure>
+          <figure class="rank-frame reveal"><img src="../public/assets/hero-model.jpg" alt="Ranked portfolio portrait"><figcaption><b>#3</b><span>ON SCREEN AT PULL</span></figcaption></figure>
+        </div>
+      </section>
+      <section class="signal-close" id="signal-close">
+        <div class="reveal"><h2>Do not guess.<span>Read the signal.</span></h2><p>Build the professional package. Send it with intention. Know how the market responds.</p><a class="cta" href="#signal-top">Build your Pholio</a></div>
+      </section>
+      <footer class="prototype-footer"><span>THE SIGNAL</span><span>Intelligence-led, mysterious, precise</span></footer>
+    </article>
+
+    <article class="concept dossier-concept" id="concept-dossier" role="tabpanel" data-concept-panel="dossier" hidden>
+      <nav class="dossier-nav" aria-label="Dossier concept navigation">
+        <a class="wordmark" href="#dossier-top">PHOLIO</a>
+        <span class="dossier-nav-center">TALENT CAREER SYSTEM</span>
+        <a class="nav-link" href="#dossier-close">Join</a>
+      </nav>
+      <section class="dossier-hero" id="dossier-top">
+        <div class="dossier-title">
+          <h1>The complete <span>talent dossier.</span></h1>
+          <div class="dossier-title-foot"><p>Everything an agency needs to understand your work, prepared before the first review and kept current after it.</p><strong>ISSUED BY PHOLIO</strong></div>
+        </div>
+        <figure class="dossier-card"><img src="../public/generated/comp-card/elara-keats-statement.png" alt="Pholio statement comp card"></figure>
+      </section>
+      <section class="dossier-sequence">
+        <div class="dossier-sequence-head reveal"><h2>One record. Every professional surface.</h2><p>Your public presence, agency package, messages, representation, and market intelligence remain connected instead of becoming five separate chores.</p></div>
+        <div class="dossier-pages">
+          <article class="dossier-page reveal"><span>01</span><h3>The Book</h3><div class="dossier-page-copy"><p>A living image system for digitals, tests, campaigns, tearsheets, and motion.</p><em>CURATE / CREDIT / CONTROL</em></div></article>
+          <article class="dossier-page reveal"><span>02</span><h3>The Card</h3><div class="dossier-page-copy"><p>A professional artifact composed from the character and geometry of your actual material.</p><em>COMPOSE / SAVE / PRINT</em></div></article>
+          <article class="dossier-page reveal"><span>03</span><h3>The Submission</h3><div class="dossier-page-copy"><p>Digitals, stats, selected book, card, note, and consent assembled for the specific agency.</p><em>PREPARE / REVIEW / SEND</em></div></article>
+          <article class="dossier-page reveal"><span>04</span><h3>The Intelligence</h3><div class="dossier-page-copy"><p>Attention, markets, image performance, material currency, and next moves in one legible system.</p><em>READ / DECIDE / MOVE</em></div></article>
+        </div>
+      </section>
+      <section class="dossier-status">
+        <h2 class="reveal">The submission does not disappear when it is sent.</h2>
+        <div class="status-line reveal">
+          <div class="status-stop"><span>01</span><strong>In review</strong><small>The house has your package.</small></div>
+          <div class="status-stop"><span>02</span><strong>Shortlisted</strong><small>Your material has advanced.</small></div>
+          <div class="status-stop"><span>03</span><strong>Kept on file</strong><small>A soft yes stays visible.</small></div>
+          <div class="status-stop"><span>04</span><strong>Go-see</strong><small>Respond and prepare.</small></div>
+          <div class="status-stop"><span>05</span><strong>Represented</strong><small>The career record continues.</small></div>
+        </div>
+      </section>
+      <section class="dossier-close" id="dossier-close">
+        <h2 class="reveal">Your career deserves <span>a proper system.</span></h2>
+        <div class="reveal"><p>Pholio gives professional and aspiring talent the materials, access, and intelligence to move with intention.</p><a class="cta" href="#dossier-top">Create your Pholio</a></div>
+      </section>
+      <footer class="prototype-footer"><span>THE DOSSIER</span><span>Graphic, fashion-publication, direct</span></footer>
+    </article>
+  </main>
+
+  <script>
+    (() => {
+      const tabs = [...document.querySelectorAll('[data-concept]')];
+      const panels = [...document.querySelectorAll('[data-concept-panel]')];
+      const valid = new Set(panels.map((panel) => panel.dataset.conceptPanel));
+
+      function activate(name, updateUrl = true) {
+        if (!valid.has(name)) return;
+        tabs.forEach((tab) => tab.setAttribute('aria-selected', String(tab.dataset.concept === name)));
+        panels.forEach((panel) => {
+          const active = panel.dataset.conceptPanel === name;
+          panel.classList.toggle('is-active', active);
+          panel.hidden = !active;
+        });
+        if (updateUrl) history.replaceState(null, '', `#${name}`);
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        observeReveals();
+      }
+
+      tabs.forEach((tab) => tab.addEventListener('click', () => activate(tab.dataset.concept)));
+      document.addEventListener('keydown', (event) => {
+        if (/^[1-4]$/.test(event.key) && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName || '')) {
+          activate(['stage', 'atelier', 'signal', 'dossier'][Number(event.key) - 1]);
+        }
+      });
+
+      let observer;
+      function observeReveals() {
+        observer?.disconnect();
+        observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.14, rootMargin: '0px 0px -6% 0px' });
+        document.querySelectorAll('.concept.is-active .reveal:not(.is-visible)').forEach((item) => observer.observe(item));
+      }
+
+      const initial = location.hash.slice(1);
+      activate(valid.has(initial) ? initial : 'stage', false);
+      observeReveals();
+    })();
+  </script>
+</body>
+</html>

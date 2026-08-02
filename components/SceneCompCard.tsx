@@ -294,10 +294,14 @@ function ContinuousCard({ progress }: { progress: MotionValue<number> }) {
     [1.04, 1.02, 0.98, 0.98, 0.96, 0.62, 0.62, 1.04, 1.06],
     { ease: glide },
   );
+  // The two bottom captions (beats 1-2) sit at bottom-[8vh]; the card is tall,
+  // so its default centred position overlapped that text. Raise the card through
+  // those beats and ease back to the original resting spots by the markets grid
+  // (0.69+ keyframes unchanged) so the flip/grid/ready choreography is untouched.
   const y = useTransform(
     progress,
-    [0.105, 0.22, 0.48, 0.69, 0.815, 0.93, 1],
-    [72, 26, -4, -4, -2, -2, -2],
+    [0.105, 0.22, 0.35, 0.46, 0.6, 0.69, 0.815, 0.93, 1],
+    [40, -30, -60, -60, -18, -4, -2, -2, -2],
     { ease: glide },
   );
   const labelOpacity = useTransform(progress, [0.63, 0.7, 0.8, 0.86], [0, 1, 1, 0]);

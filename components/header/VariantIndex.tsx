@@ -128,7 +128,7 @@ export default function VariantIndex({
             className="focus:outline-none"
             style={{ textDecoration: "none" }}
           >
-            <Wordmark size={16} style={{ transition: `color ${T}` }} />
+            <Wordmark size={24} style={{ transition: `color ${T}` }} />
           </Link>
 
           <IndexTrigger

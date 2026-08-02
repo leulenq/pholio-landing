@@ -141,6 +141,24 @@ export function usePlaneTilt(
   return { rotateX, y, scale, opacity };
 }
 
+/** CATCH-SHEET — the inverse of a plane-tilt: a sheet that arrives already
+    hinged away from the viewer and swings upright as it slides in. Written
+    to catch what Book's exit tips away, so the seam reads as one object
+    changing hands rather than two scenes changing subject. (Send's
+    entrance.) */
+export function useCatchSheet(
+  progress: MotionValue<number>,
+  range: [number, number],
+  degrees = 16,
+) {
+  const [a, b] = range;
+  const x = useScrub(progress, [a, b], ["52%", "0%"], "arrival");
+  const rotateX = useScrub(progress, [a, b], [-degrees, 0], "arrival");
+  const scale = useScrub(progress, [a, b], [0.94, 1], "arrival");
+  const opacity = useTransform(progress, [a, a + (b - a) * 0.4], [0, 1]);
+  return { x, rotateX, scale, opacity };
+}
+
 /** WIPE — a clip-path reveal. Direction-aware; the edge itself can be
     lit by pairing with <WipeEdge/>. (Send's rows, Signal's chart.) */
 export function useWipe(
