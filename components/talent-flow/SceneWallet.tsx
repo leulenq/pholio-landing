@@ -307,10 +307,15 @@ function WalletStage({
                 lineHeight: 1.05,
                 letterSpacing: "-0.024em",
                 color: ON_CREAM,
-                textWrap: "balance",
+                /* deliberately NOT `text-wrap: balance` (which the
+                   shared Caption uses): balancing this line strands
+                   "always in" on its own and pushes "your" down with
+                   the verdict. Natural wrapping breaks it
+                   "Your identity, / always in your / pocket." and
+                   leaves the gold word alone on the last line. */
               }}
             >
-              The card that&rsquo;s always on <V>you.</V>
+              Your identity, always in your <V>pocket.</V>
             </h2>
 
             <p
