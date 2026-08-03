@@ -28,7 +28,9 @@ function fieldForRoute(pathname: string | null): "ink" | "cream" {
     pathname === "/" ||
     !!pathname?.startsWith("/talent") ||
     !!pathname?.startsWith("/agency") ||
-    !!pathname?.startsWith("/about-us") ||
+    /* /about-us is a cream publication with two ink bands (the Manifesto and
+       the close); the bar samples those on the way past. Only the *starting*
+       polarity is set here, and it opens on cream paper. */
     !!pathname?.startsWith("/contact") ||
     !!pathname?.startsWith("/careers") ||
     !!pathname?.startsWith("/studio/plus") ||

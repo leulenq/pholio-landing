@@ -171,6 +171,62 @@ Rules the footer keeps, and any future change must respect:
 - Coherence with the header comes from the shared palette, ease, mono label
   voice and `Wordmark` — **not** from reusing its composition or its `NavLink`.
 
+## About (`components/about/`)
+
+`/about-us` was rebuilt from scratch. `AboutHero.tsx` / `AboutContent.tsx` are
+gone; the page is a server shell (`app/about-us/page.tsx`, which now carries real
+metadata) over `AboutPageClient.tsx`, and every section lives in
+`components/about/` on the shared `kit.tsx`.
+
+**The page's register is the legal documents and the header, not the home
+page.** It is a **cream publication with two ink bands** — the Manifesto in the
+middle, the close at the end where it runs into the ink footer — in this order:
+
+    Masthead → Origin → Ledger → Manifesto → Standing → Collective → Close
+
+Argument, then terms, then belief, then people. A manifesto placed *before* the
+ledger is a stranger listing their values; placed after it, it's a company that
+has already shown its terms. `HeaderWrapper`'s `fieldForRoute` starts the bar on
+cream for this route — the two ink bands are sampled on the way past.
+
+Rules this page keeps, and any future change must respect:
+
+- **Every claim is checkable.** The retired page asserted "multi-layer
+  verification" of every data point "from height to past bookings" and the
+  elimination of guesswork from scouting. None of it was true, and the audience
+  for this page is people who have already been lied to by a website. If a line
+  cannot be checked against the product, the Terms, the AI Notice or a receipt,
+  it does not go on this page.
+- **The ledger is the trust engine** (`AboutLedger.tsx`) — what Pholio is, what
+  it is *not*, and the commercial facts with real numbers: the free monthly
+  submission cap *and* the open-call exemption (say both halves or the cap reads
+  as stricter than it is), the Studio+ price, that agencies pay nothing and we
+  take no commission, that agency access is reviewed. Don't soften these into
+  adjectives. Money numbers come from `lib/marketing-pricing.ts`; the free cap is
+  a cross-repo contract with `application-quota.js` in pholio-app.
+- **The Manifesto is kept but it is a set of commitments, not poetry.** Each
+  article carries a marginal gloss naming the evidence. It is the one band that
+  opens on the ported `GoldSweep`. Its previous form put *two* italic-gold
+  verdicts in one statement — the brand allows one.
+- **No looping motion anywhere.** The old page had a breathing radial glow and a
+  pulsing monogram ring; neither survives. Motion is arrival only, once, and
+  `Reveal` collapses to a plain crossfade under `useReducedMotion()`.
+- **Nothing is hover-gated.** Founder biographies used to live behind a
+  `grid-rows-[0fr]` reveal, invisible to every touch device. Hover is a colour
+  shift on the portraits and nothing else — never a scale.
+- **No placeholder standing in for a photograph.** The advisor is a hairline row
+  with real type, not a monogrammed circle where a portrait should be.
+- **Gold tracks the paper, and never carries small type.** `#C9A55A` on ink,
+  `#A8894E` on cream — the header's `TOKENS` split. Gold is reserved for display
+  type (≥3:1 there), hairlines and hover; clerical labels are ink or cream,
+  because 10px gold on cream is ~3:1 and fails. The legal pages do set their
+  kickers in gold — that is the one thing on them not to copy.
+- **`Display` sets block margins only, never the `margin` shorthand.** An inline
+  `margin: 0` beats a horizontal margin utility passed via `className`, which is
+  exactly how the Manifesto's stagger first shipped rendering flush-left.
+- `tsconfig.json` excludes `archive/` — the archived marketing site imports live
+  `@/components/*` paths and breaks typecheck whenever a component is deleted.
+
 ## Comp-card showcase (`components/SceneCompCard.tsx`)
 
 The home page's flagship section (mounted in `ClientPage.tsx`). It is a **cinematic,
