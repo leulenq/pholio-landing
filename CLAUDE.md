@@ -56,6 +56,31 @@ that couldn't reach `pholio-app` to check. If `pholio-app` isn't in reach, these
   `components/header/kit.tsx`, default color the fixed brand gold (not a
   paper-tracking token) so the match holds on cream pages too.
 
+## Loading (`components/GoldSweepLoader.tsx`)
+
+The one loading indicator. It is the gold sweep above, bent into a circle: a
+hairline ring holding the rule at rest, and the same transparent → gold →
+transparent ramp travelling through it as an arc. The identical component ships
+in `pholio-app` as `LoadingSpinner` — keep the two in step.
+
+- **Hairline weight only** (1–1.75px, scaled off the box). A thick ring is a
+  progress meter; this is a rule. Don't thicken it, and don't add glow, pulse
+  or shimmer — motion is the only ornament.
+- **The cadence is the point.** Two nested rotations at one period: a constant
+  turn plus a ±16° eased oscillation. Their sum sweeps and settles instead of
+  grinding at a fixed rate. Both are tunable via `--pholio-loader-duration` /
+  `--pholio-loader-cadence`.
+- **It is not a client component**, so it can sit in a Suspense fallback or a
+  server shell for free. Reduced motion is honoured in CSS, which reads the
+  same signal as `useReducedMotion()` — converting it to the hook would only
+  buy a hydration round-trip and a flash of motion. At rest the sweep sits at
+  12 o'clock so the still frame still reads as the mark.
+- **Gold tracks the paper**, like the wordmark: `#C9A55A` on ink, the exported
+  `GOLD_DARK` on cream or white, where the brand gold manages only ~2:1. The
+  whole mark draws in `currentColor`.
+- Don't dim a button to 50% while it holds the loader — that pushes the gold
+  under the 3:1 a graphical indicator needs.
+
 ## Header (`components/header/`)
 
 "The Index" (`VariantIndex.tsx`) is the shipped header — see `docs/header-directions.md`

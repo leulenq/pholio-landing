@@ -3,6 +3,8 @@
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
 
+import GoldSweepLoader from "@/components/GoldSweepLoader";
+
 /**
  * Agency access request form.
  *
@@ -433,7 +435,16 @@ export default function AgencyRequestAccessForm() {
           className="inline-flex w-fit items-center justify-center rounded-full px-8 py-4 text-[10px] font-bold uppercase tracking-[0.15em] text-white transition-colors duration-200 disabled:opacity-60"
           style={{ fontFamily: "var(--font-sans)", backgroundColor: "#050505" }}
         >
-          {submitting ? "Sending…" : "Request access"}
+          {submitting ? (
+            <span className="inline-flex items-center gap-3">
+              {/* Decorative here — "Sending…" already names the state, so the
+                  loader must not add a second announcement. */}
+              <GoldSweepLoader size={14} aria-hidden />
+              Sending…
+            </span>
+          ) : (
+            "Request access"
+          )}
         </button>
         <p
           className="max-w-xl text-[13px] leading-relaxed"
