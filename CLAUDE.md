@@ -68,12 +68,21 @@ in `pholio-app` as `LoadingSpinner` — keep the two in step.
   Still nowhere near the tenth-of-a-diameter band that reads as a progress
   meter — don't take it further, and don't add glow, pulse or shimmer. Motion
   is the only ornament.
-- **Both tips taper to transparent** (`RAMP`). The leading edge especially: cut
-  it off at strength and the sweep becomes a dash and stops reading as the rule.
-  A comet shape — gold held to a hard head — was tried and rejected for exactly
-  that. What the ramp *isn't* is symmetric: the peak sits at 0.88, so the gold
-  gathers into a short bright entry and draws out into a long dim tail, which
-  is what gives the sweep a legible start.
+- **Both tips taper to transparent**, with zero slope, so each is a soft
+  rounded lead-in rather than a point or a cut. The leading edge especially:
+  hold the gold to a hard head and the sweep becomes a dash and stops reading
+  as the rule. A comet shape was tried and rejected for exactly that. What the
+  ramp *isn't* is symmetric — `PEAK` sits at 0.86, so the gold gathers into a
+  short bright entry and draws out into a long dim tail, which is what gives
+  the sweep a legible start.
+- **The fade is a conic mask over an SVG ring, and has to stay one.** Painting
+  the arc with an `<linearGradient>` is the obvious build and is subtly wrong:
+  a linear gradient's iso-opacity lines are straight, the stroke curves away
+  from them, and by the end of a 150° arc the fade is cutting *lengthwise*
+  along the band — the tip comes out shaved on the diagonal, weighted to one
+  side of the stroke. Conic iso-lines are radial, so every tip tapers
+  symmetrically about its centreline. The ring stays SVG because a stroked
+  `<circle>` rasterises crisply; the mask only carries the light.
 - **The cadence is the point.** Two nested rotations at one period: a constant
   turn plus a ±16° eased oscillation. Their sum sweeps and settles instead of
   grinding at a fixed rate. Both are tunable via `--pholio-loader-duration` /
