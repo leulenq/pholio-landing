@@ -1083,12 +1083,26 @@ export function IndexPanel({
 
       <FieldProvider tokens={TOKENS.ink}>
         <div
-          className="relative mx-auto flex h-full w-full max-w-[1440px] flex-col px-6 md:px-12"
+          className={
+            "relative mx-auto flex h-full w-full max-w-[1440px] flex-col px-6 md:px-12" +
+            (full && !contained ? " pt-24 md:pt-40" : "")
+          }
           /* `full` clears the corner marks; extra top inset gives Talent room
-             under the bar. Clerical pair follows the index at a fixed gap —
-             not mt-auto — so More / Account sit higher on the sheet. */
+             under the bar — 160px on desktop's taller canvas, a leaner 112px
+             on mobile (the header itself is 83px), so the top clearance and
+             the ~28px bottom inset stay in the same order of magnitude rather
+             than desktop's proportion dragged onto a much shorter viewport.
+             Live sizes are Tailwind classes (`pt-28 md:pt-40`) so they can
+             actually differ by breakpoint; `contained` (the docs preview
+             frame) keeps its own fixed inline value, since that frame has no
+             real viewport to be short on. Content below centers vertically
+             in whatever's left (`justify-center`), not anchored to the top —
+             so this top inset only sets a floor, it doesn't by itself decide
+             how much air ends up above Talent. Clerical pair follows the
+             index at a fixed gap — not mt-auto — so More / Account sit
+             right under the entries rather than pinned to the sheet's edge. */
           style={{
-            paddingTop: full ? (contained ? 112 : 160) : 44,
+            paddingTop: full ? (contained ? 112 : undefined) : 44,
             paddingBottom: contained
               ? "1.5rem"
               : "max(1.75rem, env(safe-area-inset-bottom))",
@@ -1097,7 +1111,7 @@ export function IndexPanel({
           <div
             className={
               full
-                ? "flex flex-1 flex-col overflow-y-auto md:grid md:grid-cols-[1.5fr_1fr] md:gap-12 md:overflow-visible"
+                ? "flex flex-1 flex-col justify-center overflow-y-auto md:grid md:grid-cols-[1.5fr_1fr] md:gap-12 md:overflow-visible"
                 : "flex flex-1 flex-col"
             }
           >
