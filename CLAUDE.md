@@ -114,15 +114,21 @@ more variants than this site uses). Interaction language — the hairline, the
 gold hover — is copied exactly; resting ink and gold stay on this site's own
 `#050505` / `#C9A55A` rather than the app's literal near-black, since the two
 read identically and this keeps the button on the site's own tokens. A third
-look, `.pholio-btn--meta` (mono, small caps, gold underline on hover), exists
-as a CSS class only, for link-shaped controls like "Manage" that need
-`next/link` rather than the `<PholioButton>` component's own anchor handling.
+look, `.pholio-btn--meta` (mono, small caps, gold text on hover — no
+underline; one was tried and removed, don't reintroduce it), exists as a CSS
+class only, for link-shaped controls like "Manage" that need `next/link`
+rather than the `<PholioButton>` component's own anchor handling.
 
 `CookieConsentBanner.tsx` is the only place these ship together today: Accept
 all is `variant="primary"`, Necessary only is `variant="secondary"`, Manage
-carries `pholio-btn pholio-btn--meta` directly. The identical pairing renders
-in `pholio-app`'s `CookieConsentBanner.jsx` from the same source component —
-keep the copy and the variant choices in sync between the two. Manage links to
+carries `pholio-btn pholio-btn--meta` directly. The same pairing renders in
+`pholio-app`'s `CookieConsentBanner.jsx`, but from the app's own, separately
+maintained `.pholio-btn--meta` — that one is the "canonical talent button
+primitive" used in ~30 other places across the talent dashboard, so it can't
+be edited for one caller. When the two need to diverge only for this banner
+(e.g. the underline removal), the app scopes its override to
+`.app-cookie-link` in `CookieConsentBanner.css` rather than touching the
+shared class. Keep the copy and the variant choices in sync between the two. Manage links to
 `/cookies#preferences`, not bare `/cookies`: that id is the "Change your
 choice" control on the cookies page, and linking past the policy text above it
 is the difference between "Manage" doing something and being a scroll-to-top

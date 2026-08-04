@@ -126,7 +126,6 @@
   min-height: 32px;
   padding: 4px 0 6px;
   border: 0;
-  border-bottom: 1px solid var(--ph-btn-hair-gold);
   border-radius: 0;
   background: transparent;
   color: var(--ph-btn-ink);
@@ -138,7 +137,6 @@
 }
 
 .pholio-btn--meta:hover {
-  border-color: var(--ph-btn-gold);
   color: var(--ph-btn-gold-text);
 }
 
