@@ -124,11 +124,15 @@ all is `variant="primary"`, Necessary only is `variant="secondary"`, Manage
 carries `pholio-btn pholio-btn--meta` directly. The same pairing renders in
 `pholio-app`'s `CookieConsentBanner.jsx`, but from the app's own, separately
 maintained `.pholio-btn--meta` — that one is the "canonical talent button
-primitive" used in ~30 other places across the talent dashboard, so it can't
-be edited for one caller. When the two need to diverge only for this banner
-(e.g. the underline removal), the app scopes its override to
-`.app-cookie-link` in `CookieConsentBanner.css` rather than touching the
-shared class. Keep the copy and the variant choices in sync between the two. Manage links to
+primitive," used in ~30 other places across the talent dashboard (Apply flow,
+Profile, Overview, Bio Writer), not something scoped to this banner. Both
+copies of `.pholio-btn--meta` are borderless now (no underline, in either
+repo) — the app's underline was removed at the shared-variant level, not with
+a banner-local override, so it's gone everywhere `variant="meta"` is used
+there, not just here. `.pholio-btn--destructive` in the app shared that
+border-bottom declaration before the split and still has its own — don't
+recombine the two selectors when touching either one. Keep the copy and the
+variant choices in sync between the two repos. Manage links to
 `/cookies#preferences`, not bare `/cookies`: that id is the "Change your
 choice" control on the cookies page, and linking past the policy text above it
 is the difference between "Manage" doing something and being a scroll-to-top
