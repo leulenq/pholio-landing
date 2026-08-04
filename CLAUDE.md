@@ -56,6 +56,95 @@ that couldn't reach `pholio-app` to check. If `pholio-app` isn't in reach, these
   `components/header/kit.tsx`, default color the fixed brand gold (not a
   paper-tracking token) so the match holds on cream pages too.
 
+## Loading (`components/GoldSweepLoader.tsx`)
+
+The one loading indicator. It is the gold sweep above, set turning. The
+identical component ships in `pholio-app` as `LoadingSpinner` — keep the two in
+step.
+
+**It is a stroke, not a ring, and that is the whole point.** A stroked
+`<circle>` has one constant width all the way round, so however you fade the
+gold across it, what you have drawn is a mathematical ring wearing brand
+colours. Three passes were rejected for exactly that before this one. The
+sweep swells where it is strongest and thins away to nothing at its ends, so
+the *geometry* has to carry it and the gradient only lights it.
+
+- **The width tapers.** The ribbon is a filled band (`buildSweep`) whose
+  thickness follows the same ramp as its brightness, `WIDTH_EASE` slackening
+  the relationship so the tail thins more slowly than it dims. At the tips it
+  narrows to `TIP_RATIO` of full — about a pixel, the rule's own weight. The
+  mark begins as the rule and swells into the sweep.
+- **It is long** (`SPAN` 230°). The rule runs about 160:1 long-to-thick; a
+  short fat arc reads as a crescent. It still never closes, because it is
+  tapering the whole way.
+- **Round tips, no points**, and a non-concentric path (`SPIRAL` walks the
+  radius outward a few percent, so the curve reads as drawn rather than struck
+  with a compass).
+- **No track.** A faint full circle behind the sweep is the exact perfect ring
+  this is avoiding.
+- **The fade is a conic mask, and has to stay one.** A linear gradient's
+  iso-opacity lines are straight while the band curves away from them, so past
+  a certain arc the fade cuts *lengthwise* along the ribbon rather than across
+  — the tip comes out shaved on the diagonal, weighted to one side. Conic
+  iso-lines are radial, so every tip tapers symmetrically about its centreline.
+  `MASK_EASE` keeps the gold near full strength across the body: ramp the alpha
+  as hard as the width and the two multiply, leaving a stubby crescent.
+- **The cadence is the point.** Two nested rotations at one period: a constant
+  turn plus a ±16° eased oscillation. Their sum sweeps and settles instead of
+  grinding at a fixed rate. Both are tunable via `--pholio-loader-duration` /
+  `--pholio-loader-cadence`.
+- **It is not a client component**, so it can sit in a Suspense fallback or a
+  server shell for free. Reduced motion is honoured in CSS, which reads the
+  same signal as `useReducedMotion()` — converting it to the hook would only
+  buy a hydration round-trip and a flash of motion. At rest the sweep sits at
+  12 o'clock so the still frame still reads as the mark.
+- **Gold tracks the paper**, like the wordmark: `#C9A55A` on ink, the exported
+  `GOLD_DARK` on cream or white, where the brand gold manages only ~2:1. The
+  whole mark draws in `currentColor`.
+- Don't dim a button to 50% while it holds the loader — that pushes the gold
+  under the 3:1 a graphical indicator needs.
+
+## Buttons (`components/PholioButton.tsx`) and the cookie banner
+
+`PholioButton` has two variants, `primary` (solid ink, the default) and
+`secondary` (hairline border, transparent, gold on hover) — both ported from
+the talent dashboard's own `PholioButton`
+(`client/src/shared/components/ui/PholioButton.jsx` in `pholio-app`, which has
+more variants than this site uses). Interaction language — the hairline, the
+gold hover — is copied exactly; resting ink and gold stay on this site's own
+`#050505` / `#C9A55A` rather than the app's literal near-black, since the two
+read identically and this keeps the button on the site's own tokens. A third
+look, `.pholio-btn--meta` (mono, small caps, gold text on hover — no
+underline; one was tried and removed, don't reintroduce it), exists as a CSS
+class only, for link-shaped controls like "Manage" that need `next/link`
+rather than the `<PholioButton>` component's own anchor handling.
+
+`CookieConsentBanner.tsx` is the only place these ship together today: Accept
+all is `variant="primary"`, Necessary only is `variant="secondary"`, Manage
+carries `pholio-btn pholio-btn--meta` directly. The same pairing renders in
+`pholio-app`'s `CookieConsentBanner.jsx`, but from the app's own, separately
+maintained `.pholio-btn--meta` — that one is the "canonical talent button
+primitive," used in ~30 other places across the talent dashboard (Apply flow,
+Profile, Overview, Bio Writer), not something scoped to this banner. Both
+copies of `.pholio-btn--meta` are borderless now (no underline, in either
+repo) — the app's underline was removed at the shared-variant level, not with
+a banner-local override, so it's gone everywhere `variant="meta"` is used
+there, not just here. `.pholio-btn--destructive` in the app shared that
+border-bottom declaration before the split and still has its own — don't
+recombine the two selectors when touching either one. Keep the copy and the
+variant choices in sync between the two repos. Manage links to
+`/cookies#preferences`, not bare `/cookies`: that id is the "Change your
+choice" control on the cookies page, and linking past the policy text above it
+is the difference between "Manage" doing something and being a scroll-to-top
+link with a misleading label.
+
+Banner copy avoids "marketing site": this cookie choice is shared with
+`app.pholio.studio` via the `.pholio.studio`-scoped cookie, so a visitor who
+never leaves www still shouldn't be told the choice only concerns "our
+marketing site." `CookieConsentBanner.tsx` calls it "the platform," matching
+the Terms' own definition (marketing site + app + services, collectively "the
+Platform").
+
 ## Header (`components/header/`)
 
 "The Index" (`VariantIndex.tsx`) is the shipped header — see `docs/header-directions.md`

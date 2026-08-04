@@ -11,9 +11,11 @@ export default function CookiesPage() {
       <ThemeColor color="#FAF7F2" />
       <CookiesContent />
 
-      {/* Both cookie banners send "Manage" here, so the withdrawal control has
-          to live on this page — otherwise the link is a dead end. */}
-      <section className="mx-auto w-full max-w-3xl px-5 pb-16 md:px-8">
+      {/* Both cookie banners send "Manage" to /cookies#preferences, so the
+          withdrawal control has to live here, at this id — otherwise the link
+          either dead-ends or drops the visitor above a wall of policy text
+          instead of at the control they clicked through for. */}
+      <section id="preferences" className="mx-auto w-full max-w-3xl px-5 pb-16 md:px-8 scroll-mt-24">
         <div className="border-t border-[#EDE8DD] pt-8">
           <h2
             className="mb-3 text-xl"

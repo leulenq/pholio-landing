@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 
+import GoldSweepLoader, { GOLD_DARK } from "@/components/GoldSweepLoader";
+
 export function ContactForm() {
   const [formState, setFormState] = useState({
     name: "",
@@ -161,13 +163,20 @@ export function ContactForm() {
                 <button 
                   type="submit" 
                   disabled={isSubmitting}
-                  className="btn-solid-white w-full mt-4 flex justify-center items-center py-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  /* No opacity dim while submitting: the loader is the button's
+                     only content in that state, and halving it takes the gold
+                     below the 3:1 needed for a graphical indicator. The
+                     spinner already says "busy" — the cursor covers the rest. */
+                  className="btn-solid-white w-full mt-4 flex justify-center items-center py-4 rounded-lg disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? (
-                    <motion.div 
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                      className="w-5 h-5 border-2 border-velvet border-t-transparent rounded-full"
+                    /* Dark gold, not #C9A55A: this sits on a white button,
+                       where the brand gold washes out — same paper-tracking
+                       rule the wordmark follows. */
+                    <GoldSweepLoader
+                      size={20}
+                      color={GOLD_DARK}
+                      label="Sending message"
                     />
                   ) : (
                     "Send Message"
