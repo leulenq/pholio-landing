@@ -58,31 +58,37 @@ that couldn't reach `pholio-app` to check. If `pholio-app` isn't in reach, these
 
 ## Loading (`components/GoldSweepLoader.tsx`)
 
-The one loading indicator. It is the gold sweep above, bent into a circle: a
-hairline ring holding the rule at rest, and the same transparent → gold →
-transparent ramp travelling through it as an arc. The identical component ships
-in `pholio-app` as `LoadingSpinner` — keep the two in step.
+The one loading indicator. It is the gold sweep above, set turning. The
+identical component ships in `pholio-app` as `LoadingSpinner` — keep the two in
+step.
 
-- **Fine, but not a hairline** (1.5–2.5px, scaled off the box). It shipped at
-  1–1.75px and read too faint; the current weight is the one that was approved.
-  Still nowhere near the tenth-of-a-diameter band that reads as a progress
-  meter — don't take it further, and don't add glow, pulse or shimmer. Motion
-  is the only ornament.
-- **Both tips taper to transparent**, with zero slope, so each is a soft
-  rounded lead-in rather than a point or a cut. The leading edge especially:
-  hold the gold to a hard head and the sweep becomes a dash and stops reading
-  as the rule. A comet shape was tried and rejected for exactly that. What the
-  ramp *isn't* is symmetric — `PEAK` sits at 0.86, so the gold gathers into a
-  short bright entry and draws out into a long dim tail, which is what gives
-  the sweep a legible start.
-- **The fade is a conic mask over an SVG ring, and has to stay one.** Painting
-  the arc with an `<linearGradient>` is the obvious build and is subtly wrong:
-  a linear gradient's iso-opacity lines are straight, the stroke curves away
-  from them, and by the end of a 150° arc the fade is cutting *lengthwise*
-  along the band — the tip comes out shaved on the diagonal, weighted to one
-  side of the stroke. Conic iso-lines are radial, so every tip tapers
-  symmetrically about its centreline. The ring stays SVG because a stroked
-  `<circle>` rasterises crisply; the mask only carries the light.
+**It is a stroke, not a ring, and that is the whole point.** A stroked
+`<circle>` has one constant width all the way round, so however you fade the
+gold across it, what you have drawn is a mathematical ring wearing brand
+colours. Three passes were rejected for exactly that before this one. The
+sweep swells where it is strongest and thins away to nothing at its ends, so
+the *geometry* has to carry it and the gradient only lights it.
+
+- **The width tapers.** The ribbon is a filled band (`buildSweep`) whose
+  thickness follows the same ramp as its brightness, `WIDTH_EASE` slackening
+  the relationship so the tail thins more slowly than it dims. At the tips it
+  narrows to `TIP_RATIO` of full — about a pixel, the rule's own weight. The
+  mark begins as the rule and swells into the sweep.
+- **It is long** (`SPAN` 230°). The rule runs about 160:1 long-to-thick; a
+  short fat arc reads as a crescent. It still never closes, because it is
+  tapering the whole way.
+- **Round tips, no points**, and a non-concentric path (`SPIRAL` walks the
+  radius outward a few percent, so the curve reads as drawn rather than struck
+  with a compass).
+- **No track.** A faint full circle behind the sweep is the exact perfect ring
+  this is avoiding.
+- **The fade is a conic mask, and has to stay one.** A linear gradient's
+  iso-opacity lines are straight while the band curves away from them, so past
+  a certain arc the fade cuts *lengthwise* along the ribbon rather than across
+  — the tip comes out shaved on the diagonal, weighted to one side. Conic
+  iso-lines are radial, so every tip tapers symmetrically about its centreline.
+  `MASK_EASE` keeps the gold near full strength across the body: ramp the alpha
+  as hard as the width and the two multiply, leaving a stubby crescent.
 - **The cadence is the point.** Two nested rotations at one period: a constant
   turn plus a ±16° eased oscillation. Their sum sweeps and settles instead of
   grinding at a fixed rate. Both are tunable via `--pholio-loader-duration` /

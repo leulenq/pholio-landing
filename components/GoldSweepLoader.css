@@ -9,9 +9,6 @@
  * base rate, so the sweep gathers and settles once per revolution without ever
  * stalling or reversing. Tune with the two custom properties below; drop the
  * cadence to 0 and it degrades to an ordinary constant spin.
- *
- * The two rings stack: the resting track sits underneath, the masked sweep
- * turns above it.
  */
 
 .pholio-loader {
@@ -26,12 +23,6 @@
   flex: none;
 }
 
-.pholio-loader__ring,
-.pholio-loader__orbit {
-  position: absolute;
-  inset: 0;
-}
-
 .pholio-loader__orbit,
 .pholio-loader__cadence {
   display: block;
@@ -40,9 +31,9 @@
   will-change: transform;
 }
 
+.pholio-loader__orbit,
 .pholio-loader__cadence,
-.pholio-loader__sweep,
-.pholio-loader__ring {
+.pholio-loader__sweep {
   width: 100%;
   height: 100%;
 }
