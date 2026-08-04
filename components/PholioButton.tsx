@@ -2,10 +2,16 @@ import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "reac
 import "./PholioButton.css";
 
 type PholioButtonTone = "light" | "dark";
+type PholioButtonVariant = "primary" | "secondary";
 
 type SharedProps = {
   children: ReactNode;
   tone?: PholioButtonTone;
+  /** "primary" is the solid ink button; "secondary" is the hairline alternate
+   *  ported from the talent dashboard's `PholioButton` (same component name,
+   *  `client/src/shared/components/ui/PholioButton.jsx`) — transparent, gold
+   *  on hover. Default "primary" keeps every existing call site unchanged. */
+  variant?: PholioButtonVariant;
   compact?: boolean;
   className?: string;
 };
@@ -29,6 +35,7 @@ function cx(...values: Array<string | false | undefined>) {
 export function PholioButton({
   children,
   tone = "light",
+  variant = "primary",
   compact = false,
   className,
   href,
@@ -36,7 +43,7 @@ export function PholioButton({
 }: PholioButtonProps) {
   const classes = cx(
     "pholio-btn",
-    "pholio-btn--primary",
+    `pholio-btn--${variant}`,
     tone === "dark" && "pholio-btn--tone-dark",
     compact && "pholio-btn--compact",
     className,

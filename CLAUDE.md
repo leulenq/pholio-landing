@@ -104,6 +104,37 @@ the *geometry* has to carry it and the gradient only lights it.
 - Don't dim a button to 50% while it holds the loader — that pushes the gold
   under the 3:1 a graphical indicator needs.
 
+## Buttons (`components/PholioButton.tsx`) and the cookie banner
+
+`PholioButton` has two variants, `primary` (solid ink, the default) and
+`secondary` (hairline border, transparent, gold on hover) — both ported from
+the talent dashboard's own `PholioButton`
+(`client/src/shared/components/ui/PholioButton.jsx` in `pholio-app`, which has
+more variants than this site uses). Interaction language — the hairline, the
+gold hover — is copied exactly; resting ink and gold stay on this site's own
+`#050505` / `#C9A55A` rather than the app's literal near-black, since the two
+read identically and this keeps the button on the site's own tokens. A third
+look, `.pholio-btn--meta` (mono, small caps, gold underline on hover), exists
+as a CSS class only, for link-shaped controls like "Manage" that need
+`next/link` rather than the `<PholioButton>` component's own anchor handling.
+
+`CookieConsentBanner.tsx` is the only place these ship together today: Accept
+all is `variant="primary"`, Necessary only is `variant="secondary"`, Manage
+carries `pholio-btn pholio-btn--meta` directly. The identical pairing renders
+in `pholio-app`'s `CookieConsentBanner.jsx` from the same source component —
+keep the copy and the variant choices in sync between the two. Manage links to
+`/cookies#preferences`, not bare `/cookies`: that id is the "Change your
+choice" control on the cookies page, and linking past the policy text above it
+is the difference between "Manage" doing something and being a scroll-to-top
+link with a misleading label.
+
+Banner copy avoids "marketing site": this cookie choice is shared with
+`app.pholio.studio` via the `.pholio.studio`-scoped cookie, so a visitor who
+never leaves www still shouldn't be told the choice only concerns "our
+marketing site." `CookieConsentBanner.tsx` calls it "the platform," matching
+the Terms' own definition (marketing site + app + services, collectively "the
+Platform").
+
 ## Header (`components/header/`)
 
 "The Index" (`VariantIndex.tsx`) is the shipped header — see `docs/header-directions.md`

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { getConsent, setConsent, onConsentChange } from "@/lib/cookie-consent";
+import { PholioButton } from "@/components/PholioButton";
 
 const linkClassName =
   "underline decoration-[#C9A55A]/40 underline-offset-2 transition-colors duration-150 hover:text-[#C9A55A]";
@@ -56,8 +57,8 @@ export default function CookieConsentBanner() {
                 color: "#4B5563",
               }}
             >
-              We use cookies and similar technologies to keep Pholio secure, remember
-              your preferences, and understand how our marketing site is used. Read our{" "}
+              We use cookies to keep Pholio secure, remember your preferences, and
+              understand how the platform is used. Read our{" "}
               <Link href="/cookies" className={linkClassName}>
                 Cookie Policy
               </Link>{" "}
@@ -69,60 +70,21 @@ export default function CookieConsentBanner() {
             </p>
 
             <div className="flex shrink-0 flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-              <button
-                type="button"
-                onClick={handleAcceptAll}
-                className="inline-flex items-center justify-center rounded-full px-6 py-3 text-[10px] font-bold uppercase tracking-[0.15em] transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#050505]/25 focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAF7F2]"
-                style={{
-                  fontFamily: "var(--font-sans)",
-                  backgroundColor: "#050505",
-                  color: "#FFFFFF",
-                }}
-                onMouseEnter={(event) => {
-                  event.currentTarget.style.backgroundColor = "#1A1815";
-                }}
-                onMouseLeave={(event) => {
-                  event.currentTarget.style.backgroundColor = "#050505";
-                }}
-              >
+              <PholioButton type="button" variant="primary" onClick={handleAcceptAll}>
                 Accept all
-              </button>
+              </PholioButton>
 
-              <button
+              <PholioButton
                 type="button"
+                variant="secondary"
                 onClick={handleNecessaryOnly}
-                className="inline-flex items-center justify-center rounded-full border px-6 py-3 text-[10px] font-bold uppercase tracking-[0.15em] transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#050505]/25 focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAF7F2]"
-                style={{
-                  fontFamily: "var(--font-sans)",
-                  borderColor: "#050505",
-                  color: "#050505",
-                  backgroundColor: "#FFFFFF",
-                }}
-                onMouseEnter={(event) => {
-                  event.currentTarget.style.backgroundColor = "#F5F0E8";
-                }}
-                onMouseLeave={(event) => {
-                  event.currentTarget.style.backgroundColor = "#FFFFFF";
-                }}
               >
                 Necessary only
-              </button>
+              </PholioButton>
 
-              <Link
-                href="/cookies"
-                className="inline-flex items-center justify-center rounded-full px-2 py-3 text-[10px] font-semibold uppercase tracking-[0.12em] transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#050505]/25 focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAF7F2]"
-                style={{
-                  fontFamily: "var(--font-sans)",
-                  color: "#64748B",
-                  textDecoration: "none",
-                }}
-                onMouseEnter={(event) => {
-                  event.currentTarget.style.color = "#050505";
-                }}
-                onMouseLeave={(event) => {
-                  event.currentTarget.style.color = "#64748B";
-                }}
-              >
+              {/* Jumps straight to the "Change your choice" control on /cookies,
+                  not just the top of the policy page above it. */}
+              <Link href="/cookies#preferences" className="pholio-btn pholio-btn--meta">
                 Manage
               </Link>
             </div>

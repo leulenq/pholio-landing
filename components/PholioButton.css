@@ -1,11 +1,24 @@
-/* Editorial Ledger primary — solid black / solid white only */
+/* Editorial Ledger — solid ink primary, hairline secondary, mono meta link.
+   Ported from the talent dashboard's PholioButton
+   (client/src/shared/components/ui/PholioButton.jsx in pholio-app), which is
+   the canonical two-action pairing everywhere the app asks a visitor to
+   choose between a commit and an alternative — the cookie banner included.
+   Interaction language (hairline border, gold-on-hover) is copied exactly;
+   resting ink and gold stay on this site's own tokens (#050505 / #C9A55A)
+   rather than the app's literal near-black, since the two are visually
+   indistinguishable and this keeps the button on the site's own palette. */
 
 .pholio-btn {
   --ph-btn-ink: #050505;
   --ph-btn-canvas: #ffffff;
+  --ph-btn-gold: #c9a55a;
+  --ph-btn-gold-text: #75501b;
+  --ph-btn-hair-strong: rgba(5, 5, 5, 0.16);
+  --ph-btn-hair-gold: rgba(201, 165, 90, 0.32);
   --ph-btn-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --ph-btn-radius: 3px;
   --ph-btn-sans: var(--font-sans);
+  --ph-btn-mono: var(--font-mono);
 
   position: relative;
   display: inline-flex;
@@ -74,6 +87,59 @@
 
 .pholio-btn--primary.pholio-btn--tone-dark:focus-visible {
   outline-color: rgba(255, 255, 255, 0.55);
+}
+
+.pholio-btn--secondary {
+  min-height: 44px;
+  gap: 9px;
+  padding: 10px 20px;
+  border: 1px solid var(--ph-btn-hair-strong);
+  background: transparent;
+  color: var(--ph-btn-ink);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.pholio-btn--secondary:hover {
+  border-color: var(--ph-btn-gold);
+  background: rgba(201, 165, 90, 0.05);
+  color: var(--ph-btn-gold-text);
+}
+
+.pholio-btn--secondary.pholio-btn--tone-dark {
+  border-color: rgba(255, 255, 255, 0.24);
+  color: #ffffff;
+}
+
+.pholio-btn--secondary.pholio-btn--tone-dark:hover {
+  border-color: var(--ph-btn-gold);
+  background: rgba(201, 165, 90, 0.1);
+  color: #d4bc8a;
+}
+
+/* Manage: a link, not a commit, so it doesn't take the boxed treatment above —
+   applied directly (not through <PholioButton>, which the cookie banner's
+   "Manage" control can't use because it needs next/link for client-side nav,
+   not a plain <a>). Ported from the same source as the two variants above. */
+.pholio-btn--meta {
+  min-height: 32px;
+  padding: 4px 0 6px;
+  border: 0;
+  border-bottom: 1px solid var(--ph-btn-hair-gold);
+  border-radius: 0;
+  background: transparent;
+  color: var(--ph-btn-ink);
+  font-family: var(--ph-btn-mono);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.pholio-btn--meta:hover {
+  border-color: var(--ph-btn-gold);
+  color: var(--ph-btn-gold-text);
 }
 
 .pholio-btn--compact {
