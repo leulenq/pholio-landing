@@ -63,9 +63,17 @@ hairline ring holding the rule at rest, and the same transparent → gold →
 transparent ramp travelling through it as an arc. The identical component ships
 in `pholio-app` as `LoadingSpinner` — keep the two in step.
 
-- **Hairline weight only** (1–1.75px, scaled off the box). A thick ring is a
-  progress meter; this is a rule. Don't thicken it, and don't add glow, pulse
-  or shimmer — motion is the only ornament.
+- **Fine, but not a hairline** (1.5–2.5px, scaled off the box). It shipped at
+  1–1.75px and read too faint; the current weight is the one that was approved.
+  Still nowhere near the tenth-of-a-diameter band that reads as a progress
+  meter — don't take it further, and don't add glow, pulse or shimmer. Motion
+  is the only ornament.
+- **Both tips taper to transparent** (`RAMP`). The leading edge especially: cut
+  it off at strength and the sweep becomes a dash and stops reading as the rule.
+  A comet shape — gold held to a hard head — was tried and rejected for exactly
+  that. What the ramp *isn't* is symmetric: the peak sits at 0.88, so the gold
+  gathers into a short bright entry and draws out into a long dim tail, which
+  is what gives the sweep a legible start.
 - **The cadence is the point.** Two nested rotations at one period: a constant
   turn plus a ±16° eased oscillation. Their sum sweeps and settles instead of
   grinding at a fixed rate. Both are tunable via `--pholio-loader-duration` /
