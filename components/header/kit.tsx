@@ -43,7 +43,11 @@ import {
   Sparkles,
 } from "lucide-react";
 
-import { MARKETING_NAV_LINKS } from "@/lib/marketing-nav-links";
+import {
+  PRIMARY_NAV,
+  SECONDARY_NAV,
+  isBuilt,
+} from "@/lib/marketing-nav-links";
 import { PHOLIO_APP_ORIGIN as APP_URL } from "@/lib/pholio-app-origin";
 import { STUDIO_PLUS_SIGNUP_URL } from "@/lib/marketing-pricing";
 import { usePholioAuth } from "@/lib/pholio-auth/PholioAuthProvider";
@@ -118,21 +122,18 @@ export const MONO = "var(--font-mono)";
    ══════════════════════════════════════════════════════════════════════ */
 
 /**
- * The marketing nav is not a flat list of pages — it is two audience doors and
- * one product tier, carried on `kind` for any variant that wants to express it.
+ * The nav is not a flat list of pages — it is two audience doors and one
+ * product tier, carried on `kind` for any variant that wants to express it.
+ *
+ * Both lists render all entries, built or not. The index displays the page
+ * names and routes. Clicking unbuilt pages goes to empty shells.
  */
-export const NAV = MARKETING_NAV_LINKS.map((link, i) => ({
+export const NAV = PRIMARY_NAV.map((link, i) => ({
   ...link,
   index: String(i + 1).padStart(2, "0"),
-  kind: link.label === "STUDIO+" ? ("tier" as const) : ("door" as const),
 }));
 
-export const SECONDARY_LINKS = [
-  { label: "About", href: "/about-us" },
-  { label: "Careers", href: "/careers" },
-  { label: "Contact", href: "/contact" },
-  { label: "Press", href: "/press" },
-];
+export const SECONDARY_LINKS = SECONDARY_NAV;
 
 export const LOGIN_HREF = `${APP_URL}/login`;
 export const SIGNUP_HREF = `${APP_URL}/onboarding`;
@@ -142,14 +143,15 @@ export const SIGNUP_HREF = `${APP_URL}/onboarding`;
    ══════════════════════════════════════════════════════════════════════ */
 
 /**
- * The home page carries its own chrome inside the 300vh hero composition, so
- * the sitewide header stays out of the way until the hero has left. (The old
- * header looked for a `[data-header-switch]` marker that no longer exists in
- * the DOM, which is why it never appeared on `/` at all — so this measures the
- * hero itself, and falls back to one viewport of scroll if there isn't one.)
+ * A home hero is expected to carry its own chrome, so the sitewide header stays
+ * out of the way until the hero has left the viewport.
  *
- * Note `/` currently serves the "Launching soon" holding page, which has no hero
- * and does not scroll — so the header stays hidden there, which is correct.
+ * This measures the hero itself: mark the hero's `<section>` by putting
+ * `data-hero-chrome` on any element inside it. Without that marker the header
+ * falls back to one viewport of scroll — which means a home page that does not
+ * scroll never reveals the header at all. That is deliberate, not a bug, but it
+ * is also the single easiest way to ship a page with no visible navigation.
+ * If the header is missing on `/`, this is the first thing to check.
  */
 const CONDENSE_AT = 96; // px of scroll before the header settles
 
@@ -158,8 +160,11 @@ function homeHeaderRevealed(): boolean {
     .querySelector("[data-hero-chrome]")
     ?.closest("section");
   if (hero) {
-    // Revealed once the hero's last frame has largely left the viewport.
-    return hero.getBoundingClientRect().bottom <= window.innerHeight * 0.5;
+    const rect = hero.getBoundingClientRect();
+    // The corner marks stay visible at the very top of the page, hide while
+    // the hero is actively being scrolled through, and reappear once the hero
+    // has mostly left the viewport.
+    return rect.top >= 0 || rect.bottom <= window.innerHeight * 0.5;
   }
   return window.scrollY > window.innerHeight;
 }
@@ -192,7 +197,11 @@ export function useHeaderState({
   const reduceMotion = !!useReducedMotion();
   const { scrollY } = useScroll();
 
-  const [revealed, setRevealed] = useState(preview || !isHome);
+  const [revealed, setRevealed] = useState(() => {
+    if (preview) return true;
+    if (typeof window === "undefined") return true;
+    return isHome ? homeHeaderRevealed() : true;
+  });
   const [condensed, setCondensed] = useState(
     preview && previewState === "settled",
   );
@@ -202,8 +211,12 @@ export function useHeaderState({
 
   useEffect(() => {
     if (preview) return;
-    setRevealed(!isHome);
-    setCondensed(false);
+    if (isHome) {
+      setRevealed(homeHeaderRevealed());
+    } else {
+      setRevealed(true);
+    }
+    setCondensed(window.scrollY > CONDENSE_AT);
   }, [isHome, preview]);
 
   useMotionValueEvent(scrollY, "change", (latest) => {
@@ -213,6 +226,9 @@ export function useHeaderState({
     }
     setCondensed(latest > CONDENSE_AT);
   });
+
+  /* The closing panel takes the screen, and the bar gets out of its way. */
+  const footerOwnsView = useFooterTakeover(!preview);
 
   /* Field polarity: read the paper directly under the bar so the header belongs
      to whatever section it is crossing, instead of being frozen per route. */
@@ -228,12 +244,49 @@ export function useHeaderState({
   return {
     field: preview ? theme : field,
     tokens: TOKENS[preview ? theme : field],
-    revealed,
+    revealed: revealed && !footerOwnsView,
     condensed: preview ? previewState === "settled" : condensed,
     paper: preview ? null : paper,
     pathname,
     reduceMotion,
   };
+}
+
+/**
+ * True once the site's closing panel owns most of the screen.
+ *
+ * The panel is a viewport tall and is meant to read as a destination, so the
+ * header standing down is part of the composition rather than a nicety: a
+ * persistent bar over it makes it a long section instead of an ending.
+ *
+ * `rootMargin` shrinks the observer's root to the **top 40%** of the viewport,
+ * so this reports true exactly when the panel's top edge has risen past that
+ * line and it is the majority of what anyone can see. An IntersectionObserver
+ * rather than a scroll handler: no main-thread work per frame, and the state
+ * change is a callback rather than a setState inside an effect body.
+ *
+ * The header's own opacity transition does the fade, so the takeover is a
+ * half-second dissolve rather than a cut.
+ */
+function useFooterTakeover(enabled: boolean): boolean {
+  const [taken, setTaken] = useState(false);
+
+  useEffect(() => {
+    if (!enabled || typeof window === "undefined") return;
+    const trigger =
+      document.querySelector("[data-footer-trigger]") ||
+      document.querySelector("[data-site-footer]");
+    if (!trigger) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setTaken(entry.isIntersecting),
+      { rootMargin: "0px 0px -15% 0px" },
+    );
+    observer.observe(trigger);
+    return () => observer.disconnect();
+  }, [enabled]);
+
+  return taken;
 }
 
 const OPAQUE_SKIP = new Set(["rgba(0, 0, 0, 0)", "transparent"]);
@@ -337,10 +390,44 @@ function useFieldPolarity({
 export function useScrollLock(active: boolean) {
   useEffect(() => {
     if (!active || typeof document === "undefined") return;
-    const previous = document.body.style.overflow;
+
+    const scrollbarWidth =
+      window.innerWidth - document.documentElement.clientWidth;
+
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousBodyPaddingRight = document.body.style.paddingRight;
+
     document.body.style.overflow = "hidden";
+
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+
+    const header = document.querySelector(
+      "[data-site-header]",
+    ) as HTMLElement | null;
+    const previousHeaderPaddingRight = header?.style.paddingRight ?? "";
+    if (header && scrollbarWidth > 0) {
+      header.style.paddingRight = `${scrollbarWidth}px`;
+    }
+
+    const indexPanel = document.querySelector(
+      "[data-index-panel]",
+    ) as HTMLElement | null;
+    const previousPanelPaddingRight = indexPanel?.style.paddingRight ?? "";
+    if (indexPanel && scrollbarWidth > 0) {
+      indexPanel.style.paddingRight = `${scrollbarWidth}px`;
+    }
+
     return () => {
-      document.body.style.overflow = previous;
+      document.body.style.overflow = previousBodyOverflow;
+      document.body.style.paddingRight = previousBodyPaddingRight;
+      if (header) {
+        header.style.paddingRight = previousHeaderPaddingRight;
+      }
+      if (indexPanel) {
+        indexPanel.style.paddingRight = previousPanelPaddingRight;
+      }
     };
   }, [active]);
 }
@@ -508,7 +595,7 @@ export function Kicker({
 /**
  * A nav word with a rule that draws in from the left on hover and sits filled
  * when the route is live. Hover is a colour and a line — never a scale, never a
- * pill (the site runs a custom cursor, so the feedback has to live on the mark).
+ * pill. Feedback lives on the mark itself, so it survives being read at 10px.
  */
 export function NavLink({
   href,
@@ -546,37 +633,23 @@ export function NavLink({
   };
 
   const content = (
-    <>
-      <span
-        style={{
-          fontFamily: SANS,
-          fontSize: size,
-          fontWeight: 500,
-          letterSpacing: `${tracking}em`,
-          textTransform: "uppercase",
-          lineHeight: 1,
-          color: live
-            ? (activeColor ?? tokens.gold)
-            : (color ?? tokens.textMuted),
-          transition: "color 0.32s cubic-bezier(0.22,1,0.36,1)",
-          whiteSpace: "nowrap",
-        }}
-      >
-        {label}
-      </span>
-      <span
-        aria-hidden
-        style={{
-          position: "absolute",
-          left: 0,
-          bottom: 0,
-          height: 1,
-          width: live ? "100%" : 0,
-          background: activeColor ?? tokens.gold,
-          transition: "width 0.42s cubic-bezier(0.22,1,0.36,1)",
-        }}
-      />
-    </>
+    <span
+      style={{
+        fontFamily: SANS,
+        fontSize: size,
+        fontWeight: 500,
+        letterSpacing: `${tracking}em`,
+        textTransform: "uppercase",
+        lineHeight: 1,
+        color: live
+          ? (activeColor ?? tokens.gold)
+          : (color ?? tokens.textMuted),
+        transition: "color 0.32s cubic-bezier(0.22,1,0.36,1)",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {label}
+    </span>
   );
 
   return external ? (
@@ -1064,6 +1137,7 @@ export function IndexPanel({
 
   return (
     <motion.div
+      data-index-panel
       className={`${contained ? "absolute" : "fixed"} inset-x-0 bottom-0 z-[102] flex flex-col`}
       initial={false}
       animate={{ opacity: open ? 1 : 0, pointerEvents: open ? "auto" : "none" }}
@@ -1083,26 +1157,12 @@ export function IndexPanel({
 
       <FieldProvider tokens={TOKENS.ink}>
         <div
-          className={
-            "relative mx-auto flex h-full w-full max-w-[1440px] flex-col px-6 md:px-12" +
-            (full && !contained ? " pt-24 md:pt-40" : "")
-          }
+          className="relative mx-auto flex h-full w-full max-w-[1440px] flex-col px-6 md:px-12"
           /* `full` clears the corner marks; extra top inset gives Talent room
-             under the bar — 160px on desktop's taller canvas, a leaner 112px
-             on mobile (the header itself is 83px), so the top clearance and
-             the ~28px bottom inset stay in the same order of magnitude rather
-             than desktop's proportion dragged onto a much shorter viewport.
-             Live sizes are Tailwind classes (`pt-28 md:pt-40`) so they can
-             actually differ by breakpoint; `contained` (the docs preview
-             frame) keeps its own fixed inline value, since that frame has no
-             real viewport to be short on. Content below centers vertically
-             in whatever's left (`justify-center`), not anchored to the top —
-             so this top inset only sets a floor, it doesn't by itself decide
-             how much air ends up above Talent. Clerical pair follows the
-             index at a fixed gap — not mt-auto — so More / Account sit
-             right under the entries rather than pinned to the sheet's edge. */
+             under the bar. Clerical pair follows the index at a fixed gap —
+             not mt-auto — so More / Account sit higher on the sheet. */
           style={{
-            paddingTop: full ? (contained ? 112 : undefined) : 44,
+            paddingTop: full ? (contained ? 112 : 160) : 44,
             paddingBottom: contained
               ? "1.5rem"
               : "max(1.75rem, env(safe-area-inset-bottom))",
@@ -1111,7 +1171,7 @@ export function IndexPanel({
           <div
             className={
               full
-                ? "flex flex-1 flex-col justify-center overflow-y-auto md:grid md:grid-cols-[1.5fr_1fr] md:gap-12 md:overflow-visible"
+                ? "flex flex-1 flex-col overflow-y-auto md:grid md:grid-cols-[1.5fr_1fr] md:gap-12 md:overflow-visible"
                 : "flex flex-1 flex-col"
             }
           >

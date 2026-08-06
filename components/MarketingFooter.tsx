@@ -1,22 +1,20 @@
 "use client";
 
 /**
- * The sitewide footer mount.
+ * Sitewide footer mount used by the /talent flow.
  *
- * This used to be the footer itself; it is now a one-line shim onto
- * `FooterWrapper`, which selects a direction (see `lib/footer-variants.ts`).
- * Keeping the name and the `theme` prop means the eighteen pages that already
- * mount `<MarketingFooter />` need no edit to pick up the redesign, and the
- * old implementation stays reachable at `components/MarketingFooterLegacy.tsx`
- * via `?footer=current`.
+ * In pholio-landing this was a shim onto a variant-based footer system.
+ * pholio-site has one SiteFooter, so this preserves the component name and
+ * `theme` prop while routing to the site's existing closing panel.
  */
 
-import FooterWrapper from "@/components/FooterWrapper";
+import SiteFooter from "@/components/footer/SiteFooter";
 
 export interface MarketingFooterProps {
   theme?: "light" | "dark";
 }
 
 export default function MarketingFooter({ theme = "light" }: MarketingFooterProps) {
-  return <FooterWrapper theme={theme} />;
+  void theme;
+  return <SiteFooter />;
 }

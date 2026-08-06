@@ -39,15 +39,18 @@ import { useState } from "react";
 import Link from "next/link";
 
 import {
+  AccountCluster,
   EASE,
   FieldProvider,
   GoldSweep,
   IndexPanel,
   IndexTrigger,
+  NavLink,
   Wordmark,
   useHeaderState,
   type HeaderVariantProps,
 } from "./kit";
+import { PRIMARY_NAV } from "@/lib/marketing-nav-links";
 
 export default function VariantIndex({
   theme = "ink",
@@ -62,6 +65,7 @@ export default function VariantIndex({
   /* Paper only once the page has moved under the marks. Open, the index owns
      the field and supplies its own. */
   const onPaper = condensed && !open;
+  const isHero = pathname === "/" && !condensed && !open;
 
   return (
     <FieldProvider tokens={tokens}>
@@ -120,23 +124,42 @@ export default function VariantIndex({
           className="relative mx-auto flex w-full max-w-[1440px] items-center justify-between px-6 md:px-12"
           style={{ paddingTop: 30, paddingBottom: 26 }}
         >
-          {/* The resting state is the wordmark and nothing else — no descriptor,
-              no clerical line. Whatever Pholio is gets said inside the index. */}
-          <Link
-            href="/"
-            aria-label="Pholio — home"
-            className="focus:outline-none"
-            style={{ textDecoration: "none" }}
-          >
-            <Wordmark size={24} style={{ transition: `color ${T}` }} />
-          </Link>
+          {isHero ? (
+            <>
+              <nav className="flex items-center gap-6 md:gap-8">
+                {PRIMARY_NAV.map((link) => (
+                  <NavLink
+                    key={link.href}
+                    href={link.href}
+                    label={link.label}
+                    active={pathname === link.href}
+                    size={11}
+                    tracking={0.16}
+                  />
+                ))}
+              </nav>
 
-          <IndexTrigger
-            open={open}
-            onToggle={() => setOpen((v) => !v)}
-            label="Index"
-            tokens={open ? { ...tokens, text: "#FAF7F2" } : tokens}
-          />
+              <AccountCluster />
+            </>
+          ) : (
+            <>
+              <Link
+                href="/"
+                aria-label="Pholio — home"
+                className="focus:outline-none"
+                style={{ textDecoration: "none" }}
+              >
+                <Wordmark size={24} style={{ transition: `color ${T}` }} />
+              </Link>
+
+              <IndexTrigger
+                open={open}
+                onToggle={() => setOpen((v) => !v)}
+                label="Index"
+                tokens={open ? { ...tokens, text: "#FAF7F2" } : tokens}
+              />
+            </>
+          )}
         </div>
       </header>
 

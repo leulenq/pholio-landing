@@ -15,25 +15,33 @@ import { HEADER_COMPONENTS } from "@/components/header/index";
 const STORAGE_KEY = "pholio:header-variant";
 
 /**
- * Ink field: near-black cinematic page shells (#050505, #0A0A0F, the home stack).
- * Cream field: warm editorial pages (#FAF8F5, #FAF7F2).
+ * The route's *starting* polarity, and nothing more.
  *
- * This is only the *starting* polarity — the redesigned headers sample the paper
- * beneath the bar while scrolling and flip themselves when a page changes field
- * mid-scroll (the current header can't, which is why it goes dark over cream
- * sections on the home page).
+ * The header samples the paper directly beneath the bar while scrolling
+ * (`useFieldPolarity` in components/header/kit.tsx) and flips itself when a
+ * page changes field mid-scroll. This function only answers "what is under the
+ * bar before the first sample lands", so it exists to prevent one frame of the
+ * wrong polarity — not to describe the page.
+ *
+ * Ink is the default because the document canvas is velvet. Legal documents are
+ * the site's cream surfaces: long-form reading is set on paper.
  */
+const CREAM_ROUTES = [
+  "/terms",
+  "/privacy",
+  "/cookies",
+  "/dmca",
+  "/ai-notice",
+  "/community-guidelines",
+  "/take-it-down",
+  "/legal",
+];
+
 function fieldForRoute(pathname: string | null): "ink" | "cream" {
-  const isInk =
-    pathname === "/" ||
-    !!pathname?.startsWith("/talent") ||
-    !!pathname?.startsWith("/agency") ||
-    !!pathname?.startsWith("/about-us") ||
-    !!pathname?.startsWith("/contact") ||
-    !!pathname?.startsWith("/careers") ||
-    !!pathname?.startsWith("/studio/plus") ||
-    !!pathname?.startsWith("/studio-plus");
-  return isInk ? "ink" : "cream";
+  if (!pathname) return "ink";
+  return CREAM_ROUTES.some((route) => pathname.startsWith(route))
+    ? "cream"
+    : "ink";
 }
 
 /**
@@ -43,8 +51,7 @@ function fieldForRoute(pathname: string | null): "ink" | "cream" {
  * DEFAULT_HEADER_VARIANT renders. `?header=reset` clears it.
  *
  * There is deliberately no on-page indicator of which variant is applied —
- * anything pinned to the viewport competes with the header. `?header=current`
- * is kept only as an emergency rollback to the pre-redesign glass pill.
+ * anything pinned to the viewport competes with the header itself.
  */
 function useHeaderVariant(): HeaderVariantId {
   const [variant, setVariant] = useState<HeaderVariantId>(DEFAULT_HEADER_VARIANT);

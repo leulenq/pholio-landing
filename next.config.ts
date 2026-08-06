@@ -1,12 +1,25 @@
 import type { NextConfig } from "next";
 
-/** Web app (login, onboarding, dashboard) — public CTAs point here. */
+/**
+ * Pholio public site — build + edge configuration.
+ *
+ * Everything in this file is a cross-repo contract with pholio-app. It is not
+ * design surface and it did not get reset with the rest of the site: the two
+ * origins share a session cookie, so this config is half of a security
+ * boundary. Read `docs/app-integration.md` before changing any of it.
+ */
+
+/** The web app (login, onboarding, dashboard). Every account CTA points here. */
 const pholioAppOrigin =
   process.env.NEXT_PUBLIC_APP_URL || "https://app.pholio.studio";
 
 /**
- * API proxy target for /api/* (session, logout). Defaults to the same host as the web app.
- * Override with APP_BACKEND_URL (e.g. http://localhost:3000) when the app runs locally.
+ * Proxy target for `/api/*`. This site never calls the app cross-origin — Next
+ * proxies server-side and forwards the Cookie header, so the shared
+ * `.pholio.studio` session cookie reaches Express without CORS.
+ *
+ * Override with APP_BACKEND_URL when running the app somewhere other than
+ * localhost:3000.
  */
 const apiBackendOrigin =
   process.env.APP_BACKEND_URL ||
@@ -15,36 +28,46 @@ const apiBackendOrigin =
     : pholioAppOrigin);
 
 const nextConfig: NextConfig = {
-  reactStrictMode: false,
+  reactStrictMode: true,
+
   images: {
+    // Talent avatars in the account cluster are served by the app.
     remotePatterns: [
+      { protocol: "https", hostname: "app.pholio.studio" },
+      { protocol: "https", hostname: "**.pholio.studio" },
+      // Brought in with the /talent section: stock portraits and placeholder
+      // faces used in the comp-card showcase and photo-intelligence scene.
       { protocol: "https", hostname: "images.unsplash.com" },
+      { protocol: "https", hostname: "i.pravatar.cc" },
     ],
   },
+
   env: {
     NEXT_PUBLIC_APP_URL: pholioAppOrigin,
   },
+
   /**
    * Security headers.
    *
-   * This site shipped none — no CSP, no frame protection, no HSTS — while
-   * pholio-app runs helmet. That asymmetry matters because both origins share
-   * the `.pholio.studio` session cookie: www is a same-site origin that can
-   * POST to /api/login and /api/logout with that cookie attached, so the weaker
-   * surface effectively sets the trust boundary for both.
+   * www and app share the `.pholio.studio` session cookie, which makes www a
+   * same-site origin able to POST to /api/logout with that cookie attached.
+   * The weaker of the two origins sets the trust boundary for both, so this
+   * site runs headers even though it holds no credentials of its own.
    *
-   * CSP is report-only for now, matching the app's posture — the marketing
-   * scenes use inline styles and framer-motion, so an enforced policy needs a
-   * browser pass first. The rest are enforced.
+   * CSP is report-only. The site uses inline styles and framer-motion, so
+   * enforcing it needs a browser pass first — do that pass before flipping the
+   * header name to `Content-Security-Policy`, and treat flipping it as a real
+   * task rather than a one-word edit.
    */
   async headers() {
     const csp = [
       "default-src 'self'",
       "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
       "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data: blob: https://images.unsplash.com",
+      "img-src 'self' data: blob: https://*.pholio.studio https://images.unsplash.com https://i.pravatar.cc",
       "font-src 'self' data:",
-      `connect-src 'self' ${apiBackendOrigin} https://*.googleapis.com https://*.firebaseio.com https://www.gstatic.com`,
+      // Same-origin only: /api/* is a server-side rewrite, not a browser call.
+      "connect-src 'self'",
       "frame-ancestors 'none'",
       "base-uri 'self'",
       "form-action 'self'",
@@ -57,10 +80,7 @@ const nextConfig: NextConfig = {
           { key: "Content-Security-Policy-Report-Only", value: csp },
           { key: "X-Frame-Options", value: "DENY" },
           { key: "X-Content-Type-Options", value: "nosniff" },
-          {
-            key: "Referrer-Policy",
-            value: "strict-origin-when-cross-origin",
-          },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           {
             key: "Strict-Transport-Security",
             value: "max-age=31536000; includeSubDomains",
@@ -75,19 +95,15 @@ const nextConfig: NextConfig = {
   },
 
   async rewrites() {
-    const apiProxy = {
-      source: "/api/:path*",
-      destination: `${apiBackendOrigin}/api/:path*`,
-    };
-    // Public URL stays /studio-plus; page lives at /studio/plus so dev (Turbopack) resolves the route reliably.
     return {
-      beforeFiles: [
-        { source: "/studio-plus", destination: "/studio/plus" },
-        { source: "/studio-plus/", destination: "/studio/plus" },
-        { source: "/agencies", destination: "/agency" },
-        { source: "/agencies/", destination: "/agency" },
+      beforeFiles: [],
+      afterFiles: [
+        {
+          source: "/api/:path*",
+          destination: `${apiBackendOrigin}/api/:path*`,
+        },
       ],
-      afterFiles: [apiProxy],
+      fallback: [],
     };
   },
 };

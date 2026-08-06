@@ -1,18 +1,19 @@
-import TemporaryLanding from "@/components/TemporaryLanding";
-import PageWrapper from "@/components/PageWrapper";
+import type { Metadata } from "next";
 
-/** True on live production deploys (Netlify CONTEXT or Vercel production). */
-function isProductionDeploy() {
+import Hero from "@/components/hero";
+import SceneCompCard from "@/components/comp-card";
+
+export const metadata: Metadata = {
+  title: "Pholio — Verified talent portfolios",
+  description:
+    "Pholio is a verified-talent portfolio platform. Talent build a professional book; agencies discover and shortlist real people.",
+};
+
+export default function HomePage() {
   return (
-    process.env.VERCEL_ENV === "production" ||
-    process.env.CONTEXT === "production"
+    <>
+      <Hero />
+      <SceneCompCard />
+    </>
   );
-}
-
-export default function Home() {
-  if (isProductionDeploy()) {
-    return <TemporaryLanding />;
-  }
-
-  return <PageWrapper />;
 }

@@ -1,68 +1,56 @@
 @import "tailwindcss";
 
-/* ══════════════════════════════════════════════════════════
-   PHOLIO — Editorial Design System
-   ══════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════════════════
+   PHOLIO PUBLIC SITE — BASE LAYER
+
+   This file is deliberately small. It holds tokens, a reset, and the four
+   utilities the preserved surfaces actually use. It is NOT a component
+   library: no button classes, no card classes, no section classes.
+
+   The previous site's stylesheet grew to 700 lines of named component styles
+   that every new page inherited by accident. If a section needs a look, the
+   section owns it. Add to this file only when a value is genuinely sitewide.
+
+   Token reference: docs/design-language/foundations.md
+   ══════════════════════════════════════════════════════════════════════════ */
 
 @theme {
-  /* ── Ink & Velvet ─────────────────────────────────────── */
-  --color-ink: #0F172A;
-  --color-velvet: #050505;
-  --color-ink-light: #1E293B;
-  --color-ink-muted: #162032;
+  /* ── The palette. Three colours. Adding a fourth is a brand decision,
+        not a styling decision — see docs/design-language/banned-ui.md ── */
+  --color-velvet: #050505; /* the page's ink field */
+  --color-ink: #0f172a; /* type on cream */
+  --color-cream: #faf7f2; /* the page's paper field */
+  --color-cream-warm: #f5f0e8;
+  --color-gold: #c9a55a; /* the state colour, never a surface */
+  --color-gold-light: #d4bc8a;
+  --color-gold-dark: #a8894e; /* gold that holds contrast on cream */
 
-  /* ── Cream & Warm ─────────────────────────────────────── */
-  --color-cream: #FAF7F2;
-  --color-cream-warm: #F5F0E8;
-  --color-cream-dark: #EDE8DD;
+  /* ── Type. Three voices, each with one job.
+        serif = display and verdict · sans = body and clerical · mono = labels ── */
+  --font-serif: var(--font-noto-serif), "Noto Serif Display", Georgia, serif;
+  --font-sans: var(--font-inter), "Inter", system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), "JetBrains Mono", "SF Mono", monospace;
 
-  /* ── Gold (Brand: PHOLIO_BRAND_GUIDELINES.md) ──────────── */
-  --color-gold: #C9A55A;
-  --color-gold-hover: #b08d45;
-  --color-gold-light: #D4BC8A;
-  --color-gold-dark: #A8894E;
-
-  /* ── Text ──────────────────────────────────────────────── */
-  --color-text-primary: #1A1A1A;
-  --color-text-secondary: #4B5563;
-  --color-text-muted: #9CA3AF;
-  --color-text-on-dark: #F1F5F9;
-  --color-text-on-dark-muted: #94A3B8;
-
-  /* ── Fonts ─────────────────────────────────────────────── */
-  --font-serif: "Noto Serif Display", Georgia, serif;
-  --font-sans: "Inter", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", "SF Mono", monospace;
-
-  /* ── Spacing ───────────────────────────────────────────── */
-  --spacing-section: 8rem;
-  --spacing-section-sm: 5rem;
-
-  /* ── Easing ────────────────────────────────────────────── */
+  /* ── One ease. Motion is arrival, so everything decelerates the same way. ── */
+  --ease-arrival: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Brought in with the /talent section; used by its solid CTA treatment. */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
 }
 
-/* ══════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════════════════════
    BASE
-   ══════════════════════════════════════════════════════════ */
+   ══════════════════════════════════════════════════════════════════════════ */
 
 html {
-  /* next/font-loaded JetBrains Mono (see app/layout.tsx) backs the theme's mono token */
-  --font-mono: var(--font-jbmono), "JetBrains Mono", "SF Mono", monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  scroll-behavior: auto;
-  background-color: #050505;
-  /*
-   * Fill the mobile visual viewport. `100vh` alone leaves a gap above the
-   * iOS Safari toolbar (large-viewport unit ≠ currently visible height);
-   * `-webkit-fill-available` covers older WebKit, `100dvh` tracks chrome
-   * show/hide. `viewport-fit=cover` (app/layout.tsx) lets this reach the
-   * physical edges including the home-indicator band.
-   */
+  background-color: var(--color-velvet);
+
+  /* Fill the mobile visual viewport. `100vh` alone leaves a gap above the iOS
+     Safari toolbar; `-webkit-fill-available` covers older WebKit and `100dvh`
+     tracks chrome show/hide. `viewport-fit=cover` in app/layout.tsx lets this
+     reach the physical edges including the home-indicator band. */
   height: 100%;
   min-height: 100%;
   min-height: -webkit-fill-available;
@@ -71,24 +59,10 @@ html {
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--color-velvet, #050505);
-  color: var(--color-text-primary);
+  background-color: var(--color-velvet);
+  color: var(--color-cream);
   overflow-x: hidden;
   min-height: 100%;
-  min-height: -webkit-fill-available;
-  min-height: 100dvh;
-}
-
-/* Full-bleed mobile stage — prefer over Tailwind `h-screen` / `min-h-screen`
-   (those compile to `100vh` and undershoot or overshoot Safari chrome). */
-.h-mobile-screen {
-  height: 100vh;
-  height: -webkit-fill-available;
-  height: 100dvh;
-}
-
-.min-h-mobile-screen {
-  min-height: 100vh;
   min-height: -webkit-fill-available;
   min-height: 100dvh;
 }
@@ -98,22 +72,30 @@ body {
   color: var(--color-velvet);
 }
 
-/* ══════════════════════════════════════════════════════════
-   CUSTOM CURSOR OVERRIDES
-   ══════════════════════════════════════════════════════════ */
-@media (pointer: fine) {
-  body, html, a, button, select, [role="button"], .cursor-pointer {
-    cursor: none !important;
-  }
-  input, textarea, [contenteditable] {
-    cursor: text !important;
-  }
+/* Anchored headings inside long legal documents clear the fixed header band. */
+:target {
+  scroll-margin-top: 7rem;
 }
 
-/* ══════════════════════════════════════════════════════════
-   TYPOGRAPHY
-   ══════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════════════════
+   UTILITIES — only these four. Justify any addition.
+   ══════════════════════════════════════════════════════════════════════════ */
 
+/** Full mobile viewport height, chrome-aware. */
+.min-h-mobile-screen {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  min-height: 100dvh;
+}
+
+/** The fixed-height counterpart, for a pinned stage that must not grow. */
+.h-mobile-screen {
+  height: 100vh;
+  height: -webkit-fill-available;
+  height: 100dvh;
+}
+
+/** Display serif at headline size: tightened tracking, collapsed leading. */
 .font-editorial {
   font-family: var(--font-serif);
   font-weight: 400;
@@ -121,50 +103,21 @@ body {
   line-height: 1.05;
 }
 
+/** The verdict word. One per headline, gold, never two. */
 .font-editorial-italic {
   font-family: var(--font-serif);
   font-style: italic;
   font-weight: 400;
 }
 
-.text-micro {
-  font-family: var(--font-mono);
-  font-size: 0.625rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-}
-
-.text-label {
-  font-family: var(--font-sans);
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-
-/* ══════════════════════════════════════════════════════════
-   GOLD ACCENTS
-   ══════════════════════════════════════════════════════════ */
-
-.gold-underline {
-  background-image: linear-gradient(to right, var(--color-gold), var(--color-gold-light));
-  background-size: 100% 1px;
-  background-position: 0 100%;
-  background-repeat: no-repeat;
-}
-
-.gold-glow {
-  box-shadow:
-    0 0 60px rgba(201, 165, 90, 0.12),
-    0 0 120px rgba(201, 165, 90, 0.04);
-}
-
-/* SceneAI fills its 100vh sticky parent via h-full */
-.sc-ai-sticky > * {
-  height: 100%;
-}
-
-/* Subtle paper grain overlay for light sections */
+/**
+ * Photographic grain over a field. Requires `position: relative` on the host.
+ *
+ * This is print texture on a marketing surface, not dashboard ornament — the
+ * distinction matters, because pholio-app bans decorative grain on product
+ * surfaces. Keep it at or below 0.03 opacity: at that strength it reads as
+ * paper stock, above it reads as an effect.
+ */
 .texture-grain::after {
   content: "";
   position: absolute;
@@ -175,49 +128,10 @@ body {
   background-size: 150px 150px;
 }
 
-/* ══════════════════════════════════════════════════════════
-   BUTTONS
-   ══════════════════════════════════════════════════════════ */
-
-/* Primary CTA — solid black (light surfaces). Legacy class name kept for call sites. */
-.btn-gold {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.9375rem 2.75rem;
-  background: #050505;
-  color: #ffffff;
-  font-family: var(--font-sans);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  text-decoration: none;
-  border: none;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition:
-    background-color 0.3s var(--ease-out-expo),
-    color 0.3s var(--ease-out-expo),
-    opacity 0.3s var(--ease-out-expo);
-}
-
-.btn-gold:hover {
-  background: #1a1815;
-}
-
-.btn-gold:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(5, 5, 5, 0.2);
-}
-
-.btn-gold > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* Primary CTA — solid white (dark surfaces). */
+/**
+ * Solid light CTA — brought in with the /talent section's close scene.
+ * Kept as a utility because it is the one button treatment the page uses.
+ */
 .btn-solid-white {
   display: inline-flex;
   align-items: center;
@@ -255,63 +169,13 @@ body {
   z-index: 1;
 }
 
-.btn-outline {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.9375rem 2.75rem;
-  background: transparent;
-  color: var(--color-text-on-dark);
-  font-family: var(--font-sans);
-  font-size: 0.8125rem;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  text-decoration: none;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  cursor: pointer;
-  transition:
-    border-color 0.5s var(--ease-out-expo),
-    color 0.5s var(--ease-out-expo),
-    background-color 0.5s var(--ease-out-expo);
-}
-
-.btn-outline:hover {
-  border-color: rgba(255, 255, 255, 0.55);
-  color: #ffffff;
-  background-color: rgba(255, 255, 255, 0.06);
-}
-
-/* ══════════════════════════════════════════════════════════
-   EDITORIAL DIVIDERS
-   ══════════════════════════════════════════════════════════ */
-
-.divider-gold {
-  width: 40px;
-  height: 1px;
-  background: linear-gradient(to right, var(--color-gold), transparent);
-}
-
-.divider-gold-center {
-  width: 60px;
-  height: 1px;
-  margin-left: auto;
-  margin-right: auto;
-  background: linear-gradient(to right, transparent, var(--color-gold), transparent);
-}
-
-/* ══════════════════════════════════════════════════════════
-   MARQUEE
-   ══════════════════════════════════════════════════════════ */
-
-@keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-/* ══════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════════════════════
    REDUCED MOTION
-   ══════════════════════════════════════════════════════════ */
+
+   A global backstop, not a substitute for handling it in the component. Any
+   scroll-tied sequence must still branch on `useReducedMotion()` and offer a
+   real static composition — a 0.01s version of a scrub is not a fallback.
+   ══════════════════════════════════════════════════════════════════════════ */
 
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -322,390 +186,4 @@ body {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-}
-
-/* ══════════════════════════════════════════════════════════
-   HEADER CTA
-   ══════════════════════════════════════════════════════════ */
-
-.header-cta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.55rem 1.25rem;
-  background: #050505;
-  color: #ffffff;
-  font-family: var(--font-sans);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  text-decoration: none;
-  border-radius: 999px;
-  cursor: pointer;
-  transition:
-    background-color 0.3s var(--ease-out-expo),
-    color 0.3s var(--ease-out-expo);
-}
-
-.header-cta:hover {
-  background: #1a1815;
-}
-
-/* ══════════════════════════════════════════════════════════
-   SCROLLBAR
-   ══════════════════════════════════════════════════════════ */
-
-::-webkit-scrollbar {
-  width: 5px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--color-velvet);
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(201, 165, 90, 0.3);
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(201, 165, 90, 0.6);
-}
-
-/* ===================================
-   REFINED PROFILE TRIGGER & DROPDOWN (Ported from Dashboard)
-   =================================== */
-
-.profile-trigger-container {
-  position: relative;
-  z-index: 20;
-}
-
-.profile-trigger-refined {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.35rem 0.75rem 0.35rem 0.35rem;
-  background: rgba(20, 25, 30, 0.4);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 999px;
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.2);
-}
-
-.profile-trigger-refined:hover {
-  border-color: rgba(201, 165, 90, 0.4);
-  box-shadow: 0 0 0 3px rgba(201, 165, 90, 0.08);
-  background: rgba(30, 35, 40, 0.6);
-}
-
-.avatar-container {
-  width: 34px;
-  height: 34px;
-  position: relative;
-  flex-shrink: 0;
-}
-
-.avatar-image {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.avatar-initials {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #C9A55A 0%, #B8954F 100%);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  font-size: 0.875rem;
-  box-shadow: 0 2px 8px rgba(201, 165, 90, 0.35);
-}
-
-.subscription-badge {
-  position: absolute;
-  bottom: -1px;
-  right: -1px;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  border: 2px solid #1a1a1a;
-}
-
-.subscription-badge.pro {
-  background: linear-gradient(135deg, #C9A55A, #B8954F);
-}
-
-.subscription-badge.free {
-  background: #94a3b8;
-}
-
-.trigger-chevron {
-  color: #e2e8f0;
-  transition: transform 0.3s ease;
-  flex-shrink: 0;
-}
-
-.trigger-chevron.rotate {
-  transform: rotate(180deg);
-}
-
-/* Dropdown Menu */
-.profile-dropdown-refined {
-  position: absolute;
-  top: calc(100% + 12px);
-  right: 0;
-  min-width: 280px;
-  background: rgba(20, 25, 30, 0.95);
-  backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 14px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
-  overflow: hidden;
-  animation: dropdownIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 1000;
-}
-
-@keyframes dropdownIn {
-  from { opacity: 0; transform: translateY(-8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.dropdown-identity-compact {
-  display: flex;
-  gap: 0.75rem;
-  padding: 1rem;
-  background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.identity-avatar {
-  width: 40px;
-  height: 40px;
-  flex-shrink: 0;
-}
-
-.identity-avatar img,
-.identity-avatar .avatar-initials {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-}
-
-.identity-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.identity-name {
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: #ffffff;
-  margin-bottom: 0.125rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.identity-email {
-  font-size: 0.75rem;
-  color: #94a3b8;
-  margin-bottom: 0.375rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.identity-meta {
-  display: flex;
-  gap: 0.375rem;
-}
-
-.role-badge,
-.tier-badge {
-  font-size: 0.625rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  padding: 0.125rem 0.375rem;
-  border-radius: 3px;
-}
-
-.role-badge {
-  background: rgba(255, 255, 255, 0.1);
-  color: #e2e8f0;
-}
-
-.tier-badge {
-  background: rgba(201, 165, 90, 0.2);
-  color: #C9A55A;
-}
-
-.profile-strength-widget {
-  display: block;
-  padding: 0.875rem 1rem;
-  background: rgba(201, 165, 90, 0.04);
-  text-decoration: none;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.profile-strength-widget:hover {
-  background: rgba(201, 165, 90, 0.08);
-}
-
-.widget-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: #cbd5e1;
-}
-
-.strength-percentage {
-  color: #C9A55A;
-  font-weight: 700;
-}
-
-.strength-progress-bar {
-  height: 6px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #C9A55A, #B8954F);
-  border-radius: 3px;
-  transition: width 0.3s ease;
-}
-
-.dropdown-actions {
-  padding: 0rem 0.5rem 0.5rem;
-}
-
-.dropdown-section {
-  padding-top: 0.5rem;
-}
-
-.dropdown-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 0.875rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #cbd5e1;
-  text-decoration: none;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  cursor: pointer;
-  border: none;
-  background: transparent;
-  width: 100%;
-  text-align: left;
-}
-
-.dropdown-item:hover {
-  background: rgba(201, 165, 90, 0.1);
-  color: #C9A55A;
-}
-
-.dropdown-item svg {
-  flex-shrink: 0;
-}
-
-.logout-item {
-  color: #f87171;
-  margin: 0.5rem;
-  margin-top: 0;
-}
-
-.logout-item:hover {
-  background: rgba(239, 68, 68, 0.1);
-  color: #ef4444;
-}
-
-.dropdown-divider {
-  height: 1px;
-  background: rgba(255, 255, 255, 0.08);
-}
-
-/* ══════════════════════════════════════════════════════════
-   AGENCY MARKETING PAGE — scoped tokens (see AgencyPageClient)
-   ══════════════════════════════════════════════════════════ */
-
-.agency-marketing {
-  --agency-bg-0: #08080c;
-  --agency-bg-1: #0c0c12;
-  --agency-bg-2: #101018;
-  --agency-line: rgba(255, 255, 255, 0.07);
-  --agency-text: #ececf1;
-  --agency-muted: rgba(236, 236, 241, 0.62);
-  --agency-faint: rgba(236, 236, 241, 0.42);
-  --agency-accent: #3b82f6;
-  --agency-accent-soft: rgba(59, 130, 246, 0.14);
-  --agency-warm: #c9a55a;
-  --agency-panel: rgba(255, 255, 255, 0.025);
-  background-color: var(--agency-bg-0);
-  color: var(--agency-text);
-}
-
-.agency-marketing .agency-btn-primary {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.9rem 1.75rem;
-  border-radius: 999px;
-  font-family: var(--font-sans);
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  text-decoration: none;
-  color: #050505;
-  background: #ffffff;
-  border: 1px solid #ffffff;
-  transition:
-    background-color 0.3s var(--ease-out-expo),
-    color 0.3s var(--ease-out-expo);
-}
-
-.agency-marketing .agency-btn-primary:hover {
-  background: #f5f0e8;
-}
-
-.agency-marketing .agency-btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.9rem 1.5rem;
-  border-radius: 999px;
-  font-family: var(--font-sans);
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  text-decoration: none;
-  color: #ffffff;
-  border: 1px solid #050505;
-  background: #050505;
-  transition:
-    background-color 0.3s var(--ease-out-expo),
-    color 0.3s var(--ease-out-expo);
-}
-
-.agency-marketing .agency-btn-secondary:hover {
-  background: #1a1815;
-  color: #ffffff;
 }
