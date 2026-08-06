@@ -1,0 +1,2117 @@
+<!--
+CONCEPT D — "A YEAR IN THE LIFE" (axis: TIME)
+
+Scroll-film behavior (prototype):
+- One persistent overhead studio TABLE (tilted plane) that ACCUMULATES objects act by act.
+- Long pinned scrubbed chapters (P) alternating with fast sweep transitions (S) where date stamps tick quickly.
+- Objects land with settle physics (small overshoot + rotation settle), cast soft shadows, and STAY on the table.
+- Set pieces:
+  - WEEK 03 frames: hover any frame → AI read typesets live with a hairline leader.
+  - MONTH 03 envelopes: click/drag gesture flips envelope → status + thread preview on back.
+- Finale:
+  - MONTH 12 pull-back: camera lifts; whole year visible; gold thread connects everything; mono safeguards footnoted.
+  - BEGIN: table clears to one blank card + CTA "Begin your casting" + gold underline.
+
+Intended PRODUCTION motion stack (per ROUND2-CONCEPTS.md):
+- DOM/SVG/CSS-3D only (no WebGL), GSAP + ScrollTrigger with one smoothed scroll clock, masked line reveals,
+  SVG line-draws for intel figures, and pointer-driven set pieces.
+-->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Pholio — Concept D: A Year in the Life</title>
+
+    <!-- Fonts (Google CDN): Fraunces, Inter, IBM Plex Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,ital@9..144,400..700,0;9..144,400..700,1&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --ink: #0a0a0b;
+        --ink2: #121214;
+        --paper: #f7f3ec;
+        --paper2: #f5f0e8;
+        --gold: #c9a55a;
+        --gold2: #d4bc8a;
+        --gold3: #a8894e;
+        --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+        --serif: "Fraunces", ui-serif, Georgia, serif;
+        --sans: "Inter", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+          "Courier New", monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+        color: var(--paper);
+        background: radial-gradient(1200px 900px at 50% 20%, #0f1217 0%, #070708 50%, #050505 100%);
+        font-family: var(--sans);
+        overflow-x: hidden;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .app {
+        position: relative;
+        min-height: 100vh;
+      }
+
+      /* Fixed header overlay (minimal, no nav furniture). */
+      .topbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 64px;
+        z-index: 50;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 22px;
+        pointer-events: none;
+        background: linear-gradient(to bottom, rgba(5, 5, 5, 0.72), rgba(5, 5, 5, 0));
+        backdrop-filter: blur(0px);
+      }
+
+      .wordmark {
+        font-family: var(--serif);
+        font-weight: 600;
+        letter-spacing: 0.25em;
+        color: var(--gold);
+        font-size: 14px;
+        pointer-events: auto;
+        user-select: none;
+      }
+
+      .date-stamp {
+        font-family: var(--mono);
+        font-weight: 500;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        opacity: 0.9;
+        color: rgba(247, 243, 236, 0.84);
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        pointer-events: none;
+        user-select: none;
+      }
+
+      .date-stamp .tick {
+        width: 1px;
+        height: 14px;
+        background: linear-gradient(to bottom, rgba(201, 165, 90, 0), rgba(201, 165, 90, 0.9), rgba(201, 165, 90, 0));
+        opacity: 0.7;
+      }
+
+      .underline {
+        position: fixed;
+        left: 22px;
+        top: 50px;
+        width: min(240px, calc(100vw - 44px));
+        height: 1px;
+        z-index: 49;
+        background: linear-gradient(to right, var(--gold), rgba(201, 165, 90, 0));
+        transform-origin: left center;
+        transform: scaleX(0);
+        opacity: 0.9;
+        pointer-events: none;
+      }
+
+      /* Film shell: persistent stage + per-act captions. */
+      .film {
+        position: relative;
+        padding-top: 64px;
+      }
+
+      .stage {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        z-index: 10;
+        display: grid;
+        place-items: center;
+        padding: 86px 18px 96px;
+      }
+
+      .stage-inner {
+        width: min(1160px, 100%);
+        height: min(740px, calc(100vh - 180px));
+        position: relative;
+        perspective: 1200px;
+      }
+
+      /* Table plane: a single tilted flat-lay surface in a dim room. */
+      .table-wrap {
+        position: absolute;
+        inset: 0;
+        transform-style: preserve-3d;
+        transform: rotateX(40deg) rotateZ(-1deg) scale(1);
+        transform-origin: 50% 55%;
+        will-change: transform;
+      }
+
+      .table {
+        position: absolute;
+        inset: 0;
+        border-radius: 22px;
+        background:
+          radial-gradient(900px 520px at 55% 40%, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0) 60%),
+          radial-gradient(1000px 600px at 30% 62%, rgba(201, 165, 90, 0.06), rgba(201, 165, 90, 0) 62%),
+          linear-gradient(135deg, rgba(15, 18, 23, 0.65), rgba(5, 5, 5, 0.65)),
+          radial-gradient(1200px 900px at 50% 30%, var(--paper), var(--paper2));
+        box-shadow:
+          0 60px 160px rgba(0, 0, 0, 0.6),
+          inset 0 0 0 1px rgba(201, 165, 90, 0.16);
+        overflow: hidden;
+      }
+
+      .table::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(800px 520px at 50% 45%, rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0) 60%),
+          linear-gradient(to bottom, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0));
+        pointer-events: none;
+      }
+
+      .table::after {
+        content: "";
+        position: absolute;
+        inset: -30%;
+        background: radial-gradient(closest-side, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0) 70%);
+        transform: translateZ(0);
+        opacity: 0.6;
+        pointer-events: none;
+      }
+
+      /* Grain overlay via SVG filter (subtle). */
+      .grain {
+        position: absolute;
+        inset: 0;
+        opacity: 0.12;
+        mix-blend-mode: multiply;
+        pointer-events: none;
+      }
+
+      /* Objects that land on the table */
+      .obj {
+        position: absolute;
+        transform-style: preserve-3d;
+        will-change: transform, opacity;
+        filter: drop-shadow(0 18px 20px rgba(0, 0, 0, 0.28));
+        opacity: 0;
+      }
+
+      .paper {
+        border-radius: 14px;
+        background: linear-gradient(180deg, #fbf8f2, #f2ece1);
+        color: var(--ink);
+        box-shadow: inset 0 0 0 1px rgba(10, 10, 11, 0.08);
+      }
+
+      .hairline {
+        border: 1px solid rgba(10, 10, 11, 0.12);
+      }
+
+      .mono {
+        font-family: var(--mono);
+        letter-spacing: 0.02em;
+      }
+
+      .serif {
+        font-family: var(--serif);
+      }
+
+      .ink {
+        color: var(--ink);
+      }
+
+      .muted {
+        color: rgba(10, 10, 11, 0.62);
+      }
+
+      .gold {
+        color: var(--gold);
+      }
+
+      /* Digitals (P1) — two prints */
+      .digitals {
+        width: 250px;
+        height: 330px;
+        padding: 10px;
+        border-radius: 18px;
+        background: linear-gradient(180deg, rgba(251, 248, 242, 0.95), rgba(243, 236, 225, 0.95));
+        box-shadow:
+          inset 0 0 0 1px rgba(10, 10, 11, 0.08),
+          0 26px 40px rgba(0, 0, 0, 0.18);
+      }
+
+      .photo {
+        width: 100%;
+        height: calc(100% - 36px);
+        border-radius: 12px;
+        overflow: hidden;
+        background: #0e0f12;
+        position: relative;
+      }
+
+      .photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(1) contrast(1.05);
+        transform: scale(1.02);
+      }
+
+      .photo::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(closest-side, rgba(245, 240, 232, 0.08), rgba(245, 240, 232, 0) 70%);
+        pointer-events: none;
+      }
+
+      .print-meta {
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 6px;
+        font-family: var(--mono);
+        font-size: 11px;
+        color: rgba(10, 10, 11, 0.72);
+      }
+
+      /* Book frames (P2) — small stack of frames + outlines for gaps */
+      .frame {
+        width: 168px;
+        height: 218px;
+        padding: 8px;
+        border-radius: 16px;
+        background: linear-gradient(180deg, rgba(251, 248, 242, 0.95), rgba(243, 236, 225, 0.95));
+        box-shadow: inset 0 0 0 1px rgba(10, 10, 11, 0.08);
+        cursor: default;
+      }
+
+      .frame .photo {
+        height: 166px;
+        border-radius: 12px;
+      }
+
+      .frame .cap {
+        margin-top: 7px;
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        font-family: var(--mono);
+        font-size: 10px;
+        color: rgba(10, 10, 11, 0.72);
+        gap: 10px;
+        white-space: nowrap;
+      }
+
+      .gap-outline {
+        width: 168px;
+        height: 218px;
+        border-radius: 16px;
+        background: rgba(247, 243, 236, 0.35);
+        box-shadow: inset 0 0 0 1px rgba(201, 165, 90, 0.7);
+        position: absolute;
+        opacity: 0;
+      }
+
+      .gap-outline::after {
+        content: "missing: side view";
+        position: absolute;
+        left: 12px;
+        bottom: 12px;
+        font-family: var(--mono);
+        font-size: 10px;
+        color: rgba(10, 10, 11, 0.62);
+        letter-spacing: 0.02em;
+      }
+
+      /* Comp card composing (P3) */
+      .card {
+        width: 420px;
+        height: 280px;
+        border-radius: 16px;
+        background: linear-gradient(180deg, rgba(251, 248, 242, 0.98), rgba(243, 236, 225, 0.98));
+        box-shadow:
+          inset 0 0 0 1px rgba(10, 10, 11, 0.1),
+          0 40px 60px rgba(0, 0, 0, 0.18);
+        padding: 14px;
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 12px;
+        overflow: hidden;
+      }
+
+      .card .hero {
+        border-radius: 14px;
+        overflow: hidden;
+        position: relative;
+        background: #0e0f12;
+      }
+
+      .card .hero img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(1) contrast(1.05);
+        transform: scale(1.02);
+      }
+
+      .swatches {
+        position: absolute;
+        left: 12px;
+        bottom: 12px;
+        display: flex;
+        gap: 8px;
+      }
+
+      .swatch {
+        width: 14px;
+        height: 14px;
+        border-radius: 999px;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55), 0 10px 14px rgba(0, 0, 0, 0.25);
+        transform: translateZ(0);
+        opacity: 0;
+      }
+
+      .card .info {
+        border-radius: 14px;
+        padding: 10px 12px;
+        background: rgba(5, 5, 5, 0.04);
+        box-shadow: inset 0 0 0 1px rgba(10, 10, 11, 0.08);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        overflow: hidden;
+      }
+
+      .card .name {
+        font-family: var(--serif);
+        font-weight: 650;
+        font-size: 22px;
+        letter-spacing: 0.01em;
+        color: var(--ink);
+        line-height: 1.02;
+      }
+
+      .card .sweep {
+        height: 1px;
+        background: linear-gradient(to right, rgba(201, 165, 90, 0), rgba(201, 165, 90, 0.92), rgba(201, 165, 90, 0));
+        margin: 10px 0 12px;
+        opacity: 0.9;
+        transform-origin: 50% 50%;
+        transform: scaleX(0);
+      }
+
+      .card .stats {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: rgba(10, 10, 11, 0.75);
+        display: grid;
+        gap: 6px;
+      }
+
+      .card .stats span {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .card .tiny {
+        font-family: var(--mono);
+        font-size: 10px;
+        color: rgba(10, 10, 11, 0.6);
+        letter-spacing: 0.02em;
+      }
+
+      .card .print-tag {
+        position: absolute;
+        right: 14px;
+        top: 14px;
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.08em;
+        color: rgba(10, 10, 11, 0.62);
+        opacity: 0;
+        transform: translateY(-6px);
+      }
+
+      /* Digitals sheet (Materials) — light PDF-like sheet that stays */
+      .sheet {
+        width: 320px;
+        height: 220px;
+        padding: 14px;
+        border-radius: 14px;
+        background: linear-gradient(180deg, rgba(251, 248, 242, 0.98), rgba(243, 236, 225, 0.98));
+        box-shadow: inset 0 0 0 1px rgba(10, 10, 11, 0.08);
+      }
+
+      .sheet .title {
+        font-family: var(--mono);
+        font-weight: 600;
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        color: rgba(10, 10, 11, 0.7);
+      }
+
+      .sheet .grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .sheet .thumb {
+        border-radius: 10px;
+        overflow: hidden;
+        height: 70px;
+        background: #0e0f12;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+      }
+
+      .sheet img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(1) contrast(1.05);
+      }
+
+      /* Phone/address (P4) */
+      .phone {
+        width: 280px;
+        height: 520px;
+        border-radius: 40px;
+        background: linear-gradient(180deg, rgba(250, 247, 242, 0.92), rgba(243, 236, 225, 0.92));
+        box-shadow:
+          inset 0 0 0 1px rgba(10, 10, 11, 0.12),
+          inset 0 0 0 8px rgba(10, 10, 11, 0.06);
+        padding: 18px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .phone .screen {
+        width: 100%;
+        height: 100%;
+        border-radius: 26px;
+        background:
+          radial-gradient(900px 520px at 30% 10%, rgba(201, 165, 90, 0.1), rgba(201, 165, 90, 0) 55%),
+          linear-gradient(180deg, rgba(15, 23, 42, 0.08), rgba(15, 23, 42, 0)),
+          rgba(5, 5, 5, 0.03);
+        box-shadow: inset 0 0 0 1px rgba(10, 10, 11, 0.08);
+        overflow: hidden;
+        position: relative;
+        padding: 14px 14px 12px;
+      }
+
+      .phone .url {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        color: rgba(10, 10, 11, 0.72);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .phone .url .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .phone .dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 999px;
+        background: rgba(201, 165, 90, 0.9);
+        box-shadow: 0 10px 16px rgba(0, 0, 0, 0.18);
+      }
+
+      .phone .book-is-page {
+        margin-top: 10px;
+        padding: 10px 12px;
+        border-radius: 14px;
+        background: rgba(5, 5, 5, 0.03);
+        box-shadow: inset 0 0 0 1px rgba(10, 10, 11, 0.08);
+      }
+
+      .phone .book-is-page .big {
+        font-family: var(--serif);
+        font-weight: 650;
+        font-size: 20px;
+        line-height: 1.05;
+        color: var(--ink);
+      }
+
+      .phone .book-is-page .sub {
+        margin-top: 8px;
+        font-family: var(--mono);
+        font-size: 11px;
+        color: rgba(10, 10, 11, 0.62);
+        letter-spacing: 0.03em;
+      }
+
+      .phone .visits {
+        position: absolute;
+        left: 14px;
+        right: 14px;
+        bottom: 14px;
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+        font-family: var(--mono);
+        font-size: 11px;
+        color: rgba(10, 10, 11, 0.7);
+      }
+
+      .phone .visits strong {
+        font-weight: 600;
+        color: rgba(10, 10, 11, 0.82);
+      }
+
+      /* Envelopes (P5) */
+      .envelope {
+        width: 230px;
+        height: 160px;
+        border-radius: 16px;
+        position: absolute;
+        transform-style: preserve-3d;
+        cursor: grab;
+      }
+
+      .envelope:active {
+        cursor: grabbing;
+      }
+
+      .env-face {
+        position: absolute;
+        inset: 0;
+        border-radius: 16px;
+        backface-visibility: hidden;
+        background: linear-gradient(180deg, rgba(251, 248, 242, 0.98), rgba(243, 236, 225, 0.98));
+        box-shadow: inset 0 0 0 1px rgba(10, 10, 11, 0.08);
+        overflow: hidden;
+      }
+
+      .env-front {
+        transform: rotateY(0deg);
+      }
+
+      .env-back {
+        transform: rotateY(180deg);
+        background:
+          radial-gradient(700px 420px at 20% 10%, rgba(201, 165, 90, 0.1), rgba(201, 165, 90, 0) 55%),
+          linear-gradient(180deg, rgba(251, 248, 242, 0.98), rgba(243, 236, 225, 0.98));
+      }
+
+      .env-front .stamp {
+        position: absolute;
+        right: 14px;
+        top: 14px;
+        padding: 6px 8px;
+        border-radius: 999px;
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.08em;
+        color: rgba(10, 10, 11, 0.74);
+        box-shadow: inset 0 0 0 1px rgba(10, 10, 11, 0.1);
+        background: rgba(5, 5, 5, 0.03);
+      }
+
+      .env-front .label {
+        position: absolute;
+        left: 14px;
+        bottom: 14px;
+        right: 14px;
+        font-family: var(--mono);
+        font-size: 11px;
+        color: rgba(10, 10, 11, 0.72);
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .env-front .label em {
+        font-style: normal;
+        color: rgba(10, 10, 11, 0.62);
+      }
+
+      .env-back .thread {
+        position: absolute;
+        left: 14px;
+        right: 14px;
+        top: 14px;
+        bottom: 14px;
+        padding: 10px 12px;
+        border-radius: 14px;
+        box-shadow: inset 0 0 0 1px rgba(10, 10, 11, 0.08);
+        background: rgba(5, 5, 5, 0.03);
+        overflow: hidden;
+      }
+
+      .env-back .thread h4 {
+        margin: 0;
+        font-family: var(--mono);
+        font-weight: 600;
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        color: rgba(10, 10, 11, 0.68);
+      }
+
+      .env-back .thread p {
+        margin: 10px 0 0;
+        font-family: var(--mono);
+        font-size: 11px;
+        line-height: 1.35;
+        color: rgba(10, 10, 11, 0.72);
+      }
+
+      .env-back .thread .sub {
+        margin-top: 10px;
+        color: rgba(10, 10, 11, 0.6);
+        letter-spacing: 0.02em;
+        font-size: 10px;
+      }
+
+      .kept-on-file .env-front .stamp {
+        box-shadow: inset 0 0 0 1px rgba(201, 165, 90, 0.7);
+        color: rgba(10, 10, 11, 0.78);
+      }
+
+      .kept-on-file .env-front .stamp::after {
+        content: "";
+        position: absolute;
+        inset: -1px;
+        border-radius: 999px;
+        background: linear-gradient(to right, rgba(201, 165, 90, 0.18), rgba(201, 165, 90, 0));
+        pointer-events: none;
+      }
+
+      /* Intel broadsheet (P6) */
+      .broadsheet {
+        width: 860px;
+        height: 410px;
+        border-radius: 18px;
+        background:
+          radial-gradient(900px 420px at 20% 20%, rgba(201, 165, 90, 0.08), rgba(201, 165, 90, 0) 58%),
+          linear-gradient(180deg, rgba(251, 248, 242, 0.98), rgba(243, 236, 225, 0.98));
+        box-shadow:
+          inset 0 0 0 1px rgba(10, 10, 11, 0.1),
+          0 60px 90px rgba(0, 0, 0, 0.18);
+        padding: 16px 18px;
+        overflow: hidden;
+      }
+
+      .broadsheet .mast {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 16px;
+      }
+
+      .broadsheet .mast .t {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.16em;
+        color: rgba(10, 10, 11, 0.62);
+      }
+
+      .broadsheet .pulse {
+        margin-top: 10px;
+        font-family: var(--serif);
+        font-weight: 650;
+        font-size: 34px;
+        line-height: 1.05;
+        color: var(--ink);
+      }
+
+      .broadsheet .figs {
+        margin-top: 12px;
+        display: grid;
+        grid-template-columns: 1.25fr 0.75fr 0.8fr;
+        gap: 12px;
+        align-items: stretch;
+      }
+
+      .figure {
+        border-radius: 16px;
+        background: rgba(5, 5, 5, 0.03);
+        box-shadow: inset 0 0 0 1px rgba(10, 10, 11, 0.08);
+        padding: 10px 12px;
+        overflow: hidden;
+      }
+
+      .figure h4 {
+        margin: 0;
+        font-family: var(--mono);
+        font-weight: 600;
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        color: rgba(10, 10, 11, 0.65);
+      }
+
+      .figure .cap {
+        margin-top: 8px;
+        font-family: var(--mono);
+        font-size: 10px;
+        color: rgba(10, 10, 11, 0.6);
+        line-height: 1.35;
+      }
+
+      .ink-svg {
+        width: 100%;
+        height: 120px;
+        margin-top: 8px;
+      }
+
+      .ink-path {
+        fill: none;
+        stroke: rgba(10, 10, 11, 0.78);
+        stroke-width: 2.2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .ink-wash {
+        fill: rgba(10, 10, 11, 0.08);
+      }
+
+      .clock-svg {
+        width: 100%;
+        height: 120px;
+        margin-top: 10px;
+      }
+
+      .clock-band {
+        fill: none;
+        stroke: rgba(10, 10, 11, 0.18);
+        stroke-width: 10;
+        stroke-linecap: round;
+      }
+
+      .clock-arc {
+        fill: none;
+        stroke: rgba(201, 165, 90, 0.85);
+        stroke-width: 10;
+        stroke-linecap: round;
+        stroke-dasharray: 1 999;
+      }
+
+      .spectrum {
+        height: 120px;
+        display: grid;
+        align-content: center;
+        gap: 10px;
+      }
+
+      .spectrum .band {
+        height: 12px;
+        border-radius: 999px;
+        box-shadow: inset 0 0 0 1px rgba(10, 10, 11, 0.08);
+        background: linear-gradient(
+          to right,
+          rgba(10, 10, 11, 0.18),
+          rgba(10, 10, 11, 0.08) 30%,
+          rgba(201, 165, 90, 0.55) 55%,
+          rgba(10, 10, 11, 0.08) 80%,
+          rgba(10, 10, 11, 0.16)
+        );
+        transform: scaleX(0.85);
+        transform-origin: left center;
+      }
+
+      /* Protection gold thread (finale) */
+      .thread-svg {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0;
+        filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.22));
+      }
+
+      .thread-path {
+        fill: none;
+        stroke: rgba(201, 165, 90, 0.9);
+        stroke-width: 2.2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 1 999;
+      }
+
+      .footnotes {
+        position: absolute;
+        left: 26px;
+        right: 26px;
+        bottom: 22px;
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        opacity: 0;
+        transform: translateY(8px);
+        pointer-events: none;
+      }
+
+      .footnotes .fn {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.06em;
+        color: rgba(10, 10, 11, 0.66);
+        background: rgba(247, 243, 236, 0.6);
+        box-shadow: inset 0 0 0 1px rgba(10, 10, 11, 0.08);
+        padding: 8px 10px;
+        border-radius: 999px;
+        white-space: nowrap;
+      }
+
+      /* Caption block (act headline + one sentence) */
+      .caption {
+        position: fixed;
+        z-index: 40;
+        left: 22px;
+        bottom: 22px;
+        width: min(520px, calc(100vw - 44px));
+        pointer-events: none;
+        color: rgba(247, 243, 236, 0.92);
+        mix-blend-mode: normal;
+      }
+
+      .caption .kicker {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        color: rgba(247, 243, 236, 0.78);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .caption .kicker .bar {
+        height: 1px;
+        flex: 1;
+        background: linear-gradient(to right, rgba(201, 165, 90, 0.75), rgba(201, 165, 90, 0));
+        opacity: 0.85;
+      }
+
+      .caption h2 {
+        margin: 0;
+        font-family: var(--serif);
+        font-weight: 650;
+        font-size: clamp(26px, 3vw, 40px);
+        line-height: 1.02;
+        letter-spacing: -0.01em;
+      }
+
+      .caption h2 em {
+        font-style: italic;
+        color: var(--gold);
+      }
+
+      .caption p {
+        margin: 12px 0 0;
+        font-size: 14px;
+        line-height: 1.45;
+        color: rgba(247, 243, 236, 0.82);
+        max-width: 56ch;
+      }
+
+      .caption .mono-line {
+        margin-top: 12px;
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.03em;
+        color: rgba(247, 243, 236, 0.74);
+      }
+
+      .caption .mono-line strong {
+        font-weight: 600;
+        color: rgba(247, 243, 236, 0.86);
+      }
+
+      /* AI read tooltip (hover leader) */
+      .ai-read {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 340px;
+        pointer-events: none;
+        opacity: 0;
+        transform: translateY(6px);
+        z-index: 25;
+      }
+
+      .ai-read .card {
+        width: 100%;
+        height: auto;
+        display: block;
+        grid-template-columns: 1fr;
+        padding: 12px 12px 10px;
+      }
+
+      .ai-read .t {
+        font-family: var(--mono);
+        font-weight: 600;
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        color: rgba(10, 10, 11, 0.66);
+        margin-bottom: 10px;
+      }
+
+      .ai-read .body {
+        font-family: var(--mono);
+        font-size: 11px;
+        line-height: 1.45;
+        color: rgba(10, 10, 11, 0.74);
+      }
+
+      .leader {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        opacity: 0;
+      }
+
+      .leader line {
+        stroke: rgba(201, 165, 90, 0.9);
+        stroke-width: 1;
+      }
+
+      /* Scroll chapters (act triggers) */
+      .chapters {
+        position: relative;
+        z-index: 1;
+      }
+
+      .chapter {
+        min-height: 110vh;
+      }
+
+      .chapter.sweep {
+        min-height: 55vh;
+      }
+
+      .chapter .spacer {
+        height: 100%;
+      }
+
+      /* Reduced motion mode */
+      .reduced .stage {
+        position: relative;
+        height: auto;
+        padding: 96px 18px 24px;
+      }
+
+      .reduced .caption {
+        position: relative;
+        left: auto;
+        bottom: auto;
+        width: min(720px, calc(100vw - 44px));
+        margin: 0 auto;
+        padding: 0 0 32px;
+      }
+
+      .reduced .underline,
+      .reduced .topbar {
+        position: sticky;
+      }
+
+      .reduced .chapters {
+        padding-bottom: 80px;
+      }
+
+      .reduced .chapter {
+        min-height: auto;
+        padding: 30px 0;
+      }
+
+      .reduced .chapter .spacer {
+        height: auto;
+      }
+
+      .reduced .stage-inner {
+        height: 560px;
+      }
+
+      @media (max-width: 840px) {
+        .stage-inner {
+          height: min(620px, calc(100vh - 170px));
+        }
+        .broadsheet {
+          width: 92%;
+          height: 420px;
+        }
+        .card {
+          width: 92%;
+          max-width: 460px;
+          grid-template-columns: 1fr;
+          height: 390px;
+        }
+        .caption {
+          bottom: 18px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="app" id="app">
+      <div class="topbar" aria-hidden="true">
+        <div class="wordmark">PHOLIO</div>
+        <div class="date-stamp mono">
+          <span id="dateLabel">DAY 001</span>
+          <span class="tick"></span>
+          <span id="clockLabel">00:00</span>
+        </div>
+      </div>
+      <div class="underline" id="underline"></div>
+
+      <main class="film">
+        <section class="stage" aria-label="Table stage">
+          <div class="stage-inner">
+            <div class="table-wrap" id="tableWrap">
+              <div class="table" id="table">
+                <!-- grain overlay -->
+                <svg class="grain" viewBox="0 0 800 520" preserveAspectRatio="none" aria-hidden="true">
+                  <filter id="n">
+                    <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" stitchTiles="stitch" />
+                    <feColorMatrix type="matrix" values="0 0 0 0 0.08  0 0 0 0 0.07  0 0 0 0 0.06  0 0 0 .8 0" />
+                  </filter>
+                  <rect width="800" height="520" filter="url(#n)" opacity=".45"></rect>
+                </svg>
+
+                <!-- Interactive leader line for P2 hover read -->
+                <svg class="leader" id="leader" viewBox="0 0 1000 600" preserveAspectRatio="none" aria-hidden="true">
+                  <line id="leaderLine" x1="0" y1="0" x2="0" y2="0"></line>
+                </svg>
+
+                <!-- Objects (initially hidden) -->
+                <div class="obj digitals" id="digitalA" style="left: 90px; top: 120px; transform: translate3d(-40px, 40px, 0) rotateZ(-8deg);">
+                  <div class="photo">
+                    <img
+                      alt="Digital portrait"
+                      src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=1200&q=80&fm=jpg&fit=crop"
+                    />
+                  </div>
+                  <div class="print-meta"><span>digital · front</span><span>DAY 001</span></div>
+                </div>
+
+                <div class="obj digitals" id="digitalB" style="left: 280px; top: 150px; transform: translate3d(30px, 60px, 0) rotateZ(7deg);">
+                  <div class="photo">
+                    <img
+                      alt="Digital portrait"
+                      src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=1200&q=80&fm=jpg&fit=crop"
+                    />
+                  </div>
+                  <div class="print-meta"><span>digital · profile</span><span>DAY 001</span></div>
+                </div>
+
+                <!-- WEEK 03 frames -->
+                <div class="obj frame" id="frame1" data-read="SHOT TYPE: close portrait · EXPRESSION: calm focus · MARKET: editorial / beauty.&#10;NOTE: crop holds forehead + chin—reads intentional." style="left: 560px; top: 110px;">
+                  <div class="photo">
+                    <img
+                      alt="Book frame"
+                      src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600&q=80&fm=jpg&fit=crop"
+                    />
+                  </div>
+                  <div class="cap"><span>frame 01</span><span class="muted">rights: tracked</span></div>
+                </div>
+
+                <div class="obj frame" id="frame2" data-read="SHOT TYPE: full-length · POSE: clean line · MARKET: runway / lookbook.&#10;COACH: keep one true full-length with visible feet." style="left: 740px; top: 170px;">
+                  <div class="photo">
+                    <img
+                      alt="Book frame"
+                      src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600&q=80&fm=jpg&fit=crop"
+                    />
+                  </div>
+                  <div class="cap"><span>frame 05</span><span class="muted">release: noted</span></div>
+                </div>
+
+                <div class="obj frame" id="frame3" data-read="SHOT TYPE: three-quarter · STYLING: coat / texture · MARKET: editorial.&#10;GAP: add a simple side view to clarify shape + proportion." style="left: 610px; top: 350px;">
+                  <div class="photo">
+                    <img
+                      alt="Book frame"
+                      src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=600&q=80&fm=jpg&fit=crop"
+                    />
+                  </div>
+                  <div class="cap"><span>frame 08</span><span class="muted">crop: 4:5</span></div>
+                </div>
+
+                <div class="gap-outline" id="gap1" style="left: 790px; top: 360px;"></div>
+
+                <!-- AI read tooltip -->
+                <div class="ai-read" id="aiRead" aria-hidden="true">
+                  <div class="card paper">
+                    <div class="t">SCOUT READ</div>
+                    <div class="body" id="aiReadBody">…</div>
+                  </div>
+                </div>
+
+                <!-- Comp card -->
+                <div class="obj card" id="compCard" style="left: 160px; top: 360px;">
+                  <div class="hero">
+                    <img
+                      alt="Hero portrait"
+                      src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=1200&q=80&fm=jpg&fit=crop"
+                    />
+                    <div class="swatches" aria-hidden="true">
+                      <div class="swatch" id="sw1" style="background:#c9a55a;"></div>
+                      <div class="swatch" id="sw2" style="background:#0f172a;"></div>
+                      <div class="swatch" id="sw3" style="background:#f7f3ec;"></div>
+                    </div>
+                  </div>
+                  <div class="info">
+                    <div>
+                      <div class="name">Mara <span class="gold">Rowe</span></div>
+                      <div class="sweep" id="cardSweep"></div>
+                      <div class="stats">
+                        <span><em class="muted" style="font-style: normal;">HEIGHT</em><strong>5'10"</strong></span>
+                        <span><em class="muted" style="font-style: normal;">BUST</em><strong>32"</strong></span>
+                        <span><em class="muted" style="font-style: normal;">WAIST</em><strong>24"</strong></span>
+                        <span><em class="muted" style="font-style: normal;">HIPS</em><strong>35"</strong></span>
+                      </div>
+                    </div>
+                    <div class="tiny">export: watermarked toggle · stats format: US/EU</div>
+                  </div>
+                  <div class="print-tag" id="printTag">COMPOSED · PDF</div>
+                </div>
+
+                <!-- Digitals sheet -->
+                <div class="obj sheet" id="digitalsSheet" style="left: 610px; top: 400px;">
+                  <div class="title">DIGITALS SHEET · PRESET</div>
+                  <div class="grid" aria-hidden="true">
+                    <div class="thumb">
+                      <img
+                        alt=""
+                        src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=600&q=80&fm=jpg&fit=crop"
+                      />
+                    </div>
+                    <div class="thumb">
+                      <img
+                        alt=""
+                        src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=600&q=80&fm=jpg&fit=crop"
+                      />
+                    </div>
+                    <div class="thumb">
+                      <img
+                        alt=""
+                        src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=600&q=80&fm=jpg&fit=crop"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Phone/address -->
+                <div class="obj phone" id="phone" style="left: 820px; top: 70px;">
+                  <div class="screen">
+                    <div class="url">
+                      <span class="chip"><span class="dot" aria-hidden="true"></span>pholio.studio/you</span>
+                      <span class="muted">MONTH 02</span>
+                    </div>
+                    <div class="book-is-page">
+                      <div class="big">The book is the page.</div>
+                      <div class="sub">chrome-less portfolio view · Studio+</div>
+                    </div>
+                    <div class="visits"><span>visits</span><span><strong id="visitsNum">004</strong> this week</span></div>
+                  </div>
+                </div>
+
+                <!-- Envelopes -->
+                <div class="obj envelope" id="envA" style="left: 130px; top: 120px;">
+                  <div class="env-face env-front paper">
+                    <div class="stamp">IN REVIEW</div>
+                    <div class="label"><span>Maison (Paris)</span><em>thread: open</em></div>
+                  </div>
+                  <div class="env-face env-back paper">
+                    <div class="thread">
+                      <h4>THREAD PREVIEW</h4>
+                      <p>“Thanks for sending. We’re circulating internally. If you can, attach a clean profile + a true full-length.”</p>
+                      <div class="sub">messages + status changes are archived per application</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="obj envelope kept-on-file" id="envB" style="left: 360px; top: 120px;">
+                  <div class="env-face env-front paper">
+                    <div class="stamp">KEPT ON FILE</div>
+                    <div class="label"><span>Division (NY)</span><em>soft yes</em></div>
+                  </div>
+                  <div class="env-face env-back paper">
+                    <div class="thread">
+                      <h4>STATUS</h4>
+                      <p><strong>Kept on file</strong> — saved for future boards. Not filed with rejections.</p>
+                      <div class="sub">a soft yes — never buried with rejections</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="obj envelope" id="envC" style="left: 590px; top: 140px;">
+                  <div class="env-face env-front paper">
+                    <div class="stamp">INTERVIEW</div>
+                    <div class="label"><span>Mother agency</span><em>ball in your court</em></div>
+                  </div>
+                  <div class="env-face env-back paper">
+                    <div class="thread">
+                      <h4>INTERVIEW</h4>
+                      <p>“If you’re interested, choose a slot. We can do ten minutes on video.”</p>
+                      <div class="sub">scheduling prompts + notifications on every change</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Intel broadsheet -->
+                <div class="obj broadsheet" id="broadsheet" style="left: 110px; top: 210px;">
+                  <div class="mast">
+                    <div class="t">MARKET REPORT · MONTH 06</div>
+                    <div class="t">PHOLIO PULSE</div>
+                  </div>
+                  <div class="pulse" id="pulseText">Four agencies reviewed your materials. Your card was pulled eleven times — most from Paris.</div>
+                  <div class="figs">
+                    <div class="figure">
+                      <h4>SEISMOGRAPH</h4>
+                      <svg class="ink-svg" viewBox="0 0 320 120" aria-hidden="true">
+                        <path class="ink-wash" d="M10 85 C55 55, 85 72, 120 52 C160 26, 190 44, 220 34 C260 16, 280 22, 310 18 L310 112 L10 112 Z"></path>
+                        <path class="ink-path" id="seismoPath" d="M10 86 C55 58, 85 74, 120 54 C160 28, 190 44, 220 35 C260 18, 280 22, 310 18"></path>
+                      </svg>
+                      <div class="cap">attention as ink over time · no score, a readable mix</div>
+                    </div>
+                    <div class="figure">
+                      <h4>STAGE CLOCK</h4>
+                      <svg class="clock-svg" viewBox="0 0 220 120" aria-hidden="true">
+                        <path class="clock-band" d="M30 92 A72 72 0 0 1 190 92"></path>
+                        <path class="clock-arc" id="clockArc" d="M30 92 A72 72 0 0 1 190 92"></path>
+                      </svg>
+                      <div class="cap">review latency vs the band · silence made legible</div>
+                    </div>
+                    <div class="figure">
+                      <h4>SIGNAL SPECTRUM</h4>
+                      <div class="spectrum" aria-hidden="true">
+                        <div class="band" id="band1"></div>
+                        <div class="band" id="band2" style="opacity:.82; transform:scaleX(.74)"></div>
+                        <div class="band" id="band3" style="opacity:.7; transform:scaleX(.9)"></div>
+                      </div>
+                      <div class="cap">a mix of signals you can inspect · never a single number</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Gold thread + footnotes -->
+                <svg class="thread-svg" id="threadSvg" viewBox="0 0 1000 600" preserveAspectRatio="none" aria-hidden="true">
+                  <path
+                    class="thread-path"
+                    id="threadPath"
+                    d="M140 190 C220 120, 310 120, 380 170 C460 220, 510 240, 600 230 C700 220, 780 250, 840 310 C880 350, 900 420, 830 450 C720 500, 560 510, 420 470 C320 440, 250 420, 180 380 C120 346, 110 290, 140 250"
+                  />
+                </svg>
+                <div class="footnotes" id="footnotes" aria-hidden="true">
+                  <div class="fn">rights</div>
+                  <div class="fn">consent</div>
+                  <div class="fn">your controls</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <aside class="caption" aria-live="polite">
+          <div class="kicker mono">
+            <span id="actLabel">ARRIVAL</span>
+            <span class="bar"></span>
+            <span id="pillarsLabel">book · materials · address · words · circulation · intelligence · protection</span>
+          </div>
+          <h2 id="headline">A year on the table.</h2>
+          <p id="subline">Scroll advances time. Objects arrive. The kit assembles around one person.</p>
+          <div class="mono-line" id="monoLine" style="display:none;"></div>
+        </aside>
+
+        <!-- Scroll chapters (mostly invisible; they drive pins) -->
+        <div class="chapters" id="chapters">
+          <section class="chapter" data-act="P0" data-date="DAY 001" data-clock="00:00"></section>
+          <section class="chapter" data-act="P1" data-date="DAY 001" data-clock="09:14"></section>
+          <section class="chapter sweep" data-act="S1" data-date="WEEK 03" data-clock="08:02"></section>
+          <section class="chapter" data-act="P2" data-date="WEEK 03" data-clock="14:18"></section>
+          <section class="chapter" data-act="P3" data-date="WEEK 05" data-clock="11:40"></section>
+          <section class="chapter sweep" data-act="S2" data-date="MONTH 02" data-clock="10:10"></section>
+          <section class="chapter" data-act="P4" data-date="MONTH 02" data-clock="16:03"></section>
+          <section class="chapter" data-act="P5" data-date="MONTH 03" data-clock="09:26"></section>
+          <section class="chapter" data-act="P6" data-date="MONTH 06" data-clock="18:12"></section>
+          <section class="chapter sweep" data-act="S3" data-date="MONTH 12" data-clock="22:41"></section>
+          <section class="chapter" data-act="P7" data-date="BEGIN" data-clock="00:00"></section>
+        </div>
+      </main>
+    </div>
+
+    <!-- GSAP + ScrollTrigger CDN (authoritative versions) -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+    <script>
+      (function () {
+        const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const app = document.getElementById("app");
+        if (prefersReduced) app.classList.add("reduced");
+
+        const el = {
+          underline: document.getElementById("underline"),
+          tableWrap: document.getElementById("tableWrap"),
+          dateLabel: document.getElementById("dateLabel"),
+          clockLabel: document.getElementById("clockLabel"),
+          actLabel: document.getElementById("actLabel"),
+          pillarsLabel: document.getElementById("pillarsLabel"),
+          headline: document.getElementById("headline"),
+          subline: document.getElementById("subline"),
+          monoLine: document.getElementById("monoLine"),
+          chapters: document.getElementById("chapters"),
+          // objects
+          digitalA: document.getElementById("digitalA"),
+          digitalB: document.getElementById("digitalB"),
+          frame1: document.getElementById("frame1"),
+          frame2: document.getElementById("frame2"),
+          frame3: document.getElementById("frame3"),
+          gap1: document.getElementById("gap1"),
+          aiRead: document.getElementById("aiRead"),
+          aiReadBody: document.getElementById("aiReadBody"),
+          leader: document.getElementById("leader"),
+          leaderLine: document.getElementById("leaderLine"),
+          compCard: document.getElementById("compCard"),
+          sw1: document.getElementById("sw1"),
+          sw2: document.getElementById("sw2"),
+          sw3: document.getElementById("sw3"),
+          cardSweep: document.getElementById("cardSweep"),
+          printTag: document.getElementById("printTag"),
+          digitalsSheet: document.getElementById("digitalsSheet"),
+          phone: document.getElementById("phone"),
+          visitsNum: document.getElementById("visitsNum"),
+          envA: document.getElementById("envA"),
+          envB: document.getElementById("envB"),
+          envC: document.getElementById("envC"),
+          broadsheet: document.getElementById("broadsheet"),
+          seismoPath: document.getElementById("seismoPath"),
+          clockArc: document.getElementById("clockArc"),
+          threadSvg: document.getElementById("threadSvg"),
+          threadPath: document.getElementById("threadPath"),
+          footnotes: document.getElementById("footnotes"),
+        };
+
+        const acts = {
+          P0: {
+            label: "ARRIVAL",
+            headline: "DAY 001",
+            subline: "A working diary begins. The table is empty—so the kit can arrive in front of you.",
+            mono: "",
+          },
+          P1: {
+            label: "ARRIVE",
+            headline: 'One headshot is <em>enough</em> to begin.',
+            subline: "Two digitals, and a Scout read in calm industry language—like a booker would.",
+            mono: "",
+          },
+          P2: {
+            label: "BUILD",
+            headline: "A book, built with an <em>editor</em> at your shoulder.",
+            subline:
+              "Frames land one by one. Rights are tracked. Gaps appear as outlines—then fill when coaching is followed.",
+            mono: "",
+          },
+          P3: {
+            label: "FORM",
+            headline: "Composed from the <em>photograph</em> itself.",
+            subline:
+              "Palette swatches lift off the hero frame. Geometry settles into place. The comp card prints onto the table.",
+            mono: "",
+          },
+          P4: {
+            label: "STAND",
+            headline: "The work gets an <em>address</em>.",
+            subline:
+              "pholio.studio/you goes live. Visits tick day-by-day—first‑party analytics, owned by you.",
+            mono: "<strong>Coming to Studio+</strong>: the whole website, built from your book.",
+          },
+          P5: {
+            label: "MOVE",
+            headline: "A soft <em>yes</em> — never filed with the rejections.",
+            subline:
+              "Envelopes arrive and depart. Statuses stamp honestly: in review, interview, kept on file. Threads stay attached to each application.",
+            mono: "",
+          },
+          P6: {
+            label: "SEE",
+            headline: "Watch the room <em>watching</em>.",
+            subline:
+              "Pulse reads like a sentence. Ink figures draw: attention over time, latency in context, a spectrum you can inspect—never a score.",
+            mono: "",
+          },
+          P7: {
+            label: "BEGIN",
+            headline: "Begin your <em>casting</em>.",
+            subline:
+              "Fourteen days on the house. A calm back office for the year you’re about to build.",
+            mono: "$9.99/mo · 14-day free trial",
+          },
+        };
+
+        function setCaption(key) {
+          const a = acts[key];
+          if (!a) return;
+          el.actLabel.textContent = a.label;
+          el.headline.innerHTML = a.headline;
+          el.subline.textContent = a.subline;
+          if (a.mono) {
+            el.monoLine.style.display = "block";
+            el.monoLine.innerHTML = a.mono;
+          } else {
+            el.monoLine.style.display = "none";
+            el.monoLine.innerHTML = "";
+          }
+        }
+
+        // Small helpers (no SplitText): masked line reveal + type/strike/reset
+        function revealLines(node) {
+          const lines = Array.from(node.querySelectorAll("[data-reveal]"));
+          const tl = gsap.timeline();
+          lines.forEach((ln) => {
+            const wrap = document.createElement("span");
+            wrap.style.display = "block";
+            wrap.style.overflow = "hidden";
+            wrap.style.lineHeight = "inherit";
+            wrap.style.paddingBottom = "0.06em";
+            ln.parentNode.insertBefore(wrap, ln);
+            wrap.appendChild(ln);
+            gsap.set(ln, { yPercent: 110, opacity: 0.01 });
+            tl.to(ln, { yPercent: 0, opacity: 1, duration: 0.8, ease: "power3.out" }, "+=0.05");
+          });
+          return tl;
+        }
+
+        function clamp(n, a, b) {
+          return Math.max(a, Math.min(b, n));
+        }
+
+        function lerp(a, b, t) {
+          return a + (b - a) * t;
+        }
+
+        function pad3(n) {
+          const s = String(n);
+          return s.length >= 3 ? s : "0".repeat(3 - s.length) + s;
+        }
+
+        // Hover set piece (P2): frames show live AI read with leader line
+        const frames = [el.frame1, el.frame2, el.frame3].filter(Boolean);
+        let hoverActive = false;
+        let hovered = null;
+        function tableRect() {
+          return document.getElementById("table").getBoundingClientRect();
+        }
+
+        function placeAiReadFor(frame, clientX, clientY) {
+          const tr = tableRect();
+          const fr = frame.getBoundingClientRect();
+          const anchorX = fr.left + fr.width * 0.5 - tr.left;
+          const anchorY = fr.top + fr.height * 0.2 - tr.top;
+
+          const desiredX = clamp(clientX - tr.left + 18, 24, tr.width - 360);
+          const desiredY = clamp(clientY - tr.top - 14, 24, tr.height - 160);
+          el.aiRead.style.left = desiredX + "px";
+          el.aiRead.style.top = desiredY + "px";
+
+          const readBox = el.aiRead.getBoundingClientRect();
+          const readAnchorX = readBox.left - tr.left;
+          const readAnchorY = readBox.top - tr.top + 26;
+
+          el.leader.setAttribute("viewBox", `0 0 ${tr.width} ${tr.height}`);
+          el.leaderLine.setAttribute("x1", String(anchorX));
+          el.leaderLine.setAttribute("y1", String(anchorY));
+          el.leaderLine.setAttribute("x2", String(readAnchorX));
+          el.leaderLine.setAttribute("y2", String(readAnchorY));
+        }
+
+        frames.forEach((f) => {
+          f.addEventListener("mouseenter", (e) => {
+            hovered = f;
+            hoverActive = true;
+            el.aiReadBody.textContent = f.getAttribute("data-read") || "";
+            const ev = e;
+            placeAiReadFor(f, ev.clientX, ev.clientY);
+            gsap.to(el.aiRead, { opacity: 1, y: 0, duration: 0.2, ease: "power2.out" });
+            gsap.to(el.leader, { opacity: 1, duration: 0.2, ease: "power2.out" });
+          });
+          f.addEventListener("mousemove", (e) => {
+            if (!hoverActive || hovered !== f) return;
+            placeAiReadFor(f, e.clientX, e.clientY);
+          });
+          f.addEventListener("mouseleave", () => {
+            hoverActive = false;
+            hovered = null;
+            gsap.to(el.aiRead, { opacity: 0, y: 6, duration: 0.18, ease: "power2.inOut" });
+            gsap.to(el.leader, { opacity: 0, duration: 0.18, ease: "power2.inOut" });
+          });
+        });
+
+        // Envelope flip set piece (P5): click + drag threshold toggles
+        function setupEnvelope(env) {
+          if (!env) return;
+          gsap.set(env, { transformPerspective: 900 });
+          const state = { flipped: false, dragX: 0, dragY: 0 };
+          let down = false;
+          let start = { x: 0, y: 0, ox: 0, oy: 0 };
+
+          function render() {
+            const tiltX = clamp((-state.dragY / 140) * 8, -10, 10);
+            const tiltY = clamp((state.dragX / 140) * 10, -12, 12);
+            gsap.set(env, { rotateX: tiltX, rotateY: tiltY });
+          }
+
+          function setFlip(toFlipped) {
+            state.flipped = toFlipped;
+            gsap.to(env, { rotateY: toFlipped ? 180 : 0, duration: 0.55, ease: "power3.out" });
+          }
+
+          env.addEventListener("pointerenter", () => {
+            if (prefersReduced) return;
+            gsap.to(env, { rotateZ: "+=0.25", duration: 0.2, ease: "power2.out" });
+          });
+
+          env.addEventListener("pointerleave", () => {
+            down = false;
+            state.dragX = 0;
+            state.dragY = 0;
+            gsap.to(env, { rotateX: 0, rotateY: state.flipped ? 180 : 0, duration: 0.4, ease: "power2.out" });
+          });
+
+          env.addEventListener("pointerdown", (e) => {
+            if (prefersReduced) return;
+            down = true;
+            env.setPointerCapture(e.pointerId);
+            start = { x: e.clientX, y: e.clientY, ox: env.offsetLeft, oy: env.offsetTop };
+          });
+
+          env.addEventListener("pointermove", (e) => {
+            if (!down || prefersReduced) return;
+            const dx = e.clientX - start.x;
+            const dy = e.clientY - start.y;
+            state.dragX = dx;
+            state.dragY = dy;
+            render();
+            // light positional drag for tactility (stays near home)
+            gsap.set(env, { x: clamp(dx, -18, 18), y: clamp(dy, -14, 14) });
+          });
+
+          env.addEventListener("pointerup", (e) => {
+            if (prefersReduced) return;
+            down = false;
+            const dx = e.clientX - start.x;
+            const dy = e.clientY - start.y;
+            const dist = Math.hypot(dx, dy);
+            const shouldFlip = dist < 10 ? !state.flipped : Math.abs(dx) > 20;
+            setFlip(shouldFlip);
+            state.dragX = 0;
+            state.dragY = 0;
+            gsap.to(env, { x: 0, y: 0, rotateX: 0, duration: 0.45, ease: "power2.out" });
+          });
+
+          env.addEventListener("dblclick", () => setFlip(!state.flipped));
+        }
+
+        [el.envA, el.envB, el.envC].forEach(setupEnvelope);
+
+        // If reduced motion: static final-table composition + stacked sections
+        if (prefersReduced) {
+          gsap.set(el.underline, { scaleX: 1 });
+          gsap.set(el.tableWrap, { rotateX: 28, scale: 0.94 });
+          [
+            el.digitalA,
+            el.digitalB,
+            el.frame1,
+            el.frame2,
+            el.frame3,
+            el.gap1,
+            el.compCard,
+            el.digitalsSheet,
+            el.phone,
+            el.envA,
+            el.envB,
+            el.envC,
+            el.broadsheet,
+          ].forEach((o) => o && gsap.set(o, { opacity: 1, x: 0, y: 0, rotateZ: 0 }));
+          gsap.set(el.threadSvg, { opacity: 1 });
+          gsap.set(el.footnotes, { opacity: 1, y: 0 });
+
+          // Replace scroll triggers with stacked narrative sections.
+          const stack = [
+            { label: "ARRIVE", date: "DAY 001", key: "P1" },
+            { label: "BUILD", date: "WEEK 03", key: "P2" },
+            { label: "FORM", date: "WEEK 05", key: "P3" },
+            {
+              label: "SOUND",
+              date: "—",
+              headline: "The words get <em>written</em> with you.",
+              subline: "Bio lines type, strike, and re-set into industry English—quietly, in the margin.",
+              mono: "",
+            },
+            { label: "STAND", date: "MONTH 02", key: "P4" },
+            { label: "MOVE", date: "MONTH 03", key: "P5" },
+            { label: "SEE", date: "MONTH 06", key: "P6" },
+            {
+              label: "SAFE",
+              date: "MONTH 12",
+              headline: "Control is a <em>feature</em>.",
+              subline: "Rights tracked per photograph · consent gates when needed · discovery and visibility on your terms.",
+              mono: "rights · consent · your controls",
+            },
+            { label: "BEGIN", date: "BEGIN", key: "P7" },
+          ];
+
+          const makeBlock = (item) => {
+            const a = item.key ? acts[item.key] : item;
+            const mono = a.mono ? `<div class="mono-line">${a.mono}</div>` : "";
+            return `
+              <div style="max-width: 760px; margin: 0 auto; padding: 0 22px;">
+                <div class="kicker mono" style="margin-bottom: 12px;">
+                  <span>${item.label}</span><span class="bar"></span><span>${item.date}</span>
+                </div>
+                <h2 class="serif" style="margin:0; font-weight:650; font-size: clamp(26px, 3vw, 42px); line-height:1.02;">
+                  ${a.headline}
+                </h2>
+                <p style="margin: 12px 0 0; font-size: 14px; line-height: 1.55; color: rgba(247,243,236,.82); max-width: 62ch;">
+                  ${a.subline}
+                </p>
+                ${mono}
+              </div>
+            `;
+          };
+
+          const chapters = Array.from(document.querySelectorAll(".chapter"));
+          chapters.forEach((ch, i) => {
+            const item = stack[i];
+            if (!item) {
+              ch.style.display = "none";
+              return;
+            }
+            ch.classList.remove("sweep");
+            ch.innerHTML = makeBlock(item);
+          });
+
+          el.actLabel.textContent = "MONTH 12";
+          el.dateLabel.textContent = "MONTH 12";
+          el.clockLabel.textContent = "—";
+          el.headline.innerHTML = "A year on the table.";
+          el.subline.textContent =
+            "Reduced motion: the full kit is shown at once, with the story stacked below.";
+          el.monoLine.style.display = "none";
+          return;
+        }
+
+        // Normal motion: ScrollTrigger pins/scrubs
+        gsap.registerPlugin(ScrollTrigger);
+        ScrollTrigger.config({ limitCallbacks: true, ignoreMobileResize: true });
+
+        // Intro underline draw on first entry
+        gsap.to(el.underline, {
+          scaleX: 1,
+          duration: 1.0,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: el.chapters,
+            start: "top top",
+            end: "top+=240 top",
+            scrub: true,
+          },
+        });
+
+        // Object landing helper (small overshoot + settle)
+        function land(obj, opts) {
+          const { fromX = 0, fromY = 60, fromR = -6, toR = 0, delay = 0, dur = 0.9 } = opts || {};
+          const tl = gsap.timeline();
+          gsap.set(obj, { opacity: 0, x: fromX, y: fromY, rotateZ: fromR, scale: 0.98 });
+          tl.to(obj, { opacity: 1, duration: 0.1, ease: "none" }, delay);
+          tl.to(
+            obj,
+            {
+              x: 0,
+              y: 0,
+              rotateZ: toR,
+              scale: 1,
+              duration: dur,
+              ease: "back.out(1.35)",
+            },
+            delay
+          );
+          tl.to(obj, { rotateZ: toR, duration: 0.25, ease: "power2.out" }, delay + dur - 0.1);
+          return tl;
+        }
+
+        // Draw helper for SVG paths
+        function prepDraw(path) {
+          const len = path.getTotalLength();
+          path.style.strokeDasharray = String(len);
+          path.style.strokeDashoffset = String(len);
+          return len;
+        }
+
+        const seismoLen = prepDraw(el.seismoPath);
+        const threadLen = prepDraw(el.threadPath);
+        const clockLen = prepDraw(el.clockArc);
+        el.clockArc.style.strokeDasharray = String(clockLen);
+        el.clockArc.style.strokeDashoffset = String(clockLen);
+
+        // Visits tick (Address analytics)
+        const visitState = { v: 4 };
+        function setVisits(n) {
+          el.visitsNum.textContent = pad3(n);
+        }
+        setVisits(visitState.v);
+
+        // Caption + date tick during acts and sweeps
+        const chapterEls = Array.from(document.querySelectorAll(".chapter"));
+        chapterEls.forEach((ch) => {
+          ScrollTrigger.create({
+            trigger: ch,
+            start: "top center",
+            end: "bottom center",
+            onEnter: () => onChapter(ch),
+            onEnterBack: () => onChapter(ch),
+          });
+        });
+
+        function onChapter(ch) {
+          const act = ch.getAttribute("data-act");
+          const date = ch.getAttribute("data-date");
+          const clock = ch.getAttribute("data-clock");
+          if (date) el.dateLabel.textContent = date;
+          if (clock) el.clockLabel.textContent = clock;
+
+          if (act === "P0") setCaption("P0");
+          if (act === "P1") setCaption("P1");
+          if (act === "P2") setCaption("P2");
+          if (act === "P3") setCaption("P3");
+          if (act === "P4") setCaption("P4");
+          if (act === "P5") setCaption("P5");
+          if (act === "P6") setCaption("P6");
+          if (act === "P7") setCaption("P7");
+        }
+
+        // P0 — subtle camera settle into table
+        gsap
+          .timeline({
+            scrollTrigger: {
+              trigger: chapterEls[0],
+              start: "top top",
+              end: "bottom top",
+              scrub: true,
+            },
+          })
+          .fromTo(el.tableWrap, { rotateX: 44, scale: 1.03, rotateZ: -1 }, { rotateX: 40, scale: 1, rotateZ: -1, ease: "none" })
+          .fromTo(el.tableWrap, { y: -10 }, { y: 0, ease: "none" }, 0);
+
+        // P1 — digitals land + a tiny Scout read flourish
+        gsap
+          .timeline({
+            scrollTrigger: {
+              trigger: chapterEls[1],
+              start: "top top",
+              end: "bottom top",
+              scrub: true,
+              pin: true,
+              pinSpacing: true,
+            },
+          })
+          .add(land(el.digitalA, { fromX: -60, fromY: 60, fromR: -10, toR: -8, delay: 0.05, dur: 0.9 }), 0)
+          .add(land(el.digitalB, { fromX: 70, fromY: 70, fromR: 12, toR: 7, delay: 0.12, dur: 0.95 }), 0)
+          .to(el.tableWrap, { rotateX: 39, duration: 1.0, ease: "none" }, 0);
+
+        // S1 — date flip sweep: tick the date label rapidly + slight camera drift
+        ScrollTrigger.create({
+          trigger: chapterEls[2],
+          start: "top bottom",
+          end: "bottom top",
+          onUpdate: (st) => {
+            const p = st.progress;
+            if (p < 0.4) el.dateLabel.textContent = "DAY " + pad3(Math.floor(lerp(2, 12, p / 0.4)));
+            else el.dateLabel.textContent = "WEEK 03";
+            const mins = Math.floor(lerp(0, 59, p));
+            el.clockLabel.textContent = "08:" + String(mins).padStart(2, "0");
+          },
+        });
+
+        gsap.to(el.tableWrap, {
+          x: 10,
+          y: 6,
+          duration: 1,
+          ease: "none",
+          scrollTrigger: {
+            trigger: chapterEls[2],
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
+
+        // P2 — frames land; gaps appear; hover read is active
+        gsap
+          .timeline({
+            scrollTrigger: {
+              trigger: chapterEls[3],
+              start: "top top",
+              end: "bottom top",
+              scrub: true,
+              pin: true,
+              pinSpacing: true,
+            },
+          })
+          .add(land(el.frame1, { fromX: 70, fromY: 80, fromR: -6, toR: -3, delay: 0.08, dur: 0.95 }), 0)
+          .add(land(el.frame2, { fromX: 120, fromY: 90, fromR: 8, toR: 6, delay: 0.18, dur: 0.95 }), 0)
+          .add(land(el.frame3, { fromX: 90, fromY: 100, fromR: -10, toR: -4, delay: 0.28, dur: 0.95 }), 0)
+          .to(el.gap1, { opacity: 1, duration: 0.5, ease: "power2.out" }, 0.55)
+          .to(el.tableWrap, { x: 0, y: 0, rotateX: 40.5, duration: 1.0, ease: "none" }, 0);
+
+        // P3 — comp card composes: swatches lift, sweep draws, "prints"
+        const cardTL = gsap.timeline({
+          scrollTrigger: {
+            trigger: chapterEls[4],
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+            pin: true,
+            pinSpacing: true,
+          },
+        });
+        cardTL.add(land(el.compCard, { fromX: -70, fromY: 120, fromR: -8, toR: -2, delay: 0.06, dur: 1.05 }), 0);
+        cardTL.to([el.sw1, el.sw2, el.sw3], { opacity: 1, stagger: 0.06, duration: 0.25, ease: "power2.out" }, 0.25);
+        cardTL.fromTo([el.sw1, el.sw2, el.sw3], { y: 18 }, { y: 0, stagger: 0.06, duration: 0.7, ease: "back.out(1.6)" }, 0.26);
+        cardTL.to(el.cardSweep, { scaleX: 1, duration: 0.8, ease: "power3.out" }, 0.38);
+        cardTL.to(el.printTag, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 0.56);
+        cardTL.add(land(el.digitalsSheet, { fromX: 110, fromY: 120, fromR: 8, toR: 3, delay: 0.62, dur: 0.9 }), 0);
+
+        // S2 — words pillar rides the sweep: type/strike/reset in the caption itself
+        const words = [
+          { rough: "aspiring model in atlanta · loves fashion", refined: "commercial / editorial talent · Atlanta (open to travel)" },
+          { rough: "i want to get signed soon", refined: "seeking representation · open calls welcome" },
+          { rough: "dm me on instagram", refined: "available for boards · contact via thread" },
+        ];
+        const strikeWrap = document.createElement("div");
+        strikeWrap.style.marginTop = "12px";
+        strikeWrap.style.fontFamily = "var(--mono)";
+        strikeWrap.style.fontSize = "12px";
+        strikeWrap.style.letterSpacing = "0.02em";
+        strikeWrap.style.color = "rgba(247,243,236,.78)";
+        strikeWrap.innerHTML =
+          '<div id="wordsRough" style="opacity:.92"></div><div id="wordsRefined" style="opacity:.0;margin-top:8px;color:rgba(247,243,236,.86)"></div>';
+        el.subline.parentNode.appendChild(strikeWrap);
+        const roughEl = strikeWrap.querySelector("#wordsRough");
+        const refinedEl = strikeWrap.querySelector("#wordsRefined");
+
+        ScrollTrigger.create({
+          trigger: chapterEls[5],
+          start: "top bottom",
+          end: "bottom top",
+          onEnter: () => {
+            el.actLabel.textContent = "SOUND";
+            el.headline.innerHTML = "The words get <em>written</em> with you.";
+            el.subline.textContent = "Bio lines type, strike, and re-set into industry English—quietly, in the margin.";
+          },
+          onEnterBack: () => {
+            el.actLabel.textContent = "SOUND";
+            el.headline.innerHTML = "The words get <em>written</em> with you.";
+            el.subline.textContent = "Bio lines type, strike, and re-set into industry English—quietly, in the margin.";
+          },
+          onLeave: () => {
+            roughEl.textContent = "";
+            refinedEl.textContent = "";
+            gsap.set([roughEl, refinedEl], { opacity: 0 });
+          },
+          onLeaveBack: () => {
+            roughEl.textContent = "";
+            refinedEl.textContent = "";
+            gsap.set([roughEl, refinedEl], { opacity: 0 });
+          },
+          onUpdate: (st) => {
+            const p = st.progress;
+            const idx = Math.min(words.length - 1, Math.floor(p * words.length));
+            const local = (p * words.length) % 1;
+            const w = words[idx];
+            roughEl.textContent = "bio: " + w.rough;
+            refinedEl.textContent = "→ " + w.refined;
+            const showR = clamp(local * 2.0, 0, 1);
+            const showF = clamp((local - 0.35) * 2.0, 0, 1);
+            gsap.set(roughEl, { opacity: showR });
+            gsap.set(refinedEl, { opacity: showF });
+            // strike effect by blending a hairline across rough
+            roughEl.style.textDecoration = showF > 0.2 ? "line-through" : "none";
+            roughEl.style.textDecorationColor = "rgba(201,165,90,.7)";
+          },
+        });
+
+        // P4 — phone lands + visits tick + Studio+ coming line is shown
+        const p4 = gsap.timeline({
+          scrollTrigger: {
+            trigger: chapterEls[6],
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+            pin: true,
+            pinSpacing: true,
+          },
+        });
+        p4.add(land(el.phone, { fromX: 130, fromY: 120, fromR: 9, toR: 4, delay: 0.08, dur: 1.0 }), 0);
+        p4.to(
+          visitState,
+          {
+            v: 38,
+            duration: 1,
+            ease: "none",
+            onUpdate: () => setVisits(Math.round(visitState.v)),
+          },
+          0.1
+        );
+        p4.to(el.tableWrap, { rotateX: 39.5, duration: 1, ease: "none" }, 0);
+
+        // P5 — envelopes land + gentle mail drift
+        const p5 = gsap.timeline({
+          scrollTrigger: {
+            trigger: chapterEls[7],
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+            pin: true,
+            pinSpacing: true,
+          },
+        });
+        p5.add(land(el.envA, { fromX: -60, fromY: 70, fromR: -6, toR: -2, delay: 0.06, dur: 0.9 }), 0);
+        p5.add(land(el.envB, { fromX: -40, fromY: 80, fromR: 8, toR: 2, delay: 0.16, dur: 0.95 }), 0);
+        p5.add(land(el.envC, { fromX: 60, fromY: 90, fromR: -10, toR: -4, delay: 0.26, dur: 0.95 }), 0);
+        p5.to([el.envA, el.envB, el.envC], { y: "+=2", duration: 0.6, ease: "sine.inOut", yoyo: true, repeat: 1 }, 0.5);
+
+        // P6 — broadsheet unroll + ink draws
+        const p6 = gsap.timeline({
+          scrollTrigger: {
+            trigger: chapterEls[8],
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+            pin: true,
+            pinSpacing: true,
+          },
+        });
+        p6.add(land(el.broadsheet, { fromX: -20, fromY: 140, fromR: -4, toR: -1, delay: 0.06, dur: 1.05 }), 0);
+        p6.to(el.seismoPath, { strokeDashoffset: 0, duration: 1, ease: "none" }, 0.18);
+        p6.to(el.clockArc, { strokeDashoffset: lerp(clockLen, clockLen * 0.35, 1), duration: 1, ease: "none" }, 0.22);
+        p6.fromTo("#band1", { scaleX: 0.78 }, { scaleX: 1, duration: 0.9, ease: "power2.out" }, 0.24);
+
+        // S3 — MONTH 12 pull-back: camera lifts; thread reveals
+        gsap
+          .timeline({
+            scrollTrigger: {
+              trigger: chapterEls[9],
+              start: "top bottom",
+              end: "bottom top",
+              scrub: true,
+            },
+          })
+          .to(el.tableWrap, { rotateX: 22, scale: 0.86, rotateZ: -0.5, duration: 1, ease: "none" }, 0)
+          .to(el.tableWrap, { x: 0, y: 0, duration: 1, ease: "none" }, 0)
+          .to(el.threadSvg, { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.35)
+          .to(el.threadPath, { strokeDashoffset: 0, duration: 0.9, ease: "none" }, 0.35)
+          .to(el.footnotes, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0.52);
+
+        // P7 — clear table to one blank card + CTA
+        const p7 = gsap.timeline({
+          scrollTrigger: {
+            trigger: chapterEls[10],
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+            pin: true,
+            pinSpacing: true,
+          },
+        });
+
+        // Fade out everything; keep paper feel
+        const allObjs = [
+          el.digitalA,
+          el.digitalB,
+          el.frame1,
+          el.frame2,
+          el.frame3,
+          el.gap1,
+          el.compCard,
+          el.digitalsSheet,
+          el.phone,
+          el.envA,
+          el.envB,
+          el.envC,
+          el.broadsheet,
+          el.threadSvg,
+          el.footnotes,
+        ];
+        p7.to(allObjs, { opacity: 0, duration: 0.6, ease: "power2.out", stagger: 0.02 }, 0.1);
+
+        // Make a single blank card appear
+        const blank = document.createElement("div");
+        blank.className = "obj card";
+        blank.id = "blankCard";
+        blank.style.left = "290px";
+        blank.style.top = "240px";
+        blank.style.width = "460px";
+        blank.style.height = "300px";
+        blank.style.gridTemplateColumns = "1fr";
+        blank.style.padding = "18px";
+        blank.innerHTML = `
+          <div style="border-radius:16px; background:rgba(5,5,5,.03); box-shadow: inset 0 0 0 1px rgba(10,10,11,.08); height:100%; padding:18px; display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <div class="serif" style="font-weight:650; font-size:34px; line-height:1.05; color: var(--ink);">
+                Begin your <span style="font-style:italic; color: var(--gold);">casting</span>.
+              </div>
+              <div class="mono" style="margin-top:14px; font-size:12px; color: rgba(10,10,11,.62); letter-spacing:.03em; line-height:1.5;">
+                14 days on the house · Studio+ $9.99/mo
+              </div>
+            </div>
+            <div style="height:1px; background: linear-gradient(to right, rgba(201,165,90,.92), rgba(201,165,90,0));"></div>
+            <div class="mono" style="font-size:11px; color: rgba(10,10,11,.64); letter-spacing:.06em; display:flex; justify-content:space-between;">
+              <span>rights · consent · your controls</span>
+              <span>pholio.studio/you</span>
+            </div>
+          </div>
+        `;
+        document.getElementById("table").appendChild(blank);
+        gsap.set(blank, { opacity: 0, x: 0, y: 50, rotateZ: -2, scale: 0.98 });
+        p7.to(blank, { opacity: 1, y: 0, rotateZ: 0, scale: 1, duration: 0.9, ease: "back.out(1.25)" }, 0.35);
+        p7.to(el.tableWrap, { rotateX: 34, scale: 0.96, duration: 1, ease: "none" }, 0);
+
+        // Default caption at load
+        setCaption("P0");
+      })();
+    </script>
+  </body>
+</html>
+

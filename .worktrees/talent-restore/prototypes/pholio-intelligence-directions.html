@@ -1,0 +1,1306 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pholio Intelligence — Cinematic Directions</title>
+    <style>
+      :root {
+        --ink: #050505;
+        --cream: #faf7f2;
+        --warm: #f3ede3;
+        --gold: #c9a55a;
+        --gold-dark: #a8894e;
+        --serif: "Iowan Old Style", Baskerville, "Times New Roman", serif;
+        --sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+        --ease: cubic-bezier(0.22, 1, 0.36, 1);
+        --mx: 0px;
+        --my: 0px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        min-width: 320px;
+        margin: 0;
+        background: var(--ink);
+        color: white;
+        font-family: var(--sans);
+      }
+
+      button {
+        color: inherit;
+        font: inherit;
+      }
+
+      img {
+        display: block;
+        width: 100%;
+        -webkit-user-drag: none;
+        user-select: none;
+      }
+
+      figure {
+        margin: 0;
+      }
+
+      .grain {
+        position: absolute;
+        z-index: 50;
+        inset: 0;
+        opacity: 0.035;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.9'/%3E%3C/svg%3E");
+        pointer-events: none;
+        mix-blend-mode: soft-light;
+      }
+
+      .review-mark {
+        position: fixed;
+        z-index: 200;
+        top: 24px;
+        left: 28px;
+        color: var(--gold);
+        font-family: var(--serif);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.24em;
+      }
+
+      .picker {
+        position: fixed;
+        z-index: 200;
+        top: 50%;
+        right: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        transform: translateY(-50%);
+      }
+
+      .pick {
+        position: relative;
+        display: grid;
+        width: 46px;
+        height: 46px;
+        padding: 0;
+        place-items: center;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 2px;
+        background: rgba(5, 5, 5, 0.72);
+        color: rgba(255, 255, 255, 0.48);
+        cursor: pointer;
+        font-family: var(--mono);
+        font-size: 9px;
+        transition:
+          color 220ms ease,
+          border-color 220ms ease,
+          background 220ms ease;
+      }
+
+      .pick::before {
+        position: absolute;
+        top: 50%;
+        right: 54px;
+        width: max-content;
+        padding: 7px 9px;
+        transform: translateY(-50%) translateX(6px);
+        background: var(--ink);
+        color: rgba(255, 255, 255, 0.68);
+        content: attr(data-label);
+        font-family: var(--mono);
+        font-size: 8px;
+        letter-spacing: 0.14em;
+        opacity: 0;
+        pointer-events: none;
+        text-transform: uppercase;
+        transition:
+          opacity 180ms ease,
+          transform 180ms ease;
+      }
+
+      .pick:hover::before,
+      .pick:focus-visible::before {
+        opacity: 1;
+        transform: translateY(-50%) translateX(0);
+      }
+
+      .pick:hover,
+      .pick:focus-visible {
+        border-color: rgba(201, 165, 90, 0.7);
+        color: white;
+        outline: none;
+      }
+
+      .pick[aria-selected="true"] {
+        border-color: var(--cream);
+        background: var(--cream);
+        color: var(--ink);
+      }
+
+      .belief {
+        position: relative;
+        display: grid;
+        min-height: 64vh;
+        padding: 110px 24px 60px;
+        place-items: center;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 50% 72%, rgba(201, 165, 90, 0.08), transparent 34%),
+          var(--ink);
+      }
+
+      .belief h1 {
+        position: relative;
+        z-index: 2;
+        max-width: 1120px;
+        margin: 0;
+        font-family: var(--serif);
+        font-size: clamp(38px, 5.4vw, 80px);
+        font-weight: 400;
+        letter-spacing: -0.04em;
+        line-height: 1.06;
+        text-align: center;
+      }
+
+      .belief em {
+        color: var(--gold);
+        font-weight: 400;
+      }
+
+      .belief-rule {
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        width: 1px;
+        height: 100px;
+        transform-origin: top;
+        background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+        animation: rule-in 950ms 350ms var(--ease) both;
+      }
+
+      @keyframes rule-in {
+        from {
+          transform: scaleY(0);
+        }
+        to {
+          transform: scaleY(1);
+        }
+      }
+
+      .stage {
+        position: relative;
+        min-height: 100svh;
+        overflow: hidden;
+        isolation: isolate;
+      }
+
+      .direction {
+        position: absolute;
+        inset: 0;
+        min-height: 100svh;
+        overflow: hidden;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      .direction.is-active {
+        position: relative;
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+      }
+
+      .direction-title {
+        position: absolute;
+        z-index: 80;
+        margin: 0;
+        font-family: var(--serif);
+        font-size: clamp(54px, 8.8vw, 134px);
+        font-weight: 400;
+        letter-spacing: -0.065em;
+        line-height: 0.86;
+      }
+
+      .direction-title em {
+        color: var(--gold);
+        font-weight: 400;
+      }
+
+      .truth-line {
+        position: absolute;
+        z-index: 80;
+        max-width: 370px;
+        margin: 0;
+        font-size: 11px;
+        line-height: 1.6;
+      }
+
+      .truth-line::before {
+        display: inline-block;
+        width: 28px;
+        height: 1px;
+        margin: 0 12px 3px 0;
+        background: var(--gold);
+        content: "";
+      }
+
+      /* 01 — The Scan */
+      #scan {
+        background:
+          radial-gradient(circle at 50% 47%, rgba(201, 165, 90, 0.16), transparent 31%),
+          var(--ink);
+      }
+
+      .scan-word {
+        position: absolute;
+        z-index: 0;
+        top: 50%;
+        left: 50%;
+        color: rgba(255, 255, 255, 0.06);
+        font-family: var(--serif);
+        font-size: clamp(110px, 22vw, 340px);
+        letter-spacing: -0.08em;
+        line-height: 0.7;
+        transform: translate(-50%, -50%);
+        white-space: nowrap;
+      }
+
+      .scan-halo {
+        position: absolute;
+        z-index: 1;
+        top: 50%;
+        left: 50%;
+        width: min(48vw, 660px);
+        aspect-ratio: 1;
+        transform: translate(
+          calc(-50% + var(--mx) * 0.18),
+          calc(-50% + var(--my) * 0.12)
+        );
+        border: 1px solid rgba(201, 165, 90, 0.22);
+        border-radius: 50%;
+        box-shadow:
+          0 0 0 70px rgba(201, 165, 90, 0.018),
+          0 0 0 140px rgba(201, 165, 90, 0.012);
+        transition: transform 900ms var(--ease);
+      }
+
+      .scan-echo {
+        position: absolute;
+        z-index: 2;
+        bottom: -4vh;
+        left: 50%;
+        width: min(48vw, 680px);
+        height: 92vh;
+        object-fit: contain;
+        object-position: bottom center;
+        filter: grayscale(1) blur(10px);
+        opacity: 0;
+      }
+
+      .scan-echo--left {
+        transform: translateX(-79%) scale(0.88);
+      }
+
+      .scan-echo--right {
+        transform: translateX(-21%) scale(0.88);
+      }
+
+      .is-active .scan-echo--left {
+        animation: echo-left 1.35s 160ms var(--ease) both;
+      }
+
+      .is-active .scan-echo--right {
+        animation: echo-right 1.35s 260ms var(--ease) both;
+      }
+
+      @keyframes echo-left {
+        from {
+          opacity: 0;
+          transform: translateX(-58%) scale(0.96);
+        }
+        to {
+          opacity: 0.09;
+          transform: translateX(-79%) scale(0.88);
+        }
+      }
+
+      @keyframes echo-right {
+        from {
+          opacity: 0;
+          transform: translateX(-42%) scale(0.96);
+        }
+        to {
+          opacity: 0.07;
+          transform: translateX(-21%) scale(0.88);
+        }
+      }
+
+      .scan-model {
+        position: absolute;
+        z-index: 8;
+        bottom: -2vh;
+        left: 50%;
+        width: min(48vw, 680px);
+        height: 94vh;
+        object-fit: contain;
+        object-position: bottom center;
+        filter: saturate(0.72) contrast(1.04);
+        transform: translate(
+          calc(-50% + var(--mx) * 0.32),
+          calc(var(--my) * 0.12)
+        );
+        opacity: 0;
+        transition: transform 900ms var(--ease);
+      }
+
+      .is-active .scan-model {
+        animation: model-arrive 1.3s var(--ease) forwards;
+      }
+
+      @keyframes model-arrive {
+        from {
+          opacity: 0;
+          clip-path: inset(100% 0 0);
+          transform: translate(-50%, 46px) scale(1.04);
+        }
+        to {
+          opacity: 1;
+          clip-path: inset(0 0 0);
+          transform: translate(-50%, 0) scale(1);
+        }
+      }
+
+      .scan-line {
+        position: absolute;
+        z-index: 15;
+        top: 13%;
+        left: 50%;
+        width: min(58vw, 820px);
+        height: 1px;
+        transform: translateX(-50%);
+        background: linear-gradient(to right, transparent, var(--gold), transparent);
+        box-shadow: 0 0 22px rgba(201, 165, 90, 0.5);
+        opacity: 0;
+      }
+
+      .is-active .scan-line {
+        animation: scan-pass 2.1s 550ms var(--ease) both;
+      }
+
+      @keyframes scan-pass {
+        0% {
+          top: 13%;
+          opacity: 0;
+        }
+        15%,
+        72% {
+          opacity: 1;
+        }
+        100% {
+          top: 86%;
+          opacity: 0;
+        }
+      }
+
+      .scan-read {
+        position: absolute;
+        z-index: 30;
+        right: 7vw;
+        bottom: 8vh;
+        display: flex;
+        gap: 16px;
+        color: rgba(255, 255, 255, 0.5);
+        font-family: var(--mono);
+        font-size: 8px;
+        letter-spacing: 0.16em;
+        opacity: 0;
+        text-transform: uppercase;
+      }
+
+      .scan-read b {
+        color: var(--gold);
+        font-weight: 500;
+      }
+
+      .is-active .scan-read {
+        animation: quiet-in 700ms 2s var(--ease) forwards;
+      }
+
+      @keyframes quiet-in {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      #scan .direction-title {
+        bottom: 7vh;
+        left: 6vw;
+        max-width: 710px;
+        opacity: 0;
+      }
+
+      #scan.is-active .direction-title {
+        animation: title-rise 950ms 1.45s var(--ease) forwards;
+      }
+
+      @keyframes title-rise {
+        from {
+          opacity: 0;
+          transform: translateY(36px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* 02 — The Edit */
+      #edit {
+        background: var(--cream);
+        color: var(--ink);
+      }
+
+      .edit-ghost {
+        position: absolute;
+        z-index: 0;
+        top: 50%;
+        left: 50%;
+        color: rgba(5, 5, 5, 0.035);
+        font-family: var(--serif);
+        font-size: clamp(190px, 37vw, 570px);
+        letter-spacing: -0.1em;
+        line-height: 0.7;
+        transform: translate(-50%, -50%);
+      }
+
+      .film {
+        position: absolute;
+        z-index: 3;
+        top: 50%;
+        left: 50%;
+        display: flex;
+        gap: 24px;
+        width: max-content;
+        padding: 26px;
+        transform: translate(-42%, -50%) rotate(-5deg);
+        border-top: 1px solid rgba(5, 5, 5, 0.16);
+        border-bottom: 1px solid rgba(5, 5, 5, 0.16);
+        opacity: 0;
+      }
+
+      #edit.is-active .film {
+        animation: film-arrive 1.4s var(--ease) forwards;
+      }
+
+      @keyframes film-arrive {
+        from {
+          opacity: 0;
+          transform: translate(-20%, -42%) rotate(0deg);
+        }
+        to {
+          opacity: 1;
+          transform: translate(-42%, -50%) rotate(-5deg);
+        }
+      }
+
+      .film-frame {
+        position: relative;
+        width: clamp(190px, 22vw, 330px);
+        aspect-ratio: 3 / 4;
+        overflow: hidden;
+        background: #ded9d0;
+        box-shadow: 0 28px 60px rgba(45, 35, 21, 0.13);
+      }
+
+      .film-frame img {
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(1) contrast(1.04);
+      }
+
+      .film-frame--hero {
+        z-index: 6;
+        width: clamp(250px, 29vw, 430px);
+        transform: translateY(-36px) rotate(4deg);
+        overflow: visible;
+        background: transparent;
+        box-shadow: none;
+      }
+
+      .film-frame--hero::before {
+        position: absolute;
+        z-index: -1;
+        inset: 15% 8% 2%;
+        border: 1px solid rgba(168, 137, 78, 0.55);
+        background: var(--warm);
+        box-shadow: 0 38px 80px rgba(45, 35, 21, 0.17);
+        content: "";
+      }
+
+      .film-frame--hero img {
+        height: 100%;
+        object-fit: contain;
+        filter: grayscale(0.55) saturate(0.82);
+      }
+
+      .film-caption {
+        position: absolute;
+        right: 12px;
+        bottom: 10px;
+        color: rgba(5, 5, 5, 0.52);
+        font-family: var(--mono);
+        font-size: 7px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        writing-mode: vertical-rl;
+      }
+
+      .edit-verdict {
+        position: absolute;
+        z-index: 70;
+        right: 7vw;
+        bottom: 7vh;
+        max-width: 260px;
+        color: rgba(5, 5, 5, 0.58);
+        font-family: var(--mono);
+        font-size: 9px;
+        letter-spacing: 0.08em;
+        line-height: 1.7;
+        opacity: 0;
+        text-align: right;
+        text-transform: uppercase;
+      }
+
+      .edit-verdict b {
+        color: var(--gold-dark);
+        font-weight: 600;
+      }
+
+      #edit.is-active .edit-verdict {
+        animation: quiet-in 650ms 1.25s var(--ease) forwards;
+      }
+
+      #edit .direction-title {
+        z-index: 40;
+        top: 7vh;
+        left: 5vw;
+        max-width: 690px;
+        opacity: 0;
+      }
+
+      #edit.is-active .direction-title {
+        animation: title-rise 950ms 900ms var(--ease) forwards;
+      }
+
+      /* 03 — The Reveal */
+      #reveal {
+        perspective: 1500px;
+        background:
+          radial-gradient(circle at 50% 48%, rgba(201, 165, 90, 0.2), transparent 30%),
+          var(--ink);
+      }
+
+      .reveal-photo {
+        position: absolute;
+        z-index: 0;
+        inset: -8%;
+        background:
+          linear-gradient(rgba(5, 5, 5, 0.75), rgba(5, 5, 5, 0.92)),
+          url("../public/images/model2.jpg") center 30% / cover;
+        filter: blur(10px) grayscale(0.9);
+        transform: scale(1.08);
+        opacity: 0;
+      }
+
+      #reveal.is-active .reveal-photo {
+        animation: backdrop-in 1.5s var(--ease) forwards;
+      }
+
+      @keyframes backdrop-in {
+        to {
+          opacity: 0.7;
+          transform: scale(1);
+        }
+      }
+
+      .reveal-name {
+        position: absolute;
+        z-index: 1;
+        top: 50%;
+        left: 50%;
+        color: rgba(255, 255, 255, 0.055);
+        font-family: var(--serif);
+        font-size: clamp(100px, 19vw, 300px);
+        letter-spacing: -0.08em;
+        transform: translate(-50%, -50%);
+        white-space: nowrap;
+      }
+
+      .card-stage {
+        position: absolute;
+        z-index: 10;
+        top: 50%;
+        left: 50%;
+        width: min(31vw, 430px);
+        aspect-ratio: 5.5 / 8.5;
+        transform-style: preserve-3d;
+        opacity: 0;
+      }
+
+      #reveal.is-active .card-stage {
+        animation: card-arrive 1.55s 160ms var(--ease) forwards;
+      }
+
+      @keyframes card-arrive {
+        from {
+          opacity: 0;
+          transform: translate(-50%, -42%) rotateY(-54deg) rotateX(13deg)
+            rotateZ(-9deg) scale(0.84);
+        }
+        68% {
+          opacity: 1;
+          transform: translate(-50%, -51%) rotateY(9deg) rotateX(-2deg)
+            rotateZ(1deg) scale(1.04);
+        }
+        to {
+          opacity: 1;
+          transform: translate(-50%, -50%) rotateY(-5deg) rotateX(1deg)
+            rotateZ(-1.5deg) scale(1);
+        }
+      }
+
+      .card {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        border: 1px solid rgba(201, 165, 90, 0.76);
+        background: var(--cream);
+        color: var(--ink);
+        box-shadow: 0 48px 110px rgba(0, 0, 0, 0.48);
+      }
+
+      .card-photo {
+        height: 76%;
+        overflow: hidden;
+      }
+
+      .card-photo img {
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(0.18) contrast(1.03);
+      }
+
+      .card-identity {
+        position: relative;
+        height: 24%;
+        padding: 8% 8% 6%;
+      }
+
+      .card-identity::before {
+        position: absolute;
+        top: 0;
+        left: 8%;
+        width: 38%;
+        height: 1px;
+        background: linear-gradient(to right, var(--gold), transparent);
+        content: "";
+      }
+
+      .card-name {
+        font-family: var(--serif);
+        font-size: clamp(20px, 2.35vw, 34px);
+        letter-spacing: -0.04em;
+      }
+
+      .card-name em {
+        color: var(--gold-dark);
+        font-weight: 400;
+      }
+
+      .card-stats {
+        margin-top: 5%;
+        color: rgba(5, 5, 5, 0.48);
+        font-family: var(--mono);
+        font-size: clamp(6px, 0.62vw, 9px);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .card-shadow {
+        position: absolute;
+        z-index: 3;
+        top: 50%;
+        left: 50%;
+        width: min(38vw, 540px);
+        height: 12%;
+        transform: translate(-50%, 290%) rotate(-4deg);
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.55);
+        filter: blur(28px);
+        opacity: 0;
+      }
+
+      #reveal.is-active .card-shadow {
+        animation: shadow-in 1.2s 480ms var(--ease) forwards;
+      }
+
+      @keyframes shadow-in {
+        to {
+          opacity: 0.62;
+          transform: translate(-50%, 250%) rotate(-4deg);
+        }
+      }
+
+      #reveal .direction-title {
+        bottom: 7vh;
+        left: 5vw;
+        max-width: 620px;
+        opacity: 0;
+      }
+
+      #reveal.is-active .direction-title {
+        animation: title-rise 900ms 1.1s var(--ease) forwards;
+      }
+
+      #reveal .truth-line {
+        right: 7vw;
+        bottom: 8vh;
+        color: rgba(255, 255, 255, 0.48);
+        opacity: 0;
+        text-align: right;
+      }
+
+      #reveal.is-active .truth-line {
+        animation: quiet-in 650ms 1.55s var(--ease) forwards;
+      }
+
+      /* 04 — The Field */
+      #field {
+        background:
+          radial-gradient(circle at 42% 54%, rgba(201, 165, 90, 0.13), transparent 27%),
+          #080706;
+      }
+
+      .field-word {
+        position: absolute;
+        z-index: 0;
+        top: 47%;
+        left: 52%;
+        color: rgba(255, 255, 255, 0.045);
+        font-family: var(--serif);
+        font-size: clamp(150px, 30vw, 480px);
+        letter-spacing: -0.1em;
+        line-height: 0.7;
+        transform: translate(-50%, -50%);
+      }
+
+      .field-model {
+        position: absolute;
+        z-index: 12;
+        bottom: -6vh;
+        left: 47%;
+        width: min(58vw, 840px);
+        height: 96vh;
+        object-fit: contain;
+        object-position: bottom center;
+        filter: grayscale(0.6) saturate(0.72) contrast(1.08);
+        opacity: 0;
+        transform: translateX(-50%);
+      }
+
+      #field.is-active .field-model {
+        animation: field-model-in 1.35s var(--ease) forwards;
+      }
+
+      @keyframes field-model-in {
+        from {
+          opacity: 0;
+          transform: translate(-50%, 50px) scale(0.94);
+        }
+        to {
+          opacity: 0.95;
+          transform: translate(-50%, 0) scale(1);
+        }
+      }
+
+      .field-chart {
+        position: absolute;
+        z-index: 6;
+        inset: 15% -3% 9%;
+        width: 106%;
+        height: 76%;
+        overflow: visible;
+      }
+
+      .field-grid line {
+        stroke: rgba(255, 255, 255, 0.055);
+        stroke-width: 1;
+      }
+
+      .field-area {
+        fill: url("#fieldWash");
+        opacity: 0;
+      }
+
+      #field.is-active .field-area {
+        animation: area-in 900ms 650ms ease forwards;
+      }
+
+      @keyframes area-in {
+        to {
+          opacity: 1;
+        }
+      }
+
+      .field-path {
+        fill: none;
+        stroke: var(--gold);
+        stroke-width: 1.35;
+        stroke-dasharray: 1800;
+        stroke-dashoffset: 1800;
+      }
+
+      #field.is-active .field-path {
+        animation: field-draw 1.8s 250ms var(--ease) forwards;
+      }
+
+      @keyframes field-draw {
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+
+      .field-strike {
+        stroke: rgba(255, 255, 255, 0.58);
+        stroke-width: 1;
+        opacity: 0;
+      }
+
+      #field.is-active .field-strike {
+        animation: strikes-in 420ms 1.2s ease forwards;
+      }
+
+      @keyframes strikes-in {
+        to {
+          opacity: 1;
+        }
+      }
+
+      .field-event {
+        position: absolute;
+        z-index: 25;
+        color: rgba(255, 255, 255, 0.62);
+        font-family: var(--mono);
+        font-size: 8px;
+        letter-spacing: 0.14em;
+        opacity: 0;
+        text-transform: uppercase;
+      }
+
+      .field-event b {
+        display: block;
+        margin-bottom: 5px;
+        color: var(--gold);
+        font-family: var(--serif);
+        font-size: 19px;
+        font-weight: 400;
+        letter-spacing: 0;
+        text-transform: none;
+      }
+
+      .field-event--one {
+        top: 28%;
+        left: 17%;
+      }
+
+      .field-event--two {
+        top: 18%;
+        right: 19%;
+      }
+
+      .field-event--three {
+        right: 10%;
+        bottom: 24%;
+      }
+
+      #field.is-active .field-event {
+        animation: quiet-in 650ms 1.45s var(--ease) forwards;
+      }
+
+      #field.is-active .field-event--two {
+        animation-delay: 1.6s;
+      }
+
+      #field.is-active .field-event--three {
+        animation-delay: 1.75s;
+      }
+
+      #field .direction-title {
+        bottom: 7vh;
+        left: 5vw;
+        max-width: 820px;
+        opacity: 0;
+      }
+
+      #field.is-active .direction-title {
+        animation: title-rise 900ms 1.1s var(--ease) forwards;
+      }
+
+      .footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 22px 28px 28px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        background: var(--ink);
+        color: rgba(255, 255, 255, 0.32);
+        font-family: var(--mono);
+        font-size: 8px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .footer strong {
+        color: var(--gold);
+        font-weight: 500;
+      }
+
+      @media (max-width: 760px) {
+        .review-mark {
+          top: 18px;
+          left: 18px;
+          font-size: 9px;
+        }
+
+        .picker {
+          top: auto;
+          right: 50%;
+          bottom: 14px;
+          flex-direction: row;
+          transform: translateX(50%);
+        }
+
+        .pick {
+          width: 42px;
+          height: 42px;
+        }
+
+        .pick::before {
+          display: none;
+        }
+
+        .belief {
+          min-height: 620px;
+          padding-inline: 18px;
+        }
+
+        .belief h1 {
+          font-size: clamp(38px, 11vw, 58px);
+        }
+
+        .stage,
+        .direction {
+          min-height: 820px;
+        }
+
+        .direction-title {
+          font-size: clamp(54px, 17vw, 86px);
+        }
+
+        .scan-word {
+          font-size: 34vw;
+        }
+
+        .scan-halo {
+          width: 92vw;
+        }
+
+        .scan-model,
+        .scan-echo {
+          width: 92vw;
+          height: 78vh;
+        }
+
+        .scan-read {
+          right: 18px;
+          bottom: 116px;
+          left: 18px;
+          justify-content: center;
+          gap: 10px;
+          font-size: 7px;
+        }
+
+        #scan .direction-title,
+        #reveal .direction-title,
+        #field .direction-title {
+          right: 18px;
+          bottom: 46px;
+          left: 18px;
+          text-align: center;
+        }
+
+        .film {
+          top: 48%;
+          gap: 12px;
+          padding: 14px;
+        }
+
+        .film-frame {
+          width: 46vw;
+        }
+
+        .film-frame--hero {
+          width: 68vw;
+        }
+
+        #edit .direction-title {
+          top: 84px;
+          right: 18px;
+          left: 18px;
+        }
+
+        .edit-verdict {
+          right: 18px;
+          bottom: 72px;
+        }
+
+        .card-stage {
+          width: min(68vw, 370px);
+        }
+
+        .reveal-name {
+          font-size: 35vw;
+        }
+
+        #reveal .truth-line {
+          display: none;
+        }
+
+        .field-model {
+          left: 50%;
+          width: 105vw;
+          height: 82vh;
+        }
+
+        .field-word {
+          font-size: 45vw;
+        }
+
+        .field-event {
+          font-size: 7px;
+        }
+
+        .field-event--one {
+          top: 20%;
+          left: 8%;
+        }
+
+        .field-event--two {
+          top: 12%;
+          right: 8%;
+        }
+
+        .field-event--three {
+          right: 7%;
+          bottom: 31%;
+        }
+
+        .footer {
+          padding-bottom: 74px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 1ms !important;
+          animation-delay: 0ms !important;
+          transition-duration: 1ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="review-mark">PHOLIO / INTELLIGENCE STUDIES</div>
+
+    <nav class="picker" aria-label="Choose a direction">
+      <button class="pick" type="button" data-direction="scan" data-label="The Scan" aria-selected="true">01</button>
+      <button class="pick" type="button" data-direction="edit" data-label="The Edit" aria-selected="false">02</button>
+      <button class="pick" type="button" data-direction="reveal" data-label="The Reveal" aria-selected="false">03</button>
+      <button class="pick" type="button" data-direction="field" data-label="The Field" aria-selected="false">04</button>
+    </nav>
+
+    <header class="belief">
+      <div class="grain" aria-hidden="true"></div>
+      <h1>
+        We believe your career should be defined by your <em>face</em>,<br />
+        not your formatting.
+      </h1>
+      <div class="belief-rule" aria-hidden="true"></div>
+    </header>
+
+    <main class="stage" id="stage">
+      <section class="direction is-active" id="scan" data-concept="scan">
+        <div class="grain" aria-hidden="true"></div>
+        <div class="scan-word" aria-hidden="true">SEEN</div>
+        <div class="scan-halo" aria-hidden="true"></div>
+        <img class="scan-echo scan-echo--left" src="../public/images/model2-nobg.png" alt="" />
+        <img class="scan-echo scan-echo--right" src="../public/images/model2-nobg.png" alt="" />
+        <img class="scan-model" src="../public/images/model2-nobg.png" alt="Editorial talent portrait" />
+        <div class="scan-line" aria-hidden="true"></div>
+        <h2 class="direction-title">The work,<br /><em>understood.</em></h2>
+        <div class="scan-read" aria-label="Frame read">
+          <span>Headshot</span><span>Portfolio</span><span>Current</span><b>Keep</b>
+        </div>
+      </section>
+
+      <section class="direction" id="edit" data-concept="edit">
+        <div class="grain" aria-hidden="true"></div>
+        <div class="edit-ghost" aria-hidden="true">EDIT</div>
+        <h2 class="direction-title">Intelligence<br />in the <em>edit.</em></h2>
+        <div class="film" aria-label="A portfolio resolving into a deliberate edit">
+          <figure class="film-frame">
+            <img src="../public/images/model_v2.jpg" alt="Studio portfolio frame" />
+            <figcaption class="film-caption">Three-quarter</figcaption>
+          </figure>
+          <figure class="film-frame">
+            <img src="../public/images/model2.jpg" alt="Editorial portfolio frame" />
+            <figcaption class="film-caption">Headshot</figcaption>
+          </figure>
+          <figure class="film-frame film-frame--hero">
+            <img src="../public/images/model_new-nobg.png" alt="Selected lead portfolio frame" />
+            <figcaption class="film-caption">Lead frame</figcaption>
+          </figure>
+          <figure class="film-frame">
+            <img src="../public/assets/hero-model.jpg" alt="Lifestyle portfolio frame" />
+            <figcaption class="film-caption">Full length</figcaption>
+          </figure>
+          <figure class="film-frame">
+            <img src="../public/images/editorial_foggy_portrait.png" alt="Beauty portfolio frame" />
+            <figcaption class="film-caption">Beauty</figcaption>
+          </figure>
+        </div>
+        <div class="edit-verdict"><b>One move</b><br />Add a clean profile view.</div>
+      </section>
+
+      <section class="direction" id="reveal" data-concept="reveal">
+        <div class="grain" aria-hidden="true"></div>
+        <div class="reveal-photo" aria-hidden="true"></div>
+        <div class="reveal-name" aria-hidden="true">MARA</div>
+        <div class="card-shadow" aria-hidden="true"></div>
+        <div class="card-stage" aria-label="Pholio-composed comp card">
+          <article class="card">
+            <div class="card-photo">
+              <img src="../public/images/model2.jpg" alt="Comp card portrait" />
+            </div>
+            <div class="card-identity">
+              <div class="card-name">Mara <em>Noelle</em></div>
+              <div class="card-stats">178 CM · 81 / 61 / 89 · NYC</div>
+            </div>
+          </article>
+        </div>
+        <h2 class="direction-title">Presence,<br /><em>composed.</em></h2>
+        <p class="truth-line">Built from the strongest current work in your book.</p>
+      </section>
+
+      <section class="direction" id="field" data-concept="field">
+        <div class="grain" aria-hidden="true"></div>
+        <div class="field-word" aria-hidden="true">SIGNAL</div>
+        <svg class="field-chart" viewBox="0 0 1440 640" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="fieldWash" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#C9A55A" stop-opacity="0.22"></stop>
+              <stop offset="100%" stop-color="#C9A55A" stop-opacity="0"></stop>
+            </linearGradient>
+          </defs>
+          <g class="field-grid">
+            <line x1="0" y1="128" x2="1440" y2="128"></line>
+            <line x1="0" y1="256" x2="1440" y2="256"></line>
+            <line x1="0" y1="384" x2="1440" y2="384"></line>
+            <line x1="0" y1="512" x2="1440" y2="512"></line>
+          </g>
+          <path class="field-area" d="M0,540 L0,498 L120,480 L240,506 L360,390 L480,444 L600,338 L720,402 L840,236 L960,300 L1080,182 L1200,258 L1320,112 L1440,166 L1440,540 Z"></path>
+          <path class="field-path" d="M0,498 L120,480 L240,506 L360,390 L480,444 L600,338 L720,402 L840,236 L960,300 L1080,182 L1200,258 L1320,112 L1440,166"></path>
+          <line class="field-strike" x1="360" y1="540" x2="360" y2="224"></line>
+          <line class="field-strike" x1="840" y1="540" x2="840" y2="82"></line>
+          <line class="field-strike" x1="1320" y1="540" x2="1320" y2="34"></line>
+        </svg>
+        <img class="field-model" src="../public/images/model_new-nobg.png" alt="Talent surrounded by market signals" />
+        <div class="field-event field-event--one"><b>Card pulled</b>Intent signal</div>
+        <div class="field-event field-event--two"><b>Reviewed</b>Agency signal</div>
+        <div class="field-event field-event--three"><b>Advanced</b>Career signal</div>
+        <h2 class="direction-title">The market<br />leaves a <em>trace.</em></h2>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span><strong>Choose 01–04</strong> · use the rail or keyboard</span>
+      <span>Cinematic section studies · motion arrives once and settles</span>
+    </footer>
+
+    <script>
+      (() => {
+        const buttons = [...document.querySelectorAll("[data-direction]")];
+        const directions = [...document.querySelectorAll("[data-concept]")];
+        const stage = document.getElementById("stage");
+        const names = new Set(buttons.map((button) => button.dataset.direction));
+
+        function activate(name, updateHash = true) {
+          if (!names.has(name)) name = "scan";
+
+          buttons.forEach((button) => {
+            button.setAttribute(
+              "aria-selected",
+              String(button.dataset.direction === name),
+            );
+          });
+
+          directions.forEach((direction) => direction.classList.remove("is-active"));
+          const next = directions.find(
+            (direction) => direction.dataset.concept === name,
+          );
+          if (next) {
+            void next.offsetWidth;
+            next.classList.add("is-active");
+          }
+
+          if (updateHash) history.replaceState(null, "", `#${name}`);
+        }
+
+        buttons.forEach((button) => {
+          button.addEventListener("click", () => {
+            activate(button.dataset.direction);
+            stage.scrollIntoView({ behavior: "smooth", block: "start" });
+          });
+        });
+
+        window.addEventListener("keydown", (event) => {
+          const index = Number(event.key) - 1;
+          if (index >= 0 && index < buttons.length) buttons[index].click();
+        });
+
+        window.addEventListener("pointermove", (event) => {
+          const x = (event.clientX / window.innerWidth - 0.5) * 24;
+          const y = (event.clientY / window.innerHeight - 0.5) * 18;
+          document.documentElement.style.setProperty("--mx", `${x}px`);
+          document.documentElement.style.setProperty("--my", `${y}px`);
+        });
+
+        activate(location.hash.slice(1) || "scan", false);
+      })();
+    </script>
+  </body>
+</html>

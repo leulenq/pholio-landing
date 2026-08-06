@@ -1,0 +1,117 @@
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /Users/lenquanhone/Pholio_NEW copy/package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * /Users/lenquanhone/Pholio_NEW copy/landing/package-lock.json
+
+   ▲ Next.js 15.5.12
+   - Local:        http://localhost:3002
+   - Network:      http://10.47.242.46:3002
+
+ ✓ Starting...
+ ✓ Ready in 1093ms
+ ○ Compiling / ...
+ ✓ Compiled / in 2.8s (1518 modules)
+ GET / 200 in 3106ms
+ ✓ Compiled in 359ms (660 modules)
+ ✓ Compiled / in 138ms (831 modules)
+ HEAD / 200 in 240ms
+ ✓ Compiled in 480ms (660 modules)
+ ✓ Compiled in 248ms (660 modules)
+ ✓ Compiled in 146ms (660 modules)
+ ✓ Compiled in 153ms (660 modules)
+ ⨯ ./components/StageHero.module.css
+Module not found: Can't resolve '/Users/lenquanhone/Pholio_NEW copy/landing/components/StageHero.module.css'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./components/StageHero.tsx
+./components/ClientPage.tsx
+./components/PageWrapper.tsx
+ ⨯ ./components/StageHero.tsx
+Error: 
+
+Caused by:
+    0: Failed to read source code from /Users/lenquanhone/Pholio_NEW copy/landing/components/StageHero.tsx
+    1: No such file or directory (os error 2)
+
+Import trace for requested module:
+./components/StageHero.tsx
+./components/ClientPage.tsx
+./components/PageWrapper.tsx
+ ⨯ ./components/StageHero.tsx
+Error: 
+
+Caused by:
+    0: Failed to read source code from /Users/lenquanhone/Pholio_NEW copy/landing/components/StageHero.tsx
+    1: No such file or directory (os error 2)
+
+Import trace for requested module:
+./components/StageHero.tsx
+./components/ClientPage.tsx
+./components/PageWrapper.tsx
+<w> [webpack.cache.PackFileCacheStrategy] Skipped not serializable cache item 'Compilation/modules|javascript/auto|/Users/lenquanhone/Pholio_NEW copy/landing/node_modules/next/dist/build/webpack/loaders/next-flight-css-loader.js??ruleSet[1].rules[14].oneOf[5].use[0]!/Users/lenquanhone/Pholio_NEW copy/landing/node_modules/next/dist/compiled/mini-css-extract-plugin/loader.js??ruleSet[1].rules[14].oneOf[5].use[1]!/Users/lenquanhone/Pholio_NEW copy/landing/node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[2]!/Users/lenquanhone/Pholio_NEW copy/landing/node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[3]!/Users/lenquanhone/Pholio_NEW copy/landing/components/StageHero.module.css|app-pages-browser': No serializer registered for ModuleNotFoundError
+<w> while serializing webpack/lib/cache/PackFileCacheStrategy.PackContentItems -> webpack/lib/NormalModule -> webpack/lib/ModuleBuildError -> ModuleNotFoundError
+ ⨯ ./components/Hero.tsx:2:1
+Module not found: Can't resolve 'motion/react'
+  1 | import { useRef } from 'react';
+> 2 | import { motion, useScroll, useTransform } from 'motion/react';
+    | ^
+  3 |
+  4 | export function Hero() {
+  5 |   const containerRef = useRef<HTMLDivElement>(null);
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./components/ClientPage.tsx
+./components/PageWrapper.tsx
+ ✓ Compiled in 242ms (658 modules)
+ ✓ Compiled / in 240ms (830 modules)
+ ⨯ TypeError: a[d] is not a function
+    at 2596 (.next/server/app/page.js:1:1807)
+    at <unknown> (.next/server/app/page.js:2:13653)
+    at <unknown> (.next/server/app/page.js:2:13639)
+    at Object.<anonymous> (.next/server/app/page.js:2:13684) {
+  page: '/'
+}
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 982ms (1821 modules)
+ GET / 500 in 1677ms
+ ✓ Compiled in 1000ms (918 modules)
+ ✓ Compiled in 508ms (809 modules)
+ ✓ Compiled in 228ms (809 modules)
+ ✓ Compiled in 228ms (809 modules)
+ ✓ Compiled in 553ms (809 modules)
+ ✓ Compiled in 122ms (809 modules)
+ ✓ Compiled in 224ms (809 modules)
+ ✓ Compiled in 336ms (809 modules)
+ ✓ Compiled in 274ms (809 modules)
+ ✓ Compiled in 118ms (809 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/lenquanhone/Pholio_NEW copy/landing/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/lenquanhone/Pholio_NEW copy/landing/.next/cache/webpack/client-development/0.pack.gz'
+ ✓ Compiled in 222ms (809 modules)
+ ✓ Compiled in 125ms (809 modules)
+ ✓ Compiled in 187ms (809 modules)
+ ✓ Compiled in 155ms (809 modules)
+ ✓ Compiled in 365ms (809 modules)
+ ✓ Compiled in 404ms (809 modules)
+ ✓ Compiled in 225ms (809 modules)
+ ✓ Compiled / in 231ms (930 modules)
+ ⨯ TypeError: __webpack_modules__[moduleId] is not a function
+    at __webpack_exec__ (.next/server/app/page.js:376:39)
+    at <unknown> (.next/server/app/page.js:377:264)
+    at <unknown> (.next/server/app/page.js:377:47)
+    at Object.<anonymous> (.next/server/app/page.js:380:3) {
+  page: '/'
+}
+ ✓ Compiled /_error in 156ms (1821 modules)
+ ⨯ [Error: ENOENT: no such file or directory, open '/Users/lenquanhone/Pholio_NEW copy/landing/.next/server/pages/_document.js'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/lenquanhone/Pholio_NEW copy/landing/.next/server/pages/_document.js'
+}
+ GET / 500 in 2339ms
+ ✓ Compiled in 1062ms (918 modules)

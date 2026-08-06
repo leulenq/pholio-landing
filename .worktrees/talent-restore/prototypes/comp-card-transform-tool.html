@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pholio Comp Card Transform Tool</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #050505;
+        --panel: rgba(18, 18, 18, 0.88);
+        --panel-border: rgba(255, 255, 255, 0.11);
+        --text: #f7f3ea;
+        --muted: rgba(247, 243, 234, 0.62);
+        --gold: #c9a34f;
+        --card-radius: 14px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          radial-gradient(circle at 50% 22%, rgba(201, 163, 79, 0.09), transparent 28rem),
+          radial-gradient(circle at 50% 62%, rgba(255, 255, 255, 0.045), transparent 24rem),
+          var(--bg);
+        color: var(--text);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+      }
+
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+
+      .shell {
+        display: grid;
+        grid-template-columns: minmax(360px, 1fr) 390px;
+        gap: 28px;
+        min-height: 100vh;
+        padding: 28px;
+      }
+
+      .stage-wrap {
+        display: grid;
+        place-items: center;
+        min-width: 0;
+      }
+
+      .stage {
+        position: relative;
+        width: min(48vh, 440px);
+        aspect-ratio: 1056 / 1632;
+        border-radius: var(--card-radius);
+        box-shadow:
+          0 44px 110px rgba(0, 0, 0, 0.72),
+          0 0 0 1px rgba(255, 255, 255, 0.09);
+        overflow: visible;
+        user-select: none;
+        touch-action: none;
+      }
+
+      .stage::before {
+        content: "";
+        position: absolute;
+        inset: -24px;
+        border-radius: 26px;
+        background: rgba(255, 255, 255, 0.025);
+        filter: blur(18px);
+        z-index: -1;
+      }
+
+      .layer {
+        position: absolute;
+        inset: 0;
+        border-radius: var(--card-radius);
+        overflow: hidden;
+      }
+
+      .layer img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+
+      .card-layer {
+        opacity: var(--card-opacity, 1);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+      }
+
+      .card-layer img {
+        object-fit: cover;
+      }
+
+      .source-layer {
+        cursor: grab;
+        opacity: var(--source-opacity, 0.68);
+        mix-blend-mode: var(--blend-mode, normal);
+        z-index: 2;
+        outline: 1px solid rgba(201, 163, 79, 0.38);
+      }
+
+      .source-layer:active {
+        cursor: grabbing;
+      }
+
+      .source-layer img {
+        object-fit: cover;
+        object-position: var(--crop-x, 50%) var(--crop-y, 43%);
+        transform:
+          translate3d(var(--translate-x, 0px), var(--translate-y, 18px), 0)
+          scale(var(--scale, 1.1));
+        transform-origin: center center;
+      }
+
+      .grid,
+      .centerline {
+        position: absolute;
+        inset: 0;
+        border-radius: var(--card-radius);
+        pointer-events: none;
+        z-index: 4;
+      }
+
+      .grid {
+        opacity: var(--grid-opacity, 0);
+        background:
+          linear-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+        background-size: 25% 25%;
+      }
+
+      .centerline {
+        opacity: var(--center-opacity, 0.45);
+      }
+
+      .centerline::before,
+      .centerline::after {
+        content: "";
+        position: absolute;
+        background: rgba(201, 163, 79, 0.6);
+      }
+
+      .centerline::before {
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+      }
+
+      .centerline::after {
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+      }
+
+      .panel {
+        align-self: stretch;
+        border: 1px solid var(--panel-border);
+        background: var(--panel);
+        backdrop-filter: blur(18px);
+        border-radius: 22px;
+        padding: 20px;
+        overflow: auto;
+      }
+
+      .eyebrow {
+        color: var(--gold);
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 30px;
+        font-weight: 400;
+        letter-spacing: -0.03em;
+      }
+
+      p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.5;
+        font-size: 13px;
+      }
+
+      .controls {
+        display: grid;
+        gap: 13px;
+        margin-top: 22px;
+      }
+
+      .control {
+        display: grid;
+        gap: 7px;
+      }
+
+      .label-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      label {
+        color: rgba(247, 243, 234, 0.86);
+        font-size: 12px;
+        letter-spacing: 0.02em;
+      }
+
+      .value {
+        width: 76px;
+        border: 1px solid rgba(255, 255, 255, 0.13);
+        border-radius: 9px;
+        padding: 6px 8px;
+        background: rgba(0, 0, 0, 0.32);
+        color: var(--text);
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+
+      input[type="range"] {
+        width: 100%;
+        accent-color: var(--gold);
+      }
+
+      select {
+        width: 100%;
+        border: 1px solid rgba(255, 255, 255, 0.13);
+        border-radius: 10px;
+        padding: 9px 10px;
+        background: rgba(0, 0, 0, 0.32);
+        color: var(--text);
+      }
+
+      .button-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      button {
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 999px;
+        padding: 10px 12px;
+        background: rgba(255, 255, 255, 0.07);
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      button.primary {
+        border-color: rgba(201, 163, 79, 0.56);
+        background: rgba(201, 163, 79, 0.15);
+      }
+
+      button:hover {
+        background: rgba(255, 255, 255, 0.11);
+      }
+
+      .output {
+        margin-top: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 14px;
+        background: rgba(0, 0, 0, 0.34);
+        padding: 12px;
+      }
+
+      pre {
+        margin: 0;
+        white-space: pre-wrap;
+        color: rgba(247, 243, 234, 0.82);
+        font:
+          12px/1.55 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", monospace;
+      }
+
+      .hint {
+        margin-top: 12px;
+        color: rgba(247, 243, 234, 0.46);
+        font-size: 12px;
+      }
+
+      @media (max-width: 920px) {
+        .shell {
+          grid-template-columns: 1fr;
+        }
+
+        .stage {
+          width: min(66vw, 390px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <section class="stage-wrap" aria-label="Visual alignment stage">
+        <div class="stage" id="stage">
+          <div class="layer card-layer">
+            <img
+              src="../public/generated/comp-card/elara-keats-front.png"
+              alt="Generated Mara Voss comp card front"
+              draggable="false"
+            />
+          </div>
+          <div class="layer source-layer" id="sourceLayer" title="Drag to move source layer">
+            <img
+              src="../public/generated/comp-card/source/mara-voss-red-hero.jpg"
+              alt="Original source image"
+              draggable="false"
+            />
+          </div>
+          <div class="grid" aria-hidden="true"></div>
+          <div class="centerline" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <aside class="panel">
+        <div class="eyebrow">Transform tool</div>
+        <h1>Match source to comp card</h1>
+        <p>
+          Drag the source layer or use exact controls. The goal is to make the source image sit
+          directly on top of the same image inside the finished comp card before the scroll merge.
+        </p>
+
+        <div class="controls" id="controls">
+          <div class="control">
+            <div class="label-row">
+              <label for="scale">Scale</label>
+              <input class="value" id="scaleNumber" type="number" step="0.001" />
+            </div>
+            <input id="scale" type="range" min="0.75" max="1.45" step="0.001" />
+          </div>
+
+          <div class="control">
+            <div class="label-row">
+              <label for="x">X position</label>
+              <input class="value" id="xNumber" type="number" step="0.1" />
+            </div>
+            <input id="x" type="range" min="-220" max="220" step="0.1" />
+          </div>
+
+          <div class="control">
+            <div class="label-row">
+              <label for="y">Y position</label>
+              <input class="value" id="yNumber" type="number" step="0.1" />
+            </div>
+            <input id="y" type="range" min="-260" max="260" step="0.1" />
+          </div>
+
+          <div class="control">
+            <div class="label-row">
+              <label for="cropX">Crop / object-position X</label>
+              <input class="value" id="cropXNumber" type="number" step="0.1" />
+            </div>
+            <input id="cropX" type="range" min="0" max="100" step="0.1" />
+          </div>
+
+          <div class="control">
+            <div class="label-row">
+              <label for="cropY">Crop / object-position Y</label>
+              <input class="value" id="cropYNumber" type="number" step="0.1" />
+            </div>
+            <input id="cropY" type="range" min="0" max="100" step="0.1" />
+          </div>
+
+          <div class="control">
+            <div class="label-row">
+              <label for="sourceOpacity">Source opacity</label>
+              <input class="value" id="sourceOpacityNumber" type="number" step="0.01" />
+            </div>
+            <input id="sourceOpacity" type="range" min="0" max="1" step="0.01" />
+          </div>
+
+          <div class="control">
+            <div class="label-row">
+              <label for="cardOpacity">Comp card opacity</label>
+              <input class="value" id="cardOpacityNumber" type="number" step="0.01" />
+            </div>
+            <input id="cardOpacity" type="range" min="0" max="1" step="0.01" />
+          </div>
+
+          <div class="control">
+            <div class="label-row">
+              <label for="gridOpacity">Grid opacity</label>
+              <input class="value" id="gridOpacityNumber" type="number" step="0.01" />
+            </div>
+            <input id="gridOpacity" type="range" min="0" max="0.8" step="0.01" />
+          </div>
+
+          <div class="control">
+            <label for="blendMode">Source blend mode</label>
+            <select id="blendMode">
+              <option value="normal">normal</option>
+              <option value="difference">difference</option>
+              <option value="screen">screen</option>
+              <option value="multiply">multiply</option>
+              <option value="lighten">lighten</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="button-row">
+          <button class="primary" id="copy">Copy constants</button>
+          <button id="reset">Reset</button>
+        </div>
+
+        <div class="output">
+          <pre id="output"></pre>
+        </div>
+        <div class="hint">
+          Tip: use opacity around 0.45–0.65 for onion-skin alignment. Use difference blend for
+          edge-checking, then switch back to normal.
+        </div>
+      </aside>
+    </main>
+
+    <script>
+      const defaults = {
+        scale: 1.1,
+        x: 0,
+        y: 18,
+        cropX: 50,
+        cropY: 43,
+        sourceOpacity: 0.62,
+        cardOpacity: 1,
+        gridOpacity: 0,
+        blendMode: "normal",
+      };
+
+      const storageKey = "pholio.compCardTransformTool.v1";
+      const stage = document.getElementById("stage");
+      const sourceLayer = document.getElementById("sourceLayer");
+      const output = document.getElementById("output");
+      const state = loadState();
+
+      const numericFields = [
+        "scale",
+        "x",
+        "y",
+        "cropX",
+        "cropY",
+        "sourceOpacity",
+        "cardOpacity",
+        "gridOpacity",
+      ];
+
+      function loadState() {
+        try {
+          return { ...defaults, ...JSON.parse(localStorage.getItem(storageKey) || "{}") };
+        } catch {
+          return { ...defaults };
+        }
+      }
+
+      function round(value, places = 3) {
+        const multiplier = 10 ** places;
+        return Math.round(Number(value) * multiplier) / multiplier;
+      }
+
+      function setState(patch) {
+        Object.assign(state, patch);
+        localStorage.setItem(storageKey, JSON.stringify(state));
+        render();
+      }
+
+      function render() {
+        stage.style.setProperty("--scale", state.scale);
+        stage.style.setProperty("--translate-x", `${state.x}px`);
+        stage.style.setProperty("--translate-y", `${state.y}px`);
+        stage.style.setProperty("--crop-x", `${state.cropX}%`);
+        stage.style.setProperty("--crop-y", `${state.cropY}%`);
+        stage.style.setProperty("--source-opacity", state.sourceOpacity);
+        stage.style.setProperty("--card-opacity", state.cardOpacity);
+        stage.style.setProperty("--grid-opacity", state.gridOpacity);
+        stage.style.setProperty("--blend-mode", state.blendMode);
+
+        for (const key of numericFields) {
+          const slider = document.getElementById(key);
+          const number = document.getElementById(`${key}Number`);
+          slider.value = state[key];
+          number.value = round(state[key], key === "scale" ? 3 : 2);
+        }
+        document.getElementById("blendMode").value = state.blendMode;
+
+        output.textContent = `// Source image alignment for mara-voss-red-hero.jpg
+const sourceImageAlignment = {
+  scale: ${round(state.scale, 3)},
+  x: ${round(state.x, 2)},
+  y: ${round(state.y, 2)},
+  objectPosition: "${round(state.cropX, 1)}% ${round(state.cropY, 1)}%",
+  sourceOpacity: ${round(state.sourceOpacity, 2)}
+};
+
+// CSS equivalent
+object-position: ${round(state.cropX, 1)}% ${round(state.cropY, 1)}%;
+transform: translate3d(${round(state.x, 2)}px, ${round(state.y, 2)}px, 0) scale(${round(state.scale, 3)});`;
+      }
+
+      for (const key of numericFields) {
+        const slider = document.getElementById(key);
+        const number = document.getElementById(`${key}Number`);
+        const update = (event) => setState({ [key]: Number(event.target.value) });
+        slider.addEventListener("input", update);
+        number.addEventListener("input", update);
+      }
+
+      document.getElementById("blendMode").addEventListener("change", (event) => {
+        setState({ blendMode: event.target.value });
+      });
+
+      document.getElementById("reset").addEventListener("click", () => {
+        localStorage.removeItem(storageKey);
+        Object.assign(state, defaults);
+        render();
+      });
+
+      document.getElementById("copy").addEventListener("click", async () => {
+        await navigator.clipboard.writeText(output.textContent);
+      });
+
+      let drag = null;
+      sourceLayer.addEventListener("pointerdown", (event) => {
+        sourceLayer.setPointerCapture(event.pointerId);
+        drag = {
+          pointerId: event.pointerId,
+          startX: event.clientX,
+          startY: event.clientY,
+          stateX: state.x,
+          stateY: state.y,
+        };
+      });
+
+      sourceLayer.addEventListener("pointermove", (event) => {
+        if (!drag || drag.pointerId !== event.pointerId) return;
+        setState({
+          x: round(drag.stateX + event.clientX - drag.startX, 2),
+          y: round(drag.stateY + event.clientY - drag.startY, 2),
+        });
+      });
+
+      sourceLayer.addEventListener("pointerup", () => {
+        drag = null;
+      });
+
+      sourceLayer.addEventListener("pointercancel", () => {
+        drag = null;
+      });
+
+      window.addEventListener("keydown", (event) => {
+        const nudge = event.shiftKey ? 10 : event.altKey ? 0.5 : 1;
+        if (event.key === "ArrowLeft") setState({ x: round(state.x - nudge, 2) });
+        if (event.key === "ArrowRight") setState({ x: round(state.x + nudge, 2) });
+        if (event.key === "ArrowUp") setState({ y: round(state.y - nudge, 2) });
+        if (event.key === "ArrowDown") setState({ y: round(state.y + nudge, 2) });
+      });
+
+      render();
+    </script>
+  </body>
+</html>
