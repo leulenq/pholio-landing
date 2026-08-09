@@ -1,15 +1,22 @@
-.next/
 node_modules/
+.next/
 out/
+build/
+
+.env
+.env.local
+.env*.local
+
+*.tsbuildinfo
 next-env.d.ts
-video/node_modules/
-video/out/
 
-# OS/IDE files
 .DS_Store
-tsconfig.tsbuildinfo
+*.log
+.netlify/
 
-# Agent configs
+# Agent skills, installed per-machine via `npx skills add`.
+# Not vendored: they are third-party, they change upstream, and this repo's own
+# docs/ take precedence over them wherever the two disagree.
 .agents/
 .claude/
 skills-lock.json
