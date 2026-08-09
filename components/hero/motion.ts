@@ -183,8 +183,25 @@ export const FIGURE_DRIFT = {
 // wide - so the narrow treatment separates vertically instead: she sits low and
 // the copy takes the clear band above her head, and the push in stays gentler
 // because there is less room to move into. Both are identical at scroll zero.
+/** Opening scale used as the calibration baseline for the full sequence. */
+export const STATIC_FIGURE_SCALE = {
+  desktop: 1.13,
+  mobile: 1,
+} as const;
+
 export const FIGURE_SCALE = {
-  desktop: [1, 1, 0.97, 0.9, 1.05, 1.3, 1.72],
+  // The opening scale is a camera calibration, not a one-frame override. The
+  // original relative curve is preserved across every stop so the model does
+  // not jump back when the frame sequence starts moving.
+  desktop: [
+    STATIC_FIGURE_SCALE.desktop,
+    STATIC_FIGURE_SCALE.desktop,
+    0.97 * STATIC_FIGURE_SCALE.desktop,
+    0.9 * STATIC_FIGURE_SCALE.desktop,
+    1.05 * STATIC_FIGURE_SCALE.desktop,
+    1.3 * STATIC_FIGURE_SCALE.desktop,
+    1.72 * STATIC_FIGURE_SCALE.desktop,
+  ] as const,
   mobile: [1, 1, 0.94, 0.76, 0.86, 1.0, 1.24],
 } as const;
 

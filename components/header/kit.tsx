@@ -143,37 +143,38 @@ export const SIGNUP_HREF = `${APP_URL}/onboarding`;
    ══════════════════════════════════════════════════════════════════════ */
 
 /**
- * A home hero is expected to carry its own chrome, so the sitewide header stays
- * out of the way until the hero has left the viewport.
+ * A home hero carries its own chrome for its entire life. Once the hero has
+ * left the viewport, the sitewide header takes over and stays available while
+ * the rest of the page moves underneath it.
  *
  * This measures the hero itself: mark the hero's `<section>` by putting
  * `data-hero-chrome` on any element inside it. Without that marker the header
- * falls back to one viewport of scroll — which means a home page that does not
- * scroll never reveals the header at all. That is deliberate, not a bug, but it
- * is also the single easiest way to ship a page with no visible navigation.
- * If the header is missing on `/`, this is the first thing to check.
+ * falls back to one viewport of scroll so a home page still gets navigation.
  */
 const CONDENSE_AT = 96; // px of scroll before the header settles
 
-function homeHeaderRevealed(): boolean {
+function homeHeroActive(): boolean {
   const hero = document
     .querySelector("[data-hero-chrome]")
     ?.closest("section");
   if (hero) {
     const rect = hero.getBoundingClientRect();
-    // The corner marks stay visible at the very top of the page, hide while
-    // the hero is actively being scrolled through, and reappear once the hero
-    // has mostly left the viewport.
-    return rect.top >= 0 || rect.bottom <= window.innerHeight * 0.5;
+    // The custom treatment owns the header until the Hero has genuinely left
+    // the viewport. Using the section edge rather than a scroll offset keeps
+    // this correct when the Hero's length changes and when the user reverses
+    // direction at speed.
+    return rect.bottom > 0;
   }
-  return window.scrollY > window.innerHeight;
+  return window.scrollY <= window.innerHeight;
 }
 
 export interface HeaderState {
   field: Field;
   tokens: FieldTokens;
-  /** False while the home hero owns the top of the page. */
+  /** True while the header is allowed to participate in the page chrome. */
   revealed: boolean;
+  /** True while the home hero owns the header treatment. */
+  heroActive: boolean;
   /** True once the page has scrolled past the settle threshold. */
   condensed: boolean;
   /**
@@ -197,10 +198,25 @@ export function useHeaderState({
   const reduceMotion = !!useReducedMotion();
   const { scrollY } = useScroll();
 
-  const [revealed, setRevealed] = useState(() => {
-    if (preview) return true;
-    if (typeof window === "undefined") return true;
-    return isHome ? homeHeaderRevealed() : true;
+  const [revealed] = useState(true);
+  const [preloaderDone, setPreloaderDone] = useState(!isHome);
+
+  useEffect(() => {
+    if (!isHome) {
+      setPreloaderDone(true);
+      return;
+    }
+    if (typeof window !== "undefined" && (window as any).__preloaderDone) {
+      setPreloaderDone(true);
+    }
+    const onDone = () => setPreloaderDone(true);
+    window.addEventListener("preloader-done", onDone);
+    return () => window.removeEventListener("preloader-done", onDone);
+  }, [isHome]);
+
+  const [heroActive, setHeroActive] = useState(() => {
+    if (preview || typeof window === "undefined") return false;
+    return isHome ? homeHeroActive() : false;
   });
   const [condensed, setCondensed] = useState(
     preview && previewState === "settled",
@@ -211,20 +227,23 @@ export function useHeaderState({
 
   useEffect(() => {
     if (preview) return;
-    if (isHome) {
-      setRevealed(homeHeaderRevealed());
-    } else {
-      setRevealed(true);
-    }
-    setCondensed(window.scrollY > CONDENSE_AT);
+    const frame = window.requestAnimationFrame(() => {
+      const active = isHome ? homeHeroActive() : false;
+      setHeroActive(active);
+      setCondensed(isHome ? !active : window.scrollY > CONDENSE_AT);
+    });
+    return () => window.cancelAnimationFrame(frame);
   }, [isHome, preview]);
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     if (preview) return;
     if (isHome) {
-      setRevealed(homeHeaderRevealed());
+      const active = homeHeroActive();
+      setHeroActive(active);
+      setCondensed(!active);
+    } else {
+      setCondensed(latest > CONDENSE_AT);
     }
-    setCondensed(latest > CONDENSE_AT);
   });
 
   /* The closing panel takes the screen, and the bar gets out of its way. */
@@ -244,7 +263,8 @@ export function useHeaderState({
   return {
     field: preview ? theme : field,
     tokens: TOKENS[preview ? theme : field],
-    revealed: revealed && !footerOwnsView,
+    revealed: revealed && !footerOwnsView && preloaderDone,
+    heroActive: preview ? previewState === "rest" : heroActive,
     condensed: preview ? previewState === "settled" : condensed,
     paper: preview ? null : paper,
     pathname,
@@ -270,21 +290,25 @@ export function useHeaderState({
  */
 function useFooterTakeover(enabled: boolean): boolean {
   const [taken, setTaken] = useState(false);
+  const { scrollY } = useScroll();
 
-  useEffect(() => {
+  const checkTakeover = useCallback(() => {
     if (!enabled || typeof window === "undefined") return;
     const trigger =
       document.querySelector("[data-footer-trigger]") ||
       document.querySelector("[data-site-footer]");
     if (!trigger) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => setTaken(entry.isIntersecting),
-      { rootMargin: "0px 0px -15% 0px" },
-    );
-    observer.observe(trigger);
-    return () => observer.disconnect();
+    const rect = trigger.getBoundingClientRect();
+    // The panel owns the view if its top is above the 40% mark of the screen
+    setTaken(rect.top < window.innerHeight * 0.4);
   }, [enabled]);
+
+  useMotionValueEvent(scrollY, "change", checkTakeover);
+
+  useEffect(() => {
+    checkTakeover();
+  }, [checkTakeover]);
 
   return taken;
 }
@@ -1191,7 +1215,14 @@ export function IndexPanel({
                       full={full}
                     />
                   </Link>
-                  <Rule color="rgba(250,247,242,0.07)" />
+                  <div
+                    aria-hidden
+                    style={{
+                      height: 1,
+                      width: "100%",
+                      background: "linear-gradient(to right, rgba(250,247,242,0.06), transparent)",
+                    }}
+                  />
                 </motion.div>
               ))}
             </nav>

@@ -10,34 +10,24 @@ import { BEATS, RIBBON } from "./motion";
  * it is on the stage.
  */
 
-const SCALE = [
-  "font-editorial text-[clamp(1.1rem,2.2vw,1.6rem)] tracking-[0.2em]",
-  "text-[clamp(2.6rem,6vw,6rem)] leading-[0.94] tracking-[-0.04em]",
-];
+const LARGE = "text-[clamp(2.6rem,6vw,6rem)] leading-[0.94] tracking-[-0.04em]";
 
 export default function StaticIntelligence() {
   return (
     <div className="w-full px-6 py-[16vh] md:px-12">
       <div className="space-y-[12vh]">
         {BEATS.map((beat) => (
-          <p key={beat.key} className="max-w-[13ch]">
+          <p key={beat.key}>
             {beat.lockups.flatMap((lockup) =>
               lockup.pieces.map((piece, index) => {
                 return (
                   <span
                     key={`${lockup.id}-${index}`}
                     className={`block ${
-                      piece.mark
-                        ? `${SCALE[0]} text-[#FAF7F2]`
-                        : piece.small
-                          ? "mt-3 font-editorial text-[clamp(1.2rem,2.4vw,1.8rem)] tracking-[-0.015em] text-[#FAF7F2]"
-                          : `${SCALE[1]} font-editorial text-[#FAF7F2]`
+                      piece.small
+                        ? "max-w-[30ch] font-editorial text-[clamp(1.2rem,2.4vw,1.8rem)] tracking-[-0.015em] text-[#FAF7F2]"
+                        : `mt-3 max-w-[14ch] ${LARGE} font-editorial text-[#FAF7F2]`
                     }`}
-                    style={
-                      piece.mark
-                        ? { WebkitTextStroke: "0.6px rgba(201, 165, 90, 0.62)" }
-                        : undefined
-                    }
                   >
                     {piece.words.map((word, i) => (
                       <span

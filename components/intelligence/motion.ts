@@ -2,15 +2,17 @@
  * The intelligence sequence.
  *
  * One message, twelve words, composed against the camera push in that
- * `components/hero/motion.ts` drives. The stage looks at the frame, pans onto
- * her as the line says it sees her, then closes for the last word.
+ * `components/hero/motion.ts` drives, and one motion for all of it: **a line
+ * travels into the frame from outside it, comes to rest, holds, and travels
+ * out.** Nothing is revealed, nothing fades, nothing splits, and no line is
+ * uncovered by an edge belonging to it (`lessons.md` §17, §18).
  *
- * The unit here is the **lockup**: a block placed once on the stage, holding
- * one or more lines whose spacing is measured in ems of the type they sit
- * against. Fragments of one sentence never get positioned independently
- * (`lessons.md` §14.2). Within a lockup, every word carries its own mask and
- * its own place in the stagger, so a line is written and unwritten in reading
- * order rather than fading as a rectangle (§14.3).
+ * Beats differ in where they rest, how big they are, how far they come from
+ * and how long they hold. They do not differ in mechanism.
+ *
+ * The first line begins in the hero. It is not hidden there: it sits below the
+ * frame, and as the mark leaves at the top the phrase comes up into the space
+ * it vacated. That crossing is the entire transition between the two scenes.
  *
  * Authored in frame numbers against the extracted footage, because her
  * movement is the timeline.
@@ -26,26 +28,27 @@ export type Word = {
 
 export type Piece = {
   words: Word[];
-  /**
-   * The wordmark, set as a word in the sentence rather than typed out again in
-   * body voice (`lessons.md` §14.1). It carries the hero's cream fill and gold
-   * hairline, at a size where the hairline still reads as an edge.
-   */
-  mark?: boolean;
   /** Type scale: [narrow stage, wide stage]. */
   type: [string, string];
-  /** Space above this line, in ems of its own type. */
-  gap?: string;
   /** The quiet half of the lockup. Only the still composition reads this. */
   small?: boolean;
 };
 
 export type Lockup = {
   id: string;
-  /** Placement: [narrow stage, wide stage]. */
+  /** Resting placement: [narrow stage, wide stage]. */
   pos: [string, string];
+  /**
+   * How far below its rest the line starts, in vh: [narrow stage, wide stage].
+   * Large enough to be off the stage entirely, so it is out of shot rather
+   * than hidden behind anything. Per viewport because the resting positions
+   * differ: a line resting at 6% needs a longer run than one resting at 46%.
+   */
+  enter: [number, number];
+  /** How far above its rest it travels away, in vh. Null on the last beat. */
+  exit: [number, number] | null;
   pieces: Piece[];
-  /** Entrance delay for the whole lockup, as a fraction of the beat's span. */
+  /** Entrance delay for this lockup, as a fraction of the beat's entry span. */
   delay: number;
 };
 
@@ -57,36 +60,30 @@ export type Beat = {
 };
 
 /**
- * I.   The mark signs the statement. One tight lockup, all the space around it.
+ * I.   The bridge out of the hero. A long, slow arrival from below the frame,
+ *      timed so the mark has cleared before it comes up.
  * II.  The sentence brackets her: the small half left, the verdict right, the
  *      camera centred on her in between.
  * III. A hanging indent, with the verdict carried by the small line so the
- *      beat is not one colour at one size (§14.5).
+ *      beat is not one colour at one size.
  */
 export const BEATS: Beat[] = [
   {
     key: "frame",
-    frames: [66, 82, 106, 126],
+    frames: [30, 90, 102, 122],
     lockups: [
       {
-        id: "frame-lockup",
+        id: "frame-line",
         delay: 0,
-        pos: ["left-6 top-[6%]", "left-6 bottom-[21%] md:left-12"],
+        pos: ["left-6 top-[15%]", "left-6 top-[27%] md:left-12"],
+        enter: [100, 94],
+        exit: [30, 46],
         pieces: [
           {
-            words: [{ t: "PHOLIO" }],
-            mark: true,
+            words: [{ t: "sees the frame" }],
             type: [
-              "text-[clamp(0.95rem,2.9vw,1.3rem)] tracking-[0.22em]",
-              "text-[clamp(1.1rem,2.3vw,2.6rem)] tracking-[0.2em]",
-            ],
-          },
-          {
-            words: [{ t: "sees" }, { t: "the" }, { t: "frame." }],
-            gap: "mt-[0.26em]",
-            type: [
-              "text-[clamp(2.6rem,9.6vw,4.4rem)]",
-              "text-[clamp(3rem,7.6vw,9.2rem)]",
+              "text-[clamp(2.3rem,8.4vw,3.9rem)]",
+              "text-[clamp(3rem,6.8vw,8.2rem)]",
             ],
           },
         ],
@@ -95,15 +92,17 @@ export const BEATS: Beat[] = [
   },
   {
     key: "you",
-    frames: [112, 130, 152, 170],
+    frames: [114, 136, 152, 168],
     lockups: [
       {
         id: "you-small",
         delay: 0,
-        pos: ["left-6 top-[6%]", "left-6 top-[33%] md:left-12"],
+        pos: ["left-6 top-[6%]", "left-6 top-[38%] md:left-12"],
+        enter: [104, 76],
+        exit: [20, 48],
         pieces: [
           {
-            words: [{ t: "Then" }, { t: "it" }, { t: "sees" }],
+            words: [{ t: "Then it sees" }],
             small: true,
             type: [
               "text-[clamp(1.2rem,3.6vw,1.7rem)] tracking-[-0.015em]",
@@ -114,11 +113,13 @@ export const BEATS: Beat[] = [
       },
       {
         id: "you-verdict",
-        delay: 0.36,
+        delay: 0.26,
         pos: [
           "right-6 top-[12%] text-right",
-          "right-6 top-[42%] text-right md:right-12",
+          "right-6 top-[47%] text-right md:right-12",
         ],
+        enter: [100, 64],
+        exit: [30, 72],
         pieces: [
           {
             words: [{ t: "you.", verdict: true }],
@@ -133,12 +134,14 @@ export const BEATS: Beat[] = [
   },
   {
     key: "understood",
-    frames: [158, 176, 193, null],
+    frames: [160, 184, 193, null],
     lockups: [
       {
         id: "understood-large",
         delay: 0,
-        pos: ["left-6 top-[6%]", "left-6 top-[41%] md:left-12"],
+        pos: ["left-6 top-[6%]", "left-6 top-[46%] md:left-12"],
+        enter: [104, 64],
+        exit: null,
         pieces: [
           {
             words: [{ t: "Understood" }],
@@ -151,11 +154,13 @@ export const BEATS: Beat[] = [
       },
       {
         id: "understood-small",
-        delay: 0.38,
-        pos: ["left-[16%] top-[17%]", "left-[21%] top-[57%]"],
+        delay: 0.3,
+        pos: ["left-[16%] top-[17%]", "left-[21%] top-[62%]"],
+        enter: [96, 46],
+        exit: null,
         pieces: [
           {
-            words: [{ t: "before" }, { t: "you" }, { t: "send.", verdict: true }],
+            words: [{ t: "before you " }, { t: "send.", verdict: true }],
             small: true,
             type: [
               "text-[clamp(1.05rem,3.2vw,1.5rem)] tracking-[-0.015em]",
@@ -170,28 +175,18 @@ export const BEATS: Beat[] = [
 
 /**
  * The background ribbon: the four archetypes the app scores a book against
- * (`src/domains/ai/archetypes.js`).
- *
- * It is depth, not a headline. It rides the camera's push in at a fraction of
- * the rate, it decelerates rather than travelling at one speed, and it carries
- * a real optical blur so it reads as out of focus behind her instead of merely
- * faint (`lessons.md` §14.6, §14.7). The blur is static: nothing animates a
- * filter per frame.
+ * (`src/domains/ai/archetypes.js`). Depth, not a headline.
  */
 export const RIBBON = {
   words: ["EDITORIAL", "RUNWAY", "COMMERCIAL", "LIFESTYLE"],
-  /** Size in vw: [narrow stage, wide stage]. */
   size: [15, 7.5] as [number, number],
-  /** Vertical centre, percent of stage: [narrow, wide]. */
-  top: [30, 29] as [number, number],
-  /** Blur in px: [narrow, wide]. Depth of field, not a glow. */
-  blur: [1.6, 2.6] as [number, number],
-  /** Eased travel: it arrives quickly and settles, like a plate coming to rest. */
+  top: [36, 70] as [number, number],
+  blur: [2.4, 4] as [number, number],
   drift: {
     at: [0, 0.28, 0.62, 1],
     x: ["22vw", "3vw", "-11vw", "-19vw"],
   },
-  peak: 0.055,
+  peak: 0.028,
   fade: {
     in: progressAtFrame(66),
     settled: progressAtFrame(92),
@@ -201,53 +196,30 @@ export const RIBBON = {
   travel: [progressAtFrame(64), progressAtFrame(193)] as [number, number],
 };
 
-// ── Word choreography ─────────────────────────────────────────────────────
-//
-// No opacity anywhere on display copy. A word is parked below its own mask
-// before its beat and above it afterwards, so it is simply not in the frame
-// until it is written and not in the frame once it is taken away (§14.3).
+/**
+ * Two curves, and they are the only reason GSAP is in the build.
+ *
+ * `settle` covers most of its distance early and then takes a long time to
+ * finish, which is what makes an arrival read as coming to rest rather than
+ * sliding in. `leave` is its opposite and shorter: things should go quietly,
+ * not linger. Neither is expressible as a single `cubic-bezier()`.
+ */
+export const EASES = {
+  settle: "M0,0 C0.05,0.35 0.15,0.75 0.35,0.9 0.55,1 0.8,1 1,1",
+  leave: "M0,0 C0.25,0 0.55,0.08 0.75,0.35 0.88,0.55 0.96,0.85 1,1",
+} as const;
 
-/** Clearance, as a percentage of the moving box (padding included). */
-export const WIPE = ["112%", "0%", "0%", "-112%"] as const;
-
-/** Per-word stagger, as a fraction of the entrance and exit spans. */
-export const WORD_IN = 0.16;
-export const WORD_OUT = 0.13;
-
-export type WordTiming = { stops: number[]; wipe: string[] };
-
-export function wordTiming(
-  frames: Beat["frames"],
-  lockupDelay: number,
-  wordIndex: number,
-): WordTiming {
+/** When a lockup travels in, and when it travels out. */
+export function lockupTiming(frames: Beat["frames"], delay: number) {
   const [inF, settleF, holdF, outF] = frames;
   const start = progressAtFrame(inF);
   const settle = progressAtFrame(settleF);
-  const inSpan = settle - start;
-  const shift = inSpan * (lockupDelay + wordIndex * WORD_IN);
-
-  if (outF === null) {
-    return {
-      stops: [start + shift, settle + shift],
-      wipe: [WIPE[0], WIPE[1]],
-    };
-  }
-
-  const hold = progressAtFrame(holdF);
-  const out = progressAtFrame(outF);
-  const outShift = (out - hold) * wordIndex * WORD_OUT;
-
+  const shift = (settle - start) * delay;
   return {
-    stops: [start + shift, settle + shift, hold + outShift, out + outShift],
-    wipe: [...WIPE],
+    enter: [start + shift, settle + shift] as [number, number],
+    exit:
+      outF === null
+        ? null
+        : ([progressAtFrame(holdF), progressAtFrame(outF)] as [number, number]),
   };
 }
-
-/** The whole beat, for the lockup's own slow drift. Nothing parks. */
-export function beatSpan(frames: Beat["frames"]): [number, number] {
-  return [progressAtFrame(frames[0]), progressAtFrame(frames[3] ?? frames[2])];
-}
-
-export const BLOCK_DRIFT = [20, -18] as [number, number];
-export const BLOCK_DOLLY = [0.99, 1.016] as [number, number];

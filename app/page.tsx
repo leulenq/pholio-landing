@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
-import Hero from "@/components/hero";
-import SceneCompCard from "@/components/comp-card";
+import HomePageClient from "@/components/HomePageClient";
 
 export const metadata: Metadata = {
   title: "Pholio — Verified talent portfolios",
@@ -10,10 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
-  return (
-    <>
-      <Hero />
-      <SceneCompCard />
-    </>
-  );
+  return <HomePageClient />;
 }

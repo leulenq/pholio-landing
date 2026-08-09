@@ -48,5 +48,5 @@ export function productLabel(label: string): string {
 }
 
 export function copyright(): string {
-  return `© ${new Date().getFullYear()} ${COMPANY_NAME}`;
+  return `© ${new Date().getFullYear()} All rights reserved.`;
 }

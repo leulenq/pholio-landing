@@ -670,3 +670,304 @@ than merely faint. Faintness reads as washed out; softness reads as depth.
 miss. It is depth: softened, eased rather than linear, riding the camera. A
 background element travelling at constant speed in a straight line is the
 default, and the default is what reads as undercooked.
+
+---
+
+## 15. The hero is finished. Connect to it, do not edit it.
+
+**Date:** 2026-08-06
+**Surface:** the home hero wordmark, and the hero to intelligence transition
+
+**What was built.** Asked to make the hero's PHOLIO wordmark the connective
+element into the intelligence section, the agent rewrote the wordmark's exit:
+instead of rising and fading on her first movement, it shrank and travelled to
+the upper left and held there as the subject of the first intelligence line.
+
+**What was wrong.**
+
+> "I need you to keep the hero section exactly as it is. Don't change the motion
+> in which the motion scrolls up or anything else. Find an alternative way to
+> connect the hero with the intelligence section."
+
+**The rule.** **The hero is a finished surface.** Its wordmark, its exit, its
+timing against her first movement, and its composition are not raw material for
+a later section's problem. A section that needs to feel connected to the hero
+solves that in its own code.
+
+This is the same shape as §1, one layer subtler: there the mistake was reusing
+the header's composition, here it was *editing* a finished one. Both come from
+treating a settled surface as available.
+
+**15.1 Connection is inheritance, not continuation of the same element.** The
+brief was continuity, and the agent read that as "the same element keeps
+moving". It does not have to be. A later scene can inherit a finished scene's
+**treatment**, its **exit vector**, or its **material** without touching it.
+
+**The rule.** To bridge two scenes, take something the first one leaves behind:
+
+- the direction it left in, so the next thing arrives along the same axis
+- the way it was drawn, so the next thing begins in that state and resolves out
+  of it
+- its colour, weight, or texture, carried at a different scale
+
+What the intelligence section now does: the mark exits upward and is gone,
+untouched. The first line then **descends from where it went**, drawn in the
+mark's own 1px gold hairline with no fill, and fills to solid cream as it
+lands. The hero's identity becomes the message without the mark being moved,
+copied, or retyped.
+
+**15.2 One motion per beat, chosen for meaning.** **Superseded by §17.** The
+principle that a motion should mean something still holds. Giving each beat a
+*different mechanism* does not follow from it, and in practice produced the
+tech-demo feel §17 rejects.
+
+> "Replace the current upward typography movement with a more premium
+> transition. It should feel like a transformation, continuation, or unfolding.
+> Use typography motion that's relevant and unique for each beat."
+
+**The rule.** A section does not get a house transition applied to every beat.
+Each beat states what it means and moves accordingly, with a beginning, a
+transformation, and a landing. Reusing one entrance across a whole section is
+the preset the brief is asking you to avoid, no matter how good the preset is.
+
+---
+
+## 16. The bridge starts in the hero, without touching the hero
+
+**Date:** 2026-08-06
+**Surface:** the hero to intelligence transition, and the animation stack
+
+**The direction.**
+
+> "'Sees the frame' should begin in the hero section and build into the
+> intelligence section. The PHOLIO wordmark must first stand completely on its
+> own in the hero. Do not attach the phrase to it too early, and do not turn the
+> hero mark into an inline label. The hero should remain visually intact and
+> confident."
+
+> "The feeling should be that the intelligence message is emerging from the
+> hero's identity, not that a second PHOLIO component has been added below it."
+
+**16.1 A section may begin before its section does.** The mistake behind §15
+and this one is the same assumption: that a beat's life has to fit inside the
+scroll range of the component that owns it. It does not. The first intelligence
+line is born at frame 14, while the hero is still the hero, and does not finish
+resolving until frame 86.
+
+**The rule.** Where two scenes need to feel like one move, let the later
+scene's first element **start early and live across the boundary**, mounted in
+the earlier scene's z-stack. What must not cross the boundary is *edits to the
+finished scene*. Adding a sibling layer is allowed; changing the neighbour is
+not.
+
+**16.2 Nothing before the mark has had its moment.** The wordmark must be alone
+at scroll zero, and alone until she moves.
+
+**The rule.** An element that emerges from another starts at **scale zero**, not
+at low opacity. Zero renders nothing, so the opening composition is provably
+untouched, and growth from nothing is an emergence rather than a fade.
+
+**16.3 Measure the thing you are connecting to.** The phrase's origin is not a
+hardcoded coordinate; it reads the mark's own bounding box at mount, via a
+`data-hero-wordmark` hook that adds no styling. If the hero's type scale ever
+changes, the bridge follows it instead of drifting.
+
+**The rule.** A connective element derives its geometry from the element it
+connects to. Two hardcoded positions that happen to line up today are a bug
+with a delay on it.
+
+**16.4 The animation stack.**
+
+> "Find a better animation dependency. I also want you to research and introduce
+> a more distinctive animation library. Do not rely only on basic CSS fades,
+> generic slide-ins, standard easing, or common template transitions."
+
+**What was chosen and why.** GSAP 3.15, which since 3.13 ships every former
+premium plugin in the free package: `CustomEase` for bezier curves that are not
+in any easing menu, `SplitText` where character splitting is needed, `Flip` and
+`Observer` if a later surface wants them.
+
+**What was deliberately not adopted.** `ScrollTrigger`. This page already has
+one scroll source of truth, the frame sequence, and a second scroll system
+listening alongside it is how a scrubbed sequence starts to drift from its own
+footage. GSAP timelines here are built paused and driven by
+`timeline.progress()` from the existing scroll value.
+
+**The rule.** **One scroll source per page.** Add an animation library for its
+sequencing and its easing, never for a second opinion about where the page is.
+Linear interpolation between keyframe stops is the tell that a scroll scene was
+wired rather than authored; a scene should be a timeline with real curves.
+
+`lenis` was evaluated for scroll smoothing and left out of this change: it is a
+sitewide behaviour change, not a section one, and it belongs in its own
+decision.
+
+---
+
+## 17. Quiet confidence, not novelty
+
+**Date:** 2026-08-06
+**Surface:** the hero to intelligence transition
+
+**What was built.** `sees the frame` was born as fourteen characters at scale
+zero, scattered across the wordmark's width, condensing into words on a custom
+bezier, riding the mark upward, then filling from a gold hairline outline to
+solid cream on a clipped left-to-right sweep. Beat II swept in from both edges;
+beat III opened from an aperture in the middle of the word.
+
+**What was wrong.**
+
+> "The current transition is too over-engineered and it reads generic and
+> template-like, especially the 'sees the frame' move. It feels gimmicky and
+> techy, not restrained, premium."
+
+> "The goal is not novelty. The goal is quiet confidence."
+
+> "The motion should be felt as part of the composition, not noticed as the
+> composition."
+
+**17.1 Effort is not the same as quality, and it is usually the opposite.**
+Every one of those mechanisms was individually defensible. Together they read as
+a demo reel. The failure was cumulative, which is why each review pass adding
+one more idea made it worse.
+
+**The rule.** **Count the mechanisms in a section. If there is more than one,
+justify each out loud.** A premium surface has one motion vocabulary and varies
+placement, scale and pacing inside it. Different mechanics per beat is variety
+for its own sake, and it is what makes a section read as a template demo.
+This supersedes §15.2.
+
+**17.2 Nothing appears from thin air.**
+
+> "Nothing should appear from thin air."
+
+**The rule.** Type does not fade up, scale up from zero, materialise, or
+assemble. It **arrives** — from outside the frame, or from behind an edge that
+is already part of the composition. If a viewer would ask "where did that come
+from", the answer must be a place, not an effect.
+
+This retires §16.2's scale-from-zero: the problem it solved (nothing visible
+before the mark has its moment) is better solved by putting the element
+**below the frame**, where it is genuinely not in shot.
+
+**17.3 Do not literalise the connection.**
+
+> "Do not use overly literal wordmark transformations."
+
+**The rule.** The link between two scenes is compositional, not mechanical. The
+phrase rises into the space the mark vacates, in the same typeface, as the mark
+leaves. That is the whole relationship. Redrawing the phrase in the mark's own
+hairline and filling it in was the idea being *explained* rather than felt.
+
+**17.4 Character-level choreography is banned on this site.** Splitting a line
+into letters and animating them individually is the single most recognisable
+"look at me" move in the category, and it reads as techy no matter how good the
+easing is.
+
+**The rule.** **Animate lines, not words, and never characters.** A stagger
+between two lines of one lockup is the most granularity this site permits.
+
+**17.5 What a dependency is for.**
+
+> "Choose it because it can make the motion feel invisible and elegant."
+
+GSAP stays, and its footprint shrinks to one thing: `CustomEase`, to author a
+deceleration with a long tail that `cubic-bezier()` cannot express, because the
+difference between a slide-in and something settling into place is entirely in
+the shape of that curve. No timelines, no `SplitText`, no DOM mutation. The
+library is in the build for the curve, and the curve is the part nobody should
+notice.
+
+**The rule.** Judge an animation dependency by the smallest useful thing you
+take from it, not by its feature list.
+
+---
+
+## 18. No reveals. Only travel.
+
+**Date:** 2026-08-06
+**Surface:** the intelligence section's typography
+
+**What was wrong.**
+
+> "I still don't like the card like upwards transitioning."
+
+Every line was rising out from behind a mask sized to itself. Because the mask
+edge is a rectangle the width of the line, the eye reads a card sliding: the
+type looks like it is coming out of a slot rather than moving through a space.
+That was true whatever the easing was.
+
+**The rule.** **A line is never revealed by an edge that belongs to it.** No
+per-line masks, no `overflow-hidden` sized to the text, no clip. Type enters the
+composition by **travelling into it from outside the frame** and leaves by
+travelling out. The only clipping edge on this site is the stage itself, which
+is a frame, not a card.
+
+This absorbs §17.2 and finishes it: nothing appears from thin air *and* nothing
+appears from behind a slot. Every element has a place it comes from and a place
+it goes, both of them off screen.
+
+**18.1 The type layer sits behind the figure.** Once type travels through the
+frame rather than popping into a slot, it crosses space she occupies. That is a
+reason to put it behind her, not a reason to route around her: she occludes it,
+the layer gains depth, and the rule that nothing ever covers her is enforced by
+the stacking order instead of by careful positioning.
+
+**18.2 One mechanism means one file.** The bridge and the beats now move
+identically, so the bridge stopped being a special component and became the
+first beat with a longer entry. Two implementations of one idea is how the
+second one drifts.
+
+**Note on scope.** A white intelligence section was requested and then withdrawn
+in the same message ("keep it dark"). Not built. Recorded only so nobody
+resurrects it from a half-read transcript.
+
+---
+
+## 19. The opening figure can be tuned without retiming the sequence
+
+**Date:** 2026-08-08
+**Surface:** the home Hero opening state
+
+**What was wrong.** The model's opening still held too much air above her head,
+even though the later scroll-tied framing was already right.
+
+**The rule.** Keep the authored `FIGURE_SCALE` sequence intact. If the opening
+composition needs an optical size correction, apply it only while scroll
+progress is exactly zero, and keep the mobile treatment unchanged unless it has
+the same measured problem. A static-state correction must not become a new
+camera move.
+
+---
+
+## 20. A resting scale is the sequence's calibration baseline
+
+**Date:** 2026-08-08
+**Surface:** the home Hero image sequence handoff
+
+**What was wrong.** The opening figure was enlarged through a static-only
+override, but the first scroll-derived scale still began at the old baseline.
+That made the model jump backward when the sequence started.
+
+**The rule.** The opening scale belongs to the entire authored camera curve.
+Apply the same calibration factor to every figure-scale stop so the first
+animated frame inherits the resting frame's scale and the original relative
+push/pull remains intact. Never patch a scroll sequence with a one-frame scale
+branch.
+
+---
+
+## 21. Section changes need a reason to happen
+
+**Date:** 2026-08-08
+**Surface:** the About page scrollytelling handoffs
+
+**What was wrong.** A black-to-cream vertical gradient wipe was used to move
+between the mission and Manifesto. The gradient read as default CSS and the
+text simply rose into it, making the page feel like a template transition.
+
+**The rule.** A transition must evolve from a visual element, type treatment,
+image, object, or spatial rule established in the preceding scene. Do not add
+an abstract gradient to fill the screen. For the About page, the Hero image
+reappears as an editorial image plate before receding into the Manifesto's
+existing cream/P composition: human context resolves into curation.

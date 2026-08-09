@@ -60,6 +60,8 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
+import CustomCursor from "@/components/CustomCursor";
+
 export default function RootLayout({
   children,
 }: {
@@ -72,6 +74,7 @@ export default function RootLayout({
     >
       <body>
         <Providers>
+          <CustomCursor />
           <HeaderWrapper />
           <main className="relative z-10 min-h-screen bg-[#050505]">
             {children}

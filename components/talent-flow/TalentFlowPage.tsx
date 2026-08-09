@@ -24,7 +24,6 @@ import SceneSignal from "./SceneSignal";
 import SceneAddress from "./SceneAddress";
 import SceneWallet from "./SceneWallet";
 import SceneClose from "./SceneClose";
-import MarketingFooter from "@/components/MarketingFooter";
 import ThemeColor from "@/components/ThemeColor";
 
 /* Colour stops, derived from when each scene actually OWNS THE FRAME.
@@ -106,7 +105,6 @@ export default function TalentFlowPage() {
         <SceneWallet />
         <SceneClose />
       </motion.div>
-      <MarketingFooter theme="dark" />
     </main>
   );
 }

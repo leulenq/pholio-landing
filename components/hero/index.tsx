@@ -11,6 +11,7 @@ import Image from "next/image";
 
 import Intelligence from "@/components/intelligence";
 import Ribbon from "@/components/intelligence/Ribbon";
+import HeroChrome from "./HeroChrome";
 import { useFrameSequence } from "./useFrameSequence";
 import { useMediaQuery } from "./useMediaQuery";
 import {
@@ -21,7 +22,7 @@ import {
   FIGURE_RISE,
   FIGURE_SCALE,
   FIGURE_STOPS,
-  INTELLIGENCE_ENTER,
+  STATIC_FIGURE_SCALE,
   STAGE_VH,
   WHEEL_EXIT,
   WORDMARK_EXIT,
@@ -54,7 +55,7 @@ const ROW_H = 46; // px
 /** A frame from the settled standing stretch, for the reduced-motion still. */
 const STILL_FRAME = 97;
 
-export default function Hero() {
+export default function Hero({ ready = true }: { ready?: boolean }) {
   const containerRef = useRef<HTMLElement>(null);
   const [wordIndex, setWordIndex] = useState(0);
 
@@ -66,12 +67,12 @@ export default function Hero() {
   const { canvasRef, draw, posterReady } = useFrameSequence(FRAMES, frameSrc);
 
   useEffect(() => {
-    if (prefersReducedMotion) return;
+    if (prefersReducedMotion || !ready) return;
     const timer = setInterval(() => {
       setWordIndex((i) => (i + 1) % N);
     }, WORD_INTERVAL);
     return () => clearInterval(timer);
-  }, [prefersReducedMotion]);
+  }, [prefersReducedMotion, ready]);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -125,11 +126,21 @@ export default function Hero() {
     isMobile ? [...FIGURE_RISE.mobile] : [...FIGURE_RISE.desktop],
   );
 
-  const intelligenceOpacity = useTransform(
+  const bgColor = useTransform(
     scrollYProgress,
-    [INTELLIGENCE_ENTER.start, INTELLIGENCE_ENTER.settled],
-    [0, 1],
+    [0, FIGURE_STOPS[1], FIGURE_STOPS[2], 1],
+    ["#050505", "#050505", "#050505", "#050505"]
   );
+
+  // The gold radial gradient fades out as soon as she starts to move (FIGURE_STOPS[1]),
+  // leaving the solid black base.
+  const sceneryOpacity = useTransform(
+    scrollYProgress, 
+    [0, FIGURE_STOPS[1], FIGURE_STOPS[2]], 
+    [1, 1, 0]
+  );
+  const ambientScale = useTransform(scrollYProgress, [0, 0.6, 1], [1, 1.025, 1.08]);
+  const scrollIndicatorOpacity = useTransform(scrollYProgress, [0, 0.08], [1, 0]);
 
   const grain = (
     <div
@@ -145,6 +156,7 @@ export default function Hero() {
 
   const wordmark = (
     <h1
+      data-hero-wordmark
       className="whitespace-nowrap text-center font-editorial leading-none"
       style={{
         fontSize: "clamp(5rem, 28vw, 28rem)",
@@ -162,7 +174,22 @@ export default function Hero() {
     return (
       <section ref={containerRef} data-hero-chrome className="relative z-10">
         <div className="relative flex min-h-[100dvh] w-full items-center justify-center overflow-hidden bg-[#050505]">
+          <div className="absolute inset-0 z-0 bg-[#050505]" />
+          
+          <div
+            className="absolute inset-0 z-[14] pointer-events-none opacity-100"
+          >
+            <div
+              className="absolute inset-0 opacity-[0.1]"
+              style={{
+                background: "radial-gradient(ellipse 80% 80% at 50% 50%, rgba(201, 165, 90, 0.4) 0%, transparent 70%)",
+                scale: 1,
+              }}
+            />
+          </div>
+
           {grain}
+          <HeroChrome staticMode />
           <div className="pointer-events-none absolute inset-0 z-10 flex items-start justify-center px-6 pt-[17vh] opacity-85 md:pt-[15vh]">
             {wordmark}
           </div>
@@ -174,6 +201,7 @@ export default function Hero() {
               height={FRAME_HEIGHT}
               priority
               className="h-full w-full object-contain object-bottom"
+              style={{ scale: isMobile ? STATIC_FIGURE_SCALE.mobile : STATIC_FIGURE_SCALE.desktop }}
               sizes="(max-width: 767px) 100vw, 60dvh"
             />
           </div>
@@ -211,15 +239,35 @@ export default function Hero() {
       style={{ height: `${STAGE_VH}vh` }}
     >
       <div className="sticky top-0 flex h-[100dvh] w-full items-center justify-center overflow-hidden">
+        <HeroChrome progress={scrollYProgress} />
         {/* Velvet field. Opaque, so the header's polarity sampler can read it. */}
-        <div className="absolute inset-0 z-0 bg-[#050505]" />
+        <motion.div className="absolute inset-0 z-0" style={{ backgroundColor: bgColor }} />
+
+        {/* ── Ambient Base (mobile + always-on) ── */}
+        <motion.div
+          className="absolute inset-0 z-[14] pointer-events-none"
+          style={{ opacity: sceneryOpacity }}
+        >
+          <motion.div
+            className="absolute inset-0"
+            animate={{ opacity: [0.07, 0.13, 0.07] }}
+            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+            style={{
+              background: "radial-gradient(ellipse 80% 80% at 50% 50%, rgba(201, 165, 90, 0.4) 0%, transparent 70%)",
+              scale: ambientScale,
+            }}
+          />
+        </motion.div>
 
         {grain}
 
-        {/* ── The intelligence sequence's background ribbon. Mounted here,
-              under the figure, so she cuts it as the camera closes in. ── */}
+        {/* ── Under the figure: the intelligence section's whole type layer,
+              mounted in the hero's own z-stack so she occludes it and so the
+              first line can begin before the hero is over. Nothing here edits
+              the hero. See components/intelligence. ── */}
         <div className="pointer-events-none absolute inset-0 z-[15]">
           <Ribbon progress={scrollYProgress} compact={isMobile} />
+          <Intelligence progress={scrollYProgress} isMobile={isMobile} />
         </div>
 
         {/* ── BEAT 1 — the wordmark, set behind her ── */}
@@ -355,13 +403,22 @@ export default function Hero() {
           </div>
         </motion.div>
 
-        {/* ── BEAT 3 — intelligence, arriving as she settles into standing ── */}
+        {/* ── Scroll indicator ── */}
         <motion.div
-          className="absolute inset-0 z-40"
-          style={{ opacity: intelligenceOpacity, willChange: "opacity" }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-30 pointer-events-none"
+          style={{ opacity: scrollIndicatorOpacity }}
         >
-          <Intelligence progress={scrollYProgress} isMobile={isMobile} />
+          <motion.div
+            className="w-[1px] h-12"
+            style={{
+              background: "linear-gradient(to bottom, transparent, #C9A55A, transparent)",
+              transformOrigin: "top",
+            }}
+            animate={{ scaleY: [0, 1, 0], y: [0, 20, 40], opacity: [0, 1, 0] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+          />
         </motion.div>
+
       </div>
     </section>
   );

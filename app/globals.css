@@ -169,6 +169,15 @@ body {
   z-index: 1;
 }
 
+/** Micro-label voice for section eyebrows (e.g. THE MANIFESTO) */
+.text-label {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
 /* ══════════════════════════════════════════════════════════════════════════
    REDUCED MOTION
 
@@ -186,4 +195,18 @@ body {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   CUSTOM CURSOR
+   ══════════════════════════════════════════════════════════════════════════ */
+html.has-custom-cursor,
+html.has-custom-cursor * {
+  cursor: none !important;
+}
+
+html.has-custom-cursor input,
+html.has-custom-cursor textarea,
+html.has-custom-cursor [contenteditable] {
+  cursor: text !important;
 }

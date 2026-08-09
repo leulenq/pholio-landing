@@ -177,6 +177,7 @@ export function FooterMark() {
       <Wordmark
         size="23.4cqi"
         tracking={0.06}
+        color={MUTED}
         style={{ display: "block", whiteSpace: "nowrap", transition: "none" }}
       />
     </div>
@@ -362,11 +363,12 @@ const TONE: Record<LinkTone, CSSProperties> = {
     color: MUTED,
   },
   signature: {
-    fontFamily: SANS,
-    fontSize: 11,
-    fontWeight: 500,
-    letterSpacing: "0.12em",
-    textTransform: "uppercase",
+    fontFamily: SERIF,
+    fontSize: 13,
+    fontWeight: 400,
+    fontStyle: "italic",
+    letterSpacing: "0.02em",
+    textTransform: "none",
     lineHeight: 1,
     color: MUTED,
   },
@@ -472,20 +474,6 @@ function Mark({
       >
         {label}
       </span>
-      <span
-        aria-hidden
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          bottom: -3,
-          height: 1,
-          background: GOLD,
-          transformOrigin: "left",
-          transform: `scaleX(${hover ? 1 : 0})`,
-          transition: `transform 0.34s ${EASE}`,
-        }}
-      />
     </span>
   );
 }
@@ -601,7 +589,7 @@ function XMark() {
  */
 export function AddressLink({
   email,
-  size = "clamp(1.75rem, 3vw, 2.1rem)",
+  size = "clamp(0.9rem, 2vw, 1.1rem)",
 }: {
   email: string;
   size?: string;
